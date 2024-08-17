@@ -15,15 +15,15 @@
         fields.value.map(field => field.type === "boolean" ? dialogRef.value.data.newRecord[field.id] = false : dialogRef.value.data.newRecord[field.id] = null);
     });
 
-    const validateField = (field) => {
-        return dialogRef?.value.data.hasSubmitted && field.required && !dialogRef?.value.data.newRecord[field.id]
+    function validateField(field) {
+        return dialogRef?.value.data.hasSubmitted && field.required && !dialogRef?.value.data.newRecord[field.id];
     }
 </script>
 
 <template>
     <form class="mx-8 flex flex-col gap-4">
         <article v-for="field in fields" class="flex flex-col gap-2">
-            <label :for="field.id">{{field.label}}<span v-if="field.required" title="required" class="required-asterisk" aria-hidden="true">*</span></label>
+            <label :for="field.id">{{field.label}}<span v-if="field.required" title="required" class="required-indicator" aria-hidden="true">*</span></label>
             <InputText v-if="field.type === 'text'" :id="field.id" v-model.trim="newRecord[field.id]" :placeholder="field.placeholder" :invalid="validateField(field)" fluid autofocus></InputText>
             <InputNumber v-if="field.type === 'number'" :id="field.id" v-model="newRecord[field.id]" :min="field.minimum" :max="field.maximum" :step="field.step" :minFractionDigits="field.minFractionDigits" :maxFractionDigits="field.maxFractionDigits" :prefix="field.prefix" :suffix="field.suffix" :placeholder="field.placeholder" :allowEmpty="!field.required" :invalid="validateField(field)" fluid showButtons autofocus highlightOnFocus></InputNumber>
             <InputNumber v-if="field.type === 'currency'" :id="field.id" mode="currency" currency="MYR" v-model="newRecord[field.id]" :min="field.minimum" :max="field.maximum" :step="0.01" :minFractionDigits="2" :maxFractionDigits="2" :placeholder="field.placeholder" :allowEmpty="!field.required" :invalid="validateField(field)" fluid showButtons autofocus highlightOnFocus></InputNumber>

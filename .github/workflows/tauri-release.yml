@@ -49,16 +49,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          updaterJsonPreferNsis: true
+          args: ${{ matrix.args }}
           tagName: v__VERSION__
           releaseName: 'P&L Analyzer v__VERSION__'
           releaseBody: 'See the assets to download this version and install.'
-          releaseDraft: false
-          prerelease: false
-          includeUpdaterJson: true
-          updaterJsonPreferNsis: true
-          includeDebug: false
-          includeRelease: true
-          args: ${{ matrix.args }}
 
   update-json:
     runs-on: ubuntu-latest

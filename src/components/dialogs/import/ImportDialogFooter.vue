@@ -7,11 +7,11 @@
     const file = dialogRef?.value.data.file;
     const isProcessing = ref(false);
     
-    const closeDialog = () => {
+    function closeDialog() {
         dialogRef?.value.close();
-    };
+    }
     
-    const submit = () => {
+    function submit() {
         dialogRef.value.data.hasSubmitted = true;
         const fields = dialogRef?.value.data.fields;
         const options = dialogRef?.value.data.options;
@@ -34,21 +34,21 @@
             if (dialogRef?.value.data.importFunctionParam) {
                 dialogRef?.value.data.importFunction(dialogRef?.value.data.importFunctionParam, file, fields, options).then((res) => {
                     if (res.success) {
-                        dialogRef?.value.close({success: true, file: file, result: res.data});
+                        dialogRef?.value.close({ success: true, file: file, result: res.data });
                     } else {
                         emit("error", res.error);
                     }
-    
+
                     isProcessing.value = false;
                 });
             } else {
                 dialogRef?.value.data.importFunction(file, fields, options).then((res) => {
                     if (res.success) {
-                        dialogRef?.value.close({success: true, file: file, result: res.data});
+                        dialogRef?.value.close({ success: true, file: file, result: res.data });
                     } else {
                         emit("error", res.error);
                     }
-    
+
                     isProcessing.value = false;
                 });
             }

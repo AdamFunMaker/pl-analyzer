@@ -25,12 +25,12 @@
     const editingRows = ref([]);
     const isLoading = ref(true);    
 
-    const loadItems = () => {
+    function loadItems() {
         itemService.getItems(transaction).then((res) => {
             if (res.success) {
                 items.value = res.data;
             } else {
-                toast.add({severity:"error", summary: "Error Loading Items", detail: res.error, life: 3000});
+                toast.add({ severity: "error", summary: "Error Loading Items", detail: res.error, life: 3000 });
             }
 
             isLoading.value = false;
@@ -49,10 +49,10 @@
         });
     });
 
-    const openAddDialog = () => {
+    function openAddDialog() {
         dialog.open(AddDialog, {
             props: {
-                header: "Add New Item",                
+                header: "Add New Item",
                 modal: true
             },
             templates: {
@@ -62,56 +62,56 @@
                 addFunction: itemService.addItem,
                 addFunctionParam: transaction,
                 fields: [
-                    {id: "description", label: "Description", type: "text", placeholder: "", required: true},
-                    {id: "category", label: "Category", type: "select", placeholder: "Select a Category", options: categories, optionLabel: "name", optionValue: "id", required: true}
+                    { id: "description", label: "Description", type: "text", placeholder: "", required: true },
+                    { id: "category", label: "Category", type: "select", placeholder: "Select a Category", options: categories, optionLabel: "name", optionValue: "id", required: true }
                 ],
                 newRecord: {},
                 hasSubmitted: false
             },
             emits: {
                 onError: (error) => {
-                    toast.add({severity:"error", summary: "Add Item Failed", detail: error, life: 3000});
+                    toast.add({ severity: "error", summary: "Add Item Failed", detail: error, life: 3000 });
                 }
             },
             onClose: (options) => {
                 if (options.data && options.data.success) {
-                    toast.add({severity:"success", summary: "Add Item Successful", detail: `${options.data.record.description} has been added successfully.`, life: 3000});
+                    toast.add({ severity: "success", summary: "Add Item Successful", detail: `${options.data.record.description} has been added successfully.`, life: 3000 });
                     loadItems();
                 }
             }
         });
-    };
+    }
 
-    const editItem = (event) => {
-        const {newData} = event;
-        
+    function editItem(event) {
+        const { newData } = event;
+
         if (newData.description?.trim() && newData.category_id) {
             itemService.editItem(transaction, newData.id, newData).then((editRes) => {
                 if (editRes.success) {
                     loadItems();
-                    toast.add({severity:"success", summary: "Edit Item Successful", detail: `${newData.description} has been edited successfully.`, life: 3000});
+                    toast.add({ severity: "success", summary: "Edit Item Successful", detail: `${newData.description} has been edited successfully.`, life: 3000 });
                 } else {
-                    toast.add({severity:"error", summary: "Edit Item Failed", detail: editRes.error, life: 3000});
+                    toast.add({ severity: "error", summary: "Edit Item Failed", detail: editRes.error, life: 3000 });
                 }
             });
         } else {
-            toast.add({severity:"error", summary: "Edit Item Failed", detail: "Description and Category are required.", life: 3000});
+            toast.add({ severity: "error", summary: "Edit Item Failed", detail: "Description and Category are required.", life: 3000 });
         }
-    };
+    }
 
-    const deleteItems = () => {
+    function deleteItems() {
         itemService.deleteItems(transaction, selection.value.map(item => item.id)).then((delRes) => {
             if (delRes.success) {
                 loadItems();
-                toast.add({severity:"success", summary: `Delete ${selection.value.length > 1 ? "Items" : "Item"} Successful`, detail: `${selection.value.map(item => item.description).join(", ")} ${selection.value.length > 1 ? "have" : "has"} been deleted successfully.`, life: 3000});
+                toast.add({ severity: "success", summary: `Delete ${selection.value.length > 1 ? "Items" : "Item"} Successful`, detail: `${selection.value.map(item => item.description).join(", ")} ${selection.value.length > 1 ? "have" : "has"} been deleted successfully.`, life: 3000 });
                 selection.value = null;
             } else {
-                toast.add({severity:"error", summary: `Delete ${selection.value.length > 1 ? "Items" : "Item"} Failed`, detail: delRes.error, life: 3000});
+                toast.add({ severity: "error", summary: `Delete ${selection.value.length > 1 ? "Items" : "Item"} Failed`, detail: delRes.error, life: 3000 });
             }
         });
-    };
+    }
 
-    const confirmDelete = () => {
+    function confirmDelete() {
         confirm.require({
             message: `Are you sure you want to delete ${selection.value.map(item => item.description).join(", ")}?`,
             header: `Delete ${selection.value.length > 1 ? "Items" : "Item"}`,
@@ -122,7 +122,7 @@
             severity: "danger",
             defaultFocus: "accept"
         });
-    };
+    }
 </script>
 
 <template>
@@ -133,7 +133,7 @@
         </template>
     </Toolbar>    
     <Table v-model:selection="selection" v-model:editingRows="editingRows" title="Sales Items" :loading="isLoading" :value="items" dataKey="id" :saveEdit="editItem">
-        <Column field="description" header="Description" sortable>
+        <Column field="description" header="Description" style="width: 40%" sortable>
             <template #sorticon="{sorted, sortOrder}">
                 <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
             </template>
@@ -141,7 +141,7 @@
                 <InputText v-model.trim="data[field]" :invalid="!data[field]" autofocus></InputText>
             </template>
         </Column>
-        <Column field="category" header="Category" sortable>
+        <Column field="category" header="Category" style="width: 40%" sortable>
             <template #sorticon="{sorted, sortOrder}">
                 <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
             </template>

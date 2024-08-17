@@ -3,6 +3,7 @@
     import { useToast } from "primevue/usetoast";
     import { FilterMatchMode } from "@primevue/core/api";
     import { AnalysisService } from "@/service/AnalysisService.js";
+    import { exportXLSX } from "@/utils/exports.js";
     import Button from "primevue/button";
     import Column from "primevue/column";
     import ColumnGroup from "primevue/columngroup";
@@ -73,21 +74,21 @@
         }];
     });
 
-    const loadComparison = () => {
+    function loadComparison() {
         loading.value = true;
         analysis.getPeriodComparison(props.transaction, range1.value, range2.value).then((res) => {
             if (res.success) {
                 data.value = res.data;
                 filteredData.value = data.value;
             } else {
-                toast.add({severity:"error", summary: `Error Loading ${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Analysis Period Comparison`, detail: res.error, life: 3000});
+                toast.add({ severity: "error", summary: `Error Loading ${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Analysis Period Comparison`, detail: res.error, life: 3000 });
             }
 
             loading.value = false;
         });
     }
 
-    const loadRange = () => {
+    function loadRange() {
         analysis.getComparisonRange(props.transaction).then((res) => {
             if (res.success) {
                 period.value = [res.data.min_date, res.data.max_date];
@@ -95,35 +96,35 @@
                 range2.value = period.value;
                 loadComparison();
             } else {
-                toast.add({severity:"error", summary: `Error Loading ${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Analysis Comparison Range`, detail: res.error, life: 3000});
+                toast.add({ severity: "error", summary: `Error Loading ${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Analysis Comparison Range`, detail: res.error, life: 3000 });
             }
         });
-    }    
+    }
 
     onMounted(() => {
         loadRange();
     });
 
-    const updateFilteredData = (event) => {
+    function updateFilteredData(event) {
         filteredData.value = event.filteredValue;
     }
 
-    const toggleColumnsToggler = (event) => {
-        columns_toggler.value.toggle(event)
-    }    
+    function toggleColumnsToggler(event) {
+        columns_toggler.value.toggle(event);
+    }
 
-    const formatExport = (record) => {
+    function formatExport(record) {
         if (record.field.match(/weight/gi)) {
-            return record.data.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})
+            return record.data.toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 5 });
         } else if (record.field.match(/price/gi)) {
-            return record.data.toLocaleString("en-MY", {minimumFractionDigits: 2, maximumFractionDigits: 2})
+            return record.data.toLocaleString("en-MY", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         } else {
-            return record.data
+            return record.data;
         }
     }
 
-    const exportComparison = () => {
-        selection.value.length ? table.value.exportCSV({selectionOnly: true}) : table.value.exportCSV();
+    function exportComparison() {
+        exportXLSX(table.value.$el.children[1].children[0], `Comparison Analysis (${range1String.value}, ${range2String.value}).xlsx`);
     }
 </script>
 

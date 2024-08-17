@@ -19,7 +19,7 @@
     const headers = ref([]);
     const isLoading = ref(false);
 
-    const selectFile = async () => {
+    async function selectFile() {
         file.path = await open({
             title: "Import from Excel",
             filters: [
@@ -31,9 +31,9 @@
         });
 
         if (!file.path) {
-            return
+            return;
         }
-        
+
         file.name = file.path.replace(/^.*[\\/]/, "");
         isLoading.value = true;
         dialogRef.value.data.hasSubmitted = false;
@@ -45,32 +45,32 @@
         isLoading.value = false;
     }
 
-    const updateHeaders = () => {
-        headers.value = utils.sheet_to_json(worksheets.value[options.worksheet], {header: 1, blankrows: false})[options.header_row - 1];
+    function updateHeaders() {
+        headers.value = utils.sheet_to_json(worksheets.value[options.worksheet], { header: 1, blankrows: false })[options.header_row - 1];
 
         for (let field of fields) {
             field.mapping = null;
             headers.value.forEach((header) => {
-                if (field.label.localeCompare(header, "en", {sensitivity: "accent"}) === 0) {
+                if (field.label.localeCompare(header, "en", { sensitivity: "accent" }) === 0) {
                     field.mapping = header;
                 }
-            })
+            });
         }
     }
 
-    const validateFile = () => {
-        return dialogRef?.value.data.hasSubmitted && !file.data
+    function validateFile() {
+        return dialogRef?.value.data.hasSubmitted && !file.data;
     }
 
-    const validateFieldMapping = (field) => {
-        return dialogRef?.value.data.hasSubmitted && (!field.mapping || fields.filter(f => f.label != field.label).map(otherField => otherField.mapping).includes(field.mapping))
+    function validateFieldMapping(field) {
+        return dialogRef?.value.data.hasSubmitted && (!field.mapping || fields.filter(f => f.label != field.label).map(otherField => otherField.mapping).includes(field.mapping));
     }
 
-    const fieldMappingError = (field) => {
+    function fieldMappingError(field) {
         if (!field.mapping) {
-            return `Field mapping for ${field.label} is required.`
+            return `Field mapping for ${field.label} is required.`;
         } else if (fields.filter(f => f.label != field.label).map(otherField => otherField.mapping).includes(field.mapping)) {
-            return `Field mapping for ${field.label} is duplicated.`
+            return `Field mapping for ${field.label} is duplicated.`;
         }
     }
 </script>
@@ -79,7 +79,7 @@
     <form class="mx-8 flex flex-col gap-4">
         <section class="flex flex-col md:flex-row gap-4">
             <article class="flex flex-col gap-2 w-full">
-                <label for="file">Select File to Import<span title="required" class="required-asterisk" aria-hidden="true">*</span></label>
+                <label for="file">Select File to Import<span title="required" class="required-indicator" aria-hidden="true">*</span></label>
                 <div class="flex items-center gap-2">
                     <Button icon="pi pi-upload" label="Browse" size="small" :loading="isLoading" @click="selectFile"></Button>
                     <small>{{ file.name ? file.name : "No file selected" }}</small>
@@ -94,11 +94,11 @@
         <ProgressSpinner v-if="isLoading" class="flex flex-wrap overflow-hidden"></ProgressSpinner>
         <Fluid v-if="!isLoading && file.data" class="flex flex-col gap-4">
             <section class="flex flex-col gap-2">
-                <label for="worksheet">Worksheet<span title="required" class="required-asterisk" aria-hidden="true">*</span></label>
+                <label for="worksheet">Worksheet<span title="required" class="required-indicator" aria-hidden="true">*</span></label>
                 <Select id="worksheet" v-model="options.worksheet" :options="Object.keys(worksheets)" @update:modelValue="updateHeaders"></Select>
             </section>
             <section class="flex flex-col gap-2">
-                <label for="header_row">Header Row<span title="required" class="required-asterisk" aria-hidden="true">*</span> <i v-tooltip="'Which row are the headers? (start from 1)'" class="pi pi-question-circle"></i></label>                
+                <label for="header_row">Header Row<span title="required" class="required-indicator" aria-hidden="true">*</span> <i v-tooltip="'Which row are the headers? (start from 1)'" class="pi pi-question-circle"></i></label>                
                 <InputNumber id="header_row" v-model="options.header_row" :min="1" :allowEmpty="false" showButtons @update:modelValue="updateHeaders"></InputNumber>
             </section>
             <Fieldset legend="Field Mappings" :pt="{
@@ -107,7 +107,7 @@
                 }
             }">
                 <section v-for="field in fields" class="flex flex-col gap-2">
-                    <label :id="`label_${field.label}`">{{ field.label }}<span title="required" class="required-asterisk" aria-hidden="true">*</span></label>
+                    <label :id="`label_${field.label}`">{{ field.label }}<span title="required" class="required-indicator" aria-hidden="true">*</span></label>
                     <Select v-model="field.mapping" :options="headers" :invalid="validateFieldMapping(field)"></Select>
                     <small v-if="validateFieldMapping(field)" :id="field.label + '-error'" class="text-red-500">{{ fieldMappingError(field) }}</small>
                 </section>

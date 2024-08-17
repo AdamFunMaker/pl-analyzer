@@ -1,9 +1,10 @@
 <script setup>
-    import {ref, onMounted, onBeforeMount} from "vue";
+    import { ref, onMounted, onBeforeMount } from "vue";
     import { usePrimeVue } from "primevue/config";
     import { useToast } from "primevue/usetoast";
     import { FilterMatchMode } from "@primevue/core/api";
     import { AnalysisService } from "@/service/AnalysisService.js";
+    import { exportXLSX } from "@/utils/exports.js";
     import Accordion from "primevue/accordion";
     import AccordionContent from "primevue/accordioncontent";
     import AccordionHeader from "primevue/accordionheader";
@@ -104,13 +105,13 @@
         ];
     });
 
-    const loadOverview = () => {
+    function loadOverview() {
         isLoading.value = true;
         analysis.getOverview(range.value).then((res) => {
             if (res.success) {
-                data.value = res.data;                
+                data.value = res.data;
             } else {
-                toast.add({severity:"error", summary: `Error Loading Overview Analysis`, detail: res.error, life: 3000});
+                toast.add({ severity: "error", summary: `Error Loading Overview Analysis`, detail: res.error, life: 3000 });
             }
 
             isLoading.value = false;
@@ -119,7 +120,7 @@
         accordion.value.d_value?.forEach((value) => loadCategories(value));
     }
 
-    const loadCategories = (transaction) => {
+    function loadCategories(transaction) {
         transaction === "purchases" ? isBuyBreakdownChartsLoading.value = true : isSellBreakdownChartsLoading.value = true;
         analysis.getOverviewCategories(transaction, range.value).then((res) => {
             if (res.success) {
@@ -130,7 +131,7 @@
                             data: res.data.map(record => record.weight)
                         }
                     ]
-                }
+                };
                 const priceChartData = {
                     labels: res.data.map(record => record.category),
                     datasets: [
@@ -138,25 +139,25 @@
                             data: res.data.map(record => record.price)
                         }
                     ]
-                }
+                };
                 transaction === "purchases" ? buyWeightChartData.value = weightChartData : sellWeightChartData.value = weightChartData;
                 transaction === "purchases" ? buyPriceChartData.value = priceChartData : sellPriceChartData.value = priceChartData;
             } else {
-                toast.add({severity:"error", summary: `Error Loading Overview Analysis Breakdown ${transaction === "purchases" ? "Buy" : "Sell"} Categories`, detail: res.error, life: 3000});
+                toast.add({ severity: "error", summary: `Error Loading Overview Analysis Breakdown ${transaction === "purchases" ? "Buy" : "Sell"} Categories`, detail: res.error, life: 3000 });
             }
 
             transaction === "purchases" ? isBuyBreakdownChartsLoading.value = false : isSellBreakdownChartsLoading.value = false;
         });
     }
 
-    const loadRange = () => {
+    function loadRange() {
         analysis.getOverviewRange().then((res) => {
             if (res.success) {
                 period.value = [res.data.min_date, res.data.max_date];
                 range.value = period.value;
                 loadOverview();
             } else {
-                toast.add({severity:"error", summary: `Error Loading Overview Analysis`, detail: res.error, life: 3000});
+                toast.add({ severity: "error", summary: `Error Loading Overview Analysis`, detail: res.error, life: 3000 });
             }
         });
     }
@@ -166,22 +167,22 @@
         loadRange();
     });
 
-    const toggleColumnsToggler = (event) => {
-        columns_toggler.value.toggle(event)
+    function toggleColumnsToggler(event) {
+        columns_toggler.value.toggle(event);
     }
 
-    const formatExport = (record) => {
+    function formatExport(record) {
         if (record.field.match(/weight/gi)) {
-            return `${record.data.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`
+            return `${record.data.toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 5 })} kg`;
         } else if (record.field.match(/price/gi) || record.field === "salary" || record.field === "expenses" || record.field === "petty_cash" || record.field === "profit_loss") {
-            return record.data.toLocaleString("en-MY", {style: "currency", currency: "MYR"})
+            return record.data.toLocaleString("en-MY", { style: "currency", currency: "MYR" });
         } else {
-            return record.data
+            return record.data;
         }
     }
 
-    const exportTable = () => {
-        selection.value.length ? table.value.exportCSV({selectionOnly: true}) : table.value.exportCSV();
+    function exportTable() {
+        exportXLSX(table.value.$el.children[1].children[0], `Overview Analysis (${range.value[0] ? range.value[0].toLocaleString("en-MY", {year: "numeric", month: "short"}) : ""} ${range.value[1] ? "- " + range.value[1].toLocaleString("en-MY", {year: "numeric", month: "short"}) : ""}).xlsx`);
     }
 </script>
 
@@ -196,7 +197,7 @@
         <template #end>
             <Button label="Columns" icon="pi pi-sliders-v" text :badge="String([...columns[0].items, ...columns[1].items, ...columns[2].items, ...columns[3].items, ...columns[4].items, ...columns[5].items, ...columns[6].items, ...columns[7].items].filter(column => column.shown).length)" badgeSeverity="contrast" @click="toggleColumnsToggler"></Button>
             <ColumnsToggler ref="columns_toggler" :columns></ColumnsToggler>
-            <Button label="Export" icon="pi pi-file-export" iconPos="right" :disabled="!data" @click="exportTable"></Button>
+            <Button label="Export" icon="pi pi-file-export" iconPos="right" :disabled="!data.length" @click="exportTable"></Button>
         </template>
     </Toolbar>
     <DataTable ref="table" v-model:selection="selection" :loading="isLoading" :value="data" :dataKey="(data) => `${data.year} ${primevue.config.locale.monthNamesShort[data.month - 1]}`" :globalFilterFields="['year', (data) => primevue.config.locale.monthNamesShort[data.month - 1], 'buy_weight', 'buy_price', 'buy_average_price', 'sell_weight', 'sell_price', 'sell_average_price', 'salary', 'expenses', 'petty_cash', 'profit_loss']" :filters :exportFilename="'Overview Analysis'" :exportFunction="formatExport" rowHover removableSort scrollable scrollHeight="50vh" stateKey="tableOverviewState">

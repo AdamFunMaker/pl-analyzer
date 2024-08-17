@@ -27,7 +27,7 @@
         }
     });
 
-    const render = () => {
+    function render() {
         const documentStyle = getComputedStyle(document.documentElement);
         options.value = {
             plugins: {
@@ -61,7 +61,7 @@
                     },
                     color: documentStyle.getPropertyValue("--text-color"),
                     formatter: (value, ctx) => {
-                        return (value / ctx.dataset.data.reduce((sum, val) => sum + val)).toLocaleString("en-MY", {style: "percent", minimumFractionDigits: 2})
+                        return (value / ctx.dataset.data.reduce((sum, val) => sum + val)).toLocaleString("en-MY", { style: "percent", minimumFractionDigits: 2 });
                     }
                 }
             }

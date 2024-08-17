@@ -20,13 +20,13 @@
         }
     });
 
-    const loadData = () => {
+    function loadData() {
         loading.value = true;
         analysis.getYears(props.transaction).then((res) => {
             if (res.success) {
                 value.value = res.data;
             } else {
-                toast.add({severity:"error", summary: `Error Loading Yearly ${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Analysis Data`, detail: res.error, life: 3000});
+                toast.add({ severity: "error", summary: `Error Loading Yearly ${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Analysis Data`, detail: res.error, life: 3000 });
             }
 
             loading.value = false;
@@ -37,10 +37,10 @@
         loadData();
     });
 
-    const loadChildrenData = (node) => {
+    function loadChildrenData(node) {
         if (!node.children.length) {
             loading.value = true;
-            let currentNode = {...node};
+            let currentNode = { ...node };
 
             if (String(node.key).split("-").length === 1) {
                 analysis.getMonths(props.transaction, node.data.year).then((res) => {
@@ -51,10 +51,10 @@
                                 n = currentNode;
                             }
 
-                            return n
+                            return n;
                         });
                     } else {
-                        toast.add({severity:"error", summary: `Error Loading Monthly ${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Analysis Data`, detail: res.error, life: 3000});
+                        toast.add({ severity: "error", summary: `Error Loading Monthly ${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Analysis Data`, detail: res.error, life: 3000 });
                     }
 
                     loading.value = false;
@@ -69,17 +69,17 @@
                                     if (nc.key === node.key) {
                                         nc = currentNode;
                                     }
-        
-                                    return nc
+
+                                    return nc;
                                 });
                             }
 
-                            return n
+                            return n;
                         });
                     } else {
-                        toast.add({severity:"error", summary: `Error Loading Categorical ${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Analysis Data`, detail: res.error, life: 3000});
+                        toast.add({ severity: "error", summary: `Error Loading Categorical ${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Analysis Data`, detail: res.error, life: 3000 });
                     }
-                    
+
                     loading.value = false;
                 });
             } else {
@@ -95,18 +95,18 @@
                                                 ncc = currentNode;
                                             }
 
-                                            return ncc
+                                            return ncc;
                                         });
                                     }
-        
-                                    return nc
+
+                                    return nc;
                                 });
                             }
 
-                            return n
+                            return n;
                         });
                     } else {
-                        toast.add({severity:"error", summary: `Error Loading ${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Analysis Data Items`, detail: res.error, life: 3000});
+                        toast.add({ severity: "error", summary: `Error Loading ${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Analysis Data Items`, detail: res.error, life: 3000 });
                     }
 
                     loading.value = false;

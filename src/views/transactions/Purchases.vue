@@ -32,12 +32,12 @@
     const editingRows = ref([]);
     const isLoading = ref(true);    
     
-    const loadPurchases = () => {
+    function loadPurchases() {
         transactionService.getTransactions(transaction).then((res) => {
             if (res.success) {
                 purchases.value = res.data;
             } else {
-                toast.add({severity:"error", summary: "Error Loading Purchases", detail: res.error, life: 3000});
+                toast.add({ severity: "error", summary: "Error Loading Purchases", detail: res.error, life: 3000 });
             }
 
             isLoading.value = false;
@@ -56,7 +56,7 @@
         });        
     });
 
-    const openAddDialog = () => {
+    function openAddDialog() {
         dialog.open(AddDialog, {
             props: {
                 header: "Add New Purchase",
@@ -69,29 +69,29 @@
                 addFunction: transactionService.addTransaction,
                 addFunctionParam: transaction,
                 fields: [
-                    {id: "date", label: "Date", type: "month", minimum: null, maximum: null, required: true},
-                    {id: "item", label: "Item", type: "select", placeholder: "Select an Item", options: items, optionLabel: "description", optionValue: "id", required: true},
-                    {id: "weight", label: "Weight", type: "number", minimum: 0, maximum: null, step: 0.1, minFractionDigits: 2, maxFractionDigits: 5, prefix: "", suffix: " kg", required: true},
-                    {id: "price", label: "Buying Price", type: "currency", minimum: 0, maximum: null, required: true}
+                    { id: "date", label: "Date", type: "month", minimum: null, maximum: null, required: true },
+                    { id: "item", label: "Item", type: "select", placeholder: "Select an Item", options: items, optionLabel: "description", optionValue: "id", required: true },
+                    { id: "weight", label: "Weight", type: "number", minimum: 0, maximum: null, step: 0.1, minFractionDigits: 2, maxFractionDigits: 5, prefix: "", suffix: " kg", required: true },
+                    { id: "price", label: "Buying Price", type: "currency", minimum: 0, maximum: null, required: true }
                 ],
                 newRecord: {},
                 hasSubmitted: false
             },
             emits: {
                 onError: (error) => {
-                    toast.add({severity:"error", summary: "Add Purchase Failed", detail: error, life: 3000});
+                    toast.add({ severity: "error", summary: "Add Purchase Failed", detail: error, life: 3000 });
                 }
             },
             onClose: (options) => {
                 if (options.data && options.data.success) {
-                    toast.add({severity:"success", summary: "Add Purchase Successful", detail: `The purchase for ${items.value.filter(item => item.id == options.data.record.item).map(item => item.description)[0]} on ${new Date(options.data.record.date).toLocaleString("en-MY", {month: "short", year: "numeric"})} has been added successfully.`, life: 3000});
+                    toast.add({ severity: "success", summary: "Add Purchase Successful", detail: `The purchase for ${items.value.filter(item => item.id == options.data.record.item).map(item => item.description)[0]} on ${new Date(options.data.record.date).toLocaleString("en-MY", { month: "short", year: "numeric" })} has been added successfully.`, life: 3000 });
                     loadPurchases();
                 }
             }
         });
-    };
+    }
 
-    const openImportDialog = () => {
+    function openImportDialog() {
         dialog.open(ImportDialog, {
             props: {
                 header: "Import Purchases",
@@ -109,12 +109,12 @@
                     data: null
                 },
                 fields: [
-                    {name: "year", label: "Year", type: "year", mapping: null},
-                    {name: "month", label: "Month", type: "month", mapping: null},
-                    {name: "category", label: "Category", type: "string", mapping: null},
-                    {name: "item", label: "Description", type: "string", mapping: null},
-                    {name: "weight", label: "Weight", type: "numeric", mapping: null},
-                    {name: "price", label: "Buying Price", type: "numeric", mapping: null}
+                    { name: "year", label: "Year", type: "year", mapping: null },
+                    { name: "month", label: "Month", type: "month", mapping: null },
+                    { name: "category", label: "Category", type: "string", mapping: null },
+                    { name: "item", label: "Description", type: "string", mapping: null },
+                    { name: "weight", label: "Weight", type: "numeric", mapping: null },
+                    { name: "price", label: "Buying Price", type: "numeric", mapping: null }
                 ],
                 options: {
                     overwrite: false,
@@ -126,49 +126,49 @@
             },
             emits: {
                 onError: (error) => {
-                    toast.add({severity:"error", summary: "Import Purchases Failed", detail: error, life: 3000});
+                    toast.add({ severity: "error", summary: "Import Purchases Failed", detail: error, life: 3000 });
                 }
             },
             onClose: (options) => {
                 if (options.data && options.data.success) {
-                    toast.add({severity:"success", summary: "Import Purchases Successful", detail: `Successfully imported ${options.data.result.rowsAffected} ${options.data.result.rowsAffected > 1 ? "purchases" : "purchase"} from ${options.data.file.name}`, life: 3000});
+                    toast.add({ severity: "success", summary: "Import Purchases Successful", detail: `Successfully imported ${options.data.result.rowsAffected} ${options.data.result.rowsAffected > 1 ? "purchases" : "purchase"} from ${options.data.file.name}`, life: 3000 });
                     loadPurchases();
                 }
             }
         });
     }
 
-    const editPurchase = (event) => {
-        const {data, newData} = event;
-        
-        if (newData.year && typeof(newData.month) === "number" && newData.item_id && newData.weight && newData.price) {
+    function editPurchase(event) {
+        const { data, newData } = event;
+
+        if (newData.year && typeof (newData.month) === "number" && newData.item_id && newData.weight && newData.price) {
             newData.date = new Date(newData.year, newData.month - 1);
-            transactionService.editTransaction(transaction, {date: data.date, item: data.item_id}, newData).then((editRes) => {
+            transactionService.editTransaction(transaction, { date: data.date, item: data.item_id }, newData).then((editRes) => {
                 if (editRes.success) {
                     loadPurchases();
-                    toast.add({severity:"success", summary: "Edit Purchase Successful", detail: `Purchase for ${data.item} on ${data.date.toLocaleString("en-MY", {month: "short", year: "numeric"})} has been edited successfully.`, life: 3000});
+                    toast.add({ severity: "success", summary: "Edit Purchase Successful", detail: `Purchase for ${data.item} on ${data.date.toLocaleString("en-MY", { month: "short", year: "numeric" })} has been edited successfully.`, life: 3000 });
                 } else {
-                    toast.add({severity:"error", summary: "Edit Purchase Failed", detail: editRes.error, life: 3000});
+                    toast.add({ severity: "error", summary: "Edit Purchase Failed", detail: editRes.error, life: 3000 });
                 }
             });
         } else {
-            toast.add({severity:"error", summary: "Edit Purchase Failed", detail: "Year, Month, Item, Weight, and Buying Price are required.", life: 3000});
+            toast.add({ severity: "error", summary: "Edit Purchase Failed", detail: "Year, Month, Item, Weight, and Buying Price are required.", life: 3000 });
         }
-    };
+    }
 
-    const deletePurchases = () => {
-        transactionService.deleteTransactions(transaction, selection.value.map(purchase => {return {date: purchase.date, item: purchase.item_id}})).then((delRes) => {
+    function deletePurchases() {
+        transactionService.deleteTransactions(transaction, selection.value.map(purchase => { return { date: purchase.date, item: purchase.item_id }; })).then((delRes) => {
             if (delRes.success) {
                 loadPurchases();
-                toast.add({severity:"success", summary: `Delete ${selection.value.length > 1 ? "Purchases" : "Purchase"} Successful`, detail: `${selection.value.length > 1 ? "Purchases" : "Purchase"} for ${selection.value.map(purchase => purchase.item).join(", ")} on ${selection.value.map(purchase => new Date(purchase.date).toLocaleString("en-MY", {month: "short", year: "numeric"})).join(", ")} ${selection.value.length > 1 ? "have" : "has"} been deleted successfully.`, life: 3000});
+                toast.add({ severity: "success", summary: `Delete ${selection.value.length > 1 ? "Purchases" : "Purchase"} Successful`, detail: `${selection.value.length > 1 ? "Purchases" : "Purchase"} for ${selection.value.map(purchase => purchase.item).join(", ")} on ${selection.value.map(purchase => new Date(purchase.date).toLocaleString("en-MY", { month: "short", year: "numeric" })).join(", ")} ${selection.value.length > 1 ? "have" : "has"} been deleted successfully.`, life: 3000 });
                 selection.value = null;
             } else {
-                toast.add({severity:"error", summary: `Delete ${selection.value.length > 1 ? "Purchases" : "Purchase"} Failed`, detail: delRes.error, life: 3000});
+                toast.add({ severity: "error", summary: `Delete ${selection.value.length > 1 ? "Purchases" : "Purchase"} Failed`, detail: delRes.error, life: 3000 });
             }
         });
     }
 
-    const confirmDelete = () => {
+    function confirmDelete() {
         confirm.require({
             message: `Are you sure you want to delete the selected ${selection.value.length > 1 ? "purchases" : "purchase"}?`,
             header: `Delete ${selection.value.length > 1 ? "Purchases" : "Purchase"}`,
@@ -181,21 +181,9 @@
         });
     }
 
-    const formatExport = (record) => {
-        switch (record.field) {
-            case "weight":
-            return record.data.toLocaleString("en-MY", {minimumFractionDigits: 2, maximumFractionDigits: 5})
-            case "price":
-            case "average_price":
-                return record.data.toLocaleString("en-MY", {minimumFractionDigits: 2, maximumFractionDigits: 2})
-            default:
-                return record.data
-        }
-    }
-
-    const exportTable = () => {                      
+    function exportTable() {
         purchases_table.value.exportXLSX();
-    };
+    }
 </script>
 
 <template>
@@ -209,16 +197,16 @@
             <Button label="Export" icon="pi pi-file-export" iconPos="right" severity="info" :disabled="!purchases.length" @click="exportTable($event)"></Button>
         </template>
     </Toolbar>
-    <Table ref="purchases_table" v-model:selection="selection" v-model:editingRows="editingRows" title="Purchases" :loading="isLoading" :value="purchases" :dataKey="(data) => data.date + data.item_id" :globalFilterFields="['year', (data) => primevue.config.locale.monthNamesShort[data.month - 1], 'category', 'item', 'weight', 'price', 'average_price']" :saveEdit="editPurchase" exportFilename="Purchases" :exportFunction="formatExport">
-        <Column field="year" header="Year" sortable>
+    <Table ref="purchases_table" v-model:selection="selection" v-model:editingRows="editingRows" title="Purchases" :loading="isLoading" :value="purchases" :dataKey="(data) => data.date + data.item_id" :globalFilterFields="['year', (data) => primevue.config.locale.monthNamesShort[data.month - 1], 'category', 'item', 'weight', 'price', 'average_price']" :saveEdit="editPurchase" exportFilename="Purchases">
+        <Column field="year" header="Year" style="width: 6ch" sortable>
             <template #sorticon="{sorted, sortOrder}">
                 <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
             </template>
             <template #editor="{ data, field }">
-                <InputNumber v-model="data[field]" :min="0" :max="9999" :step="1" :useGrouping="false" showButtons :allowEmpty="false" :invalid="!data[field]" autofocus :highlightOnFocus="true"></InputNumber>
+                <InputNumber v-model="data[field]" :min="0" :max="9999" :step="1" :useGrouping="false" showButtons :allowEmpty="false" :invalid="!data[field]" autofocus highlightOnFocus inputStyle="width: calc(6ch + var(--p-inputnumber-button-width))"></InputNumber>
             </template>
         </Column>
-        <Column field="month" header="Month" sortable>
+        <Column field="month" header="Month" style="width: 7ch" sortable>
             <template #sorticon="{sorted, sortOrder}">
                 <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
             </template>

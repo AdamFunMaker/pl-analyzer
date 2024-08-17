@@ -31,12 +31,12 @@
     const editingRows = ref([]);
     const isLoading = ref(true);    
     
-    const loadSales = () => {
+    function loadSales() {
         transactionService.getTransactions(transaction).then((res) => {
             if (res.success) {
                 sales.value = res.data;
             } else {
-                toast.add({severity:"error", summary: "Error Loading Sales", detail: res.error, life: 3000});
+                toast.add({ severity: "error", summary: "Error Loading Sales", detail: res.error, life: 3000 });
             }
 
             isLoading.value = false;
@@ -55,7 +55,7 @@
         });        
     });
 
-    const openAddDialog = () => {
+    function openAddDialog() {
         dialog.open(AddDialog, {
             props: {
                 header: "Add New Sale",
@@ -68,29 +68,29 @@
                 addFunction: transactionService.addTransaction,
                 addFunctionParam: transaction,
                 fields: [
-                    {id: "date", label: "Date", type: "date", format: "dd/mm/yyyy", minimum: null, maximum: null, required: true},
-                    {id: "item", label: "Item", type: "select", placeholder: "Select an Item", options: items, optionLabel: "description", optionValue: "id", required: true},
-                    {id: "weight", label: "Weight", type: "number", minimum: 0, maximum: null, step: 0.1, minFractionDigits: 2, maxFractionDigits: 5, prefix: "", suffix: " kg", required: true},
-                    {id: "price", label: "Unit Price", type: "currency", minimum: 0, maximum: null, required: true}
+                    { id: "date", label: "Date", type: "date", format: "dd/mm/yyyy", minimum: null, maximum: null, required: true },
+                    { id: "item", label: "Item", type: "select", placeholder: "Select an Item", options: items, optionLabel: "description", optionValue: "id", required: true },
+                    { id: "weight", label: "Weight", type: "number", minimum: 0, maximum: null, step: 0.1, minFractionDigits: 2, maxFractionDigits: 5, prefix: "", suffix: " kg", required: true },
+                    { id: "price", label: "Unit Price", type: "currency", minimum: 0, maximum: null, required: true }
                 ],
                 newRecord: {},
                 hasSubmitted: false
             },
             emits: {
                 onError: (error) => {
-                    toast.add({severity:"error", summary: "Add Sale Failed", detail: error, life: 3000});
+                    toast.add({ severity: "error", summary: "Add Sale Failed", detail: error, life: 3000 });
                 }
             },
             onClose: (options) => {
                 if (options.data && options.data.success) {
-                    toast.add({severity:"success", summary: "Add Sale Successful", detail: `The sale for ${items.value.filter(item => item.id === options.data.record.item).map(item => item.description)[0]} on ${options.data.record.date.toLocaleString("en-MY", {dateStyle: "short"})} has been added successfully.`, life: 3000});
+                    toast.add({ severity: "success", summary: "Add Sale Successful", detail: `The sale for ${items.value.filter(item => item.id === options.data.record.item).map(item => item.description)[0]} on ${options.data.record.date.toLocaleString("en-MY", { dateStyle: "short" })} has been added successfully.`, life: 3000 });
                     loadSales();
                 }
             }
         });
-    };
+    }
 
-    const openImportDialog = () => {
+    function openImportDialog() {
         dialog.open(ImportDialog, {
             props: {
                 header: "Import Sales",
@@ -108,11 +108,11 @@
                     data: null
                 },
                 fields: [
-                    {name: "date", label: "Date", type: "date", mapping: null},
-                    {name: "category", label: "Category", type: "string", mapping: null},
-                    {name: "item", label: "Description", type: "string", mapping: null},
-                    {name: "weight", label: "Weight", type: "numeric", mapping: null},
-                    {name: "price", label: "Unit Price", type: "numeric", mapping: null}
+                    { name: "date", label: "Date", type: "date", mapping: null },
+                    { name: "category", label: "Category", type: "string", mapping: null },
+                    { name: "item", label: "Description", type: "string", mapping: null },
+                    { name: "weight", label: "Weight", type: "numeric", mapping: null },
+                    { name: "price", label: "Unit Price", type: "numeric", mapping: null }
                 ],
                 options: {
                     overwrite: false,
@@ -124,48 +124,48 @@
             },
             emits: {
                 onError: (error) => {
-                    toast.add({severity:"error", summary: "Import Sales Failed", detail: error, life: 3000});
+                    toast.add({ severity: "error", summary: "Import Sales Failed", detail: error, life: 3000 });
                 }
             },
             onClose: (options) => {
                 if (options.data && options.data.success) {
-                    toast.add({severity:"success", summary: "Import Sales Successful", detail: `Successfully imported ${options.data.result.rowsAffected} ${options.data.result.rowsAffected > 1 ? "sales" : "sale"} from ${options.data.file.name}`, life: 3000});
+                    toast.add({ severity: "success", summary: "Import Sales Successful", detail: `Successfully imported ${options.data.result.rowsAffected} ${options.data.result.rowsAffected > 1 ? "sales" : "sale"} from ${options.data.file.name}`, life: 3000 });
                     loadSales();
                 }
             }
         });
     }
 
-    const editSale = (event) => {
-        const {data, newData} = event;
-        
+    function editSale(event) {
+        const { data, newData } = event;
+
         if (newData.date && newData.item_id && newData.weight && newData.price) {
-            transactionService.editTransaction(transaction, {date: data.date, item: data.item_id}, newData).then((editRes) => {
+            transactionService.editTransaction(transaction, { date: data.date, item: data.item_id }, newData).then((editRes) => {
                 if (editRes.success) {
                     loadSales();
-                    toast.add({severity:"success", summary: "Edit Sale Successful", detail: `Sale for ${data.item} on ${data.date.toLocaleString("en-MY", {dateStyle: "short"})} has been edited successfully.`, life: 3000});
+                    toast.add({ severity: "success", summary: "Edit Sale Successful", detail: `Sale for ${data.item} on ${data.date.toLocaleString("en-MY", { dateStyle: "short" })} has been edited successfully.`, life: 3000 });
                 } else {
-                    toast.add({severity:"error", summary: "Edit Sale Failed", detail: editRes.error, life: 3000});
+                    toast.add({ severity: "error", summary: "Edit Sale Failed", detail: editRes.error, life: 3000 });
                 }
             });
         } else {
-            toast.add({severity:"error", summary: "Edit Sale Failed", detail: "Date, Item, Weight, and Unit Price are required.", life: 3000});
+            toast.add({ severity: "error", summary: "Edit Sale Failed", detail: "Date, Item, Weight, and Unit Price are required.", life: 3000 });
         }
-    };
+    }
 
-    const deleteSales = () => {
-        transactionService.deleteTransactions(transaction, selection.value.map(sale => {return {date: sale.date, item: sale.item_id}})).then((delRes) => {
+    function deleteSales() {
+        transactionService.deleteTransactions(transaction, selection.value.map(sale => { return { date: sale.date, item: sale.item_id }; })).then((delRes) => {
             if (delRes.success) {
                 loadSales();
-                toast.add({severity:"success", summary: `Delete ${selection.value.length > 1 ? "Sales" : "Sale"} Successful`, detail: `${selection.value.length > 1 ? "Sales" : "Sale"} for ${selection.value.map(sale => sale.item).join(", ")} on ${selection.value.map(sale => new Date(sale.date).toLocaleString("en-MY", {dateStyle: "short"})).join(", ")} ${selection.value.length > 1 ? "have" : "has"} been deleted successfully.`, life: 3000});
+                toast.add({ severity: "success", summary: `Delete ${selection.value.length > 1 ? "Sales" : "Sale"} Successful`, detail: `${selection.value.length > 1 ? "Sales" : "Sale"} for ${selection.value.map(sale => sale.item).join(", ")} on ${selection.value.map(sale => new Date(sale.date).toLocaleString("en-MY", { dateStyle: "short" })).join(", ")} ${selection.value.length > 1 ? "have" : "has"} been deleted successfully.`, life: 3000 });
                 selection.value = null;
             } else {
-                toast.add({severity:"error", summary: `Delete ${selection.value.length > 1 ? "Sales" : "Sale"} Failed`, detail: delRes.error, life: 3000});
+                toast.add({ severity: "error", summary: `Delete ${selection.value.length > 1 ? "Sales" : "Sale"} Failed`, detail: delRes.error, life: 3000 });
             }
         });
     }
 
-    const confirmDelete = () => {
+    function confirmDelete() {
         confirm.require({
             message: `Are you sure you want to delete the selected ${selection.value.length > 1 ? "sales" : "sale"}?`,
             header: `Delete ${selection.value.length > 1 ? "Sales" : "Sale"}`,
@@ -176,25 +176,11 @@
             severity: "danger",
             defaultFocus: "accept"
         });
-    };
-
-    const formatExport = (record) => {
-        switch (record.field) {
-            case "date":
-                return record.data.toLocaleString("en-MY", {dateStyle: "short"})
-            case "weight":
-                return record.data.toLocaleString("en-MY", {minimumFractionDigits: 2, maximumFractionDigits: 5})
-            case "price":
-            case "selling_price":
-                return record.data.toLocaleString("en-MY", {minimumFractionDigits: 2, maximumFractionDigits: 2})
-            default:
-                return record.data
-        }
     }
 
-    const exportTable = (event) => {                
+    function exportTable() {
         sales_table.value.exportXLSX();
-    };
+    }
 </script>
 
 <template>
@@ -208,8 +194,8 @@
             <Button label="Export" icon="pi pi-file-export" iconPos="right" severity="info" :disabled="!sales.length" @click="exportTable($event)"></Button>
         </template>
     </Toolbar>
-    <Table ref="sales_table" title="Sales" :loading="isLoading" :value="sales" :dataKey="(data) => data.date + data.item_id" v-model:selection="selection" v-model:editingRows="editingRows" :saveEdit="editSale" exportFilename="Sales" :exportFunction="formatExport">
-        <Column field="date" header="Date" sortable>
+    <Table ref="sales_table" title="Sales" :loading="isLoading" :value="sales" :dataKey="(data) => data.date + data.item_id" v-model:selection="selection" v-model:editingRows="editingRows" :saveEdit="editSale" exportFilename="Sales">
+        <Column field="date" header="Date" style="width: 20ch" sortable>
             <template #sorticon="{sorted, sortOrder}">
                 <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
             </template>

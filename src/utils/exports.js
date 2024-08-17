@@ -6,12 +6,12 @@ async function exportXLSX(table, fileName) {
     const workbook = utils.book_new();
     const sheet = utils.table_to_sheet(table, {cellDates: true});
     const sheetData = utils.sheet_to_json(sheet);
-    const columns = sheetData.map(row => Object.keys(row))[0];
+    const columns = sheetData.map(row => Object.keys(row))[1];
     sheet["!cols"] = [
         {}, 
         ...columns.map(column => {
-            if (!column.match(/^_/)) {
-                return {wch: Object.values(sheetData).reduce((max, row) => Math.max(max, row[column] instanceof Date ? 10 : String(row[column]).length), column.length)}
+            if (!column.match(/^_\d/)) {                
+                return {wch: Object.values(sheetData).reduce((max, row) => Math.max(max, row[column] ? (row[column] instanceof Date ? 10 : String(row[column]).length) : 0), column.length)}
             }
         })
     ];
