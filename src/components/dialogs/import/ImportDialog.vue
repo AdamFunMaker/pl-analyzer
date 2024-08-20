@@ -51,7 +51,7 @@
         for (let field of fields) {
             field.mapping = null;
             headers.value.forEach((header) => {
-                if (field.label.localeCompare(header, "en", { sensitivity: "accent" }) === 0) {
+                if (field.label.localeCompare(header.trim(), "en", { sensitivity: "accent" }) === 0) {
                     field.mapping = header;
                 }
             });
@@ -76,7 +76,7 @@
 </script>
 
 <template>
-    <form class="mx-8 flex flex-col gap-4">
+    <form class="mx-8 flex flex-col gap-4" @submit.prevent="dialogRef.data.hasSubmitted = true">
         <section class="flex flex-col md:flex-row gap-4">
             <article class="flex flex-col gap-2 w-full">
                 <label for="file">Select File to Import<span title="required" class="required-indicator" aria-hidden="true">*</span></label>

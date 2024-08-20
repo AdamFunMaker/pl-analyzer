@@ -109,12 +109,12 @@
                     data: null
                 },
                 fields: [
-                    { name: "year", label: "Year", type: "year", mapping: null },
-                    { name: "month", label: "Month", type: "month", mapping: null },
-                    { name: "category", label: "Category", type: "string", mapping: null },
-                    { name: "item", label: "Description", type: "string", mapping: null },
-                    { name: "weight", label: "Weight", type: "numeric", mapping: null },
-                    { name: "price", label: "Buying Price", type: "numeric", mapping: null }
+                    { name: "year", label: "Year", type: "year", mapping: null},
+                    { name: "month", label: "Month", type: "month", mapping: null},
+                    { name: "category", label: "Category", type: "string", mapping: null},
+                    { name: "item", label: "Description", type: "string", mapping: null},
+                    { name: "weight", label: "Weight", type: "numeric", mapping: null},
+                    { name: "price", label: "Buying Price", type: "numeric", mapping: null}
                 ],
                 options: {
                     overwrite: false,
@@ -203,7 +203,7 @@
                 <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
             </template>
             <template #editor="{ data, field }">
-                <InputNumber v-model="data[field]" :min="0" :max="9999" :step="1" :useGrouping="false" showButtons :allowEmpty="false" :invalid="!data[field]" autofocus highlightOnFocus inputStyle="width: calc(6ch + var(--p-inputnumber-button-width))"></InputNumber>
+                <InputNumber v-model="data[field]" :min="0" :max="9999" :step="1" :useGrouping="false" showButtons :allowEmpty="false" :invalid="!data[field]" autofocus highlightOnFocus :inputStyle="{width: 'calc(6ch + var(--p-inputnumber-button-width))'}"></InputNumber>
             </template>
         </Column>
         <Column field="month" header="Month" style="width: 7ch" sortable>
@@ -241,7 +241,7 @@
                 {{ `${data[field].toLocaleString("en-MY", {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg` }}
             </template>
             <template #editor="{ data, field }">
-                <InputNumber v-model="data[field]" :min="0" :step="0.1" :minFractionDigits="2" :maxFractionDigits="5" showButtons :allowEmpty="false" :invalid="!data[field]" autofocus :highlightOnFocus="true"></InputNumber>
+                <InputNumber v-model="data[field]" :min="0" :step="0.1" :minFractionDigits="2" :maxFractionDigits="5" suffix=" kg" showButtons :allowEmpty="false" :invalid="!data[field]" autofocus highlightOnFocus></InputNumber>
             </template>
         </Column>
         <Column field="price" header="Buying Price" sortable>
@@ -252,7 +252,7 @@
                 {{ data[field].toLocaleString("en-MY", {style: "currency", currency: "MYR"}) }}
             </template>
             <template #editor="{ data, field }">
-                <InputNumber mode="currency" currency="MYR" v-model="data[field]" :min="0" :step="0.01" :minFractionDigits="2" :maxFractionDigits="2" showButtons :allowEmpty="false" :invalid="!data[field]" autofocus :highlightOnFocus="true"></InputNumber>
+                <InputNumber mode="currency" currency="MYR" v-model="data[field]" :min="0" :step="0.01" :minFractionDigits="2" :maxFractionDigits="2" showButtons :allowEmpty="false" :invalid="!data[field]" autofocus highlightOnFocus></InputNumber>
             </template>
         </Column>        
         <Column field="average_price" header="Average Price" sortable>

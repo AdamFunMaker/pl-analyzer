@@ -214,4 +214,4 @@ function escapeId(value, forbidQualified) {
     }
 }
 
-export {escapeValue, parseDate, parseFile, formatSQLString}
+export {formatSQLString, parseDate, parseFile}

@@ -1,5 +1,5 @@
 <script setup>
-    import { inject, ref, computed } from "vue";
+    import { inject, ref, watch } from "vue";
     import Button from "primevue/button";
 
     const emit = defineEmits(["error"]);
@@ -11,8 +11,7 @@
         dialogRef?.value.close();
     }
     
-    function submit() {
-        dialogRef.value.data.hasSubmitted = true;
+    function submit() {        
         const fields = dialogRef?.value.data.fields;
         const options = dialogRef?.value.data.options;
 
@@ -54,9 +53,18 @@
             }
         }
     }
+
+    watch(
+        () => dialogRef?.value.data.hasSubmitted,
+        (hasSubmitted) => {
+            if (hasSubmitted) {
+                submit();
+            }
+        }
+    );
 </script>
 
 <template>
     <Button label="Cancel" severity="danger" text @click="closeDialog"></Button>
-    <Button :class="isProcessing ? 'cursor-wait' : ''" label="Import" iconPos="right" severity="success" :loading="isProcessing" :disabled="!file.data || isProcessing" autofocus @click="submit"></Button>
+    <Button :class="isProcessing ? 'cursor-wait' : ''" label="Import" iconPos="right" severity="success" :loading="isProcessing" :disabled="!file.data || isProcessing" autofocus @click="dialogRef.data.hasSubmitted = true"></Button>
 </template>

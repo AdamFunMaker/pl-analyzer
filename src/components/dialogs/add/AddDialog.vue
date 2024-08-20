@@ -21,7 +21,7 @@
 </script>
 
 <template>
-    <form class="mx-8 flex flex-col gap-4">
+    <form class="mx-8 flex flex-col gap-4" @submit.prevent="dialogRef.data.hasSubmitted = true">
         <article v-for="field in fields" class="flex flex-col gap-2">
             <label :for="field.id">{{field.label}}<span v-if="field.required" title="required" class="required-indicator" aria-hidden="true">*</span></label>
             <InputText v-if="field.type === 'text'" :id="field.id" v-model.trim="newRecord[field.id]" :placeholder="field.placeholder" :invalid="validateField(field)" fluid autofocus></InputText>

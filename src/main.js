@@ -93,7 +93,11 @@ createApp(App)
         theme: {
             preset: Noir,
             options: {
-                darkModeSelector: ".app-dark"
+                darkModeSelector: ".app-dark",
+                cssLayer: {
+                    name: "primevue",
+                    order: "tailwind-base, primevue, tailwind-utilities"
+                }
             }
         }
     })
@@ -101,6 +105,6 @@ createApp(App)
     .use(DialogService)
     .use(ConfirmationService)
     .directive("tooltip", Tooltip)
-    .directive('focustrap', FocusTrap)
+    .directive("focustrap", FocusTrap)
     .directive("styleclass", StyleClass)
     .mount("#app");

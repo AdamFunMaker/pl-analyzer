@@ -11,16 +11,15 @@ const router = createRouter({
                 {
                     path: "/",
                     name: "Home",
-                    component: () => import("@/views/Home.vue"),
-                    alias: "/home"
+                    component: () => import("@/views/Home.vue")
                 },
                 {
                     path: "/manage",
                     children: [
                         {
-                            path: "item-categories",
-                            name: "Manage Item Categories",
-                            component: () => import("@/views/manage/ItemCategories.vue")
+                            path: "categories",
+                            name: "Manage Categories",
+                            component: () => import("@/views/manage/Categories.vue")
                         },
                         {
                             path: "items/purchases",
@@ -56,18 +55,8 @@ const router = createRouter({
                 },
                 {
                     path: "/analysis",
-                    children: [
-                        {
-                            path: "overview",
-                            name: "Analysis - Overview",
-                            component: () => import("@/views/analysis/Overview.vue")
-                        },
-                        {
-                            path: "transactions",
-                            name: "Analysis - Transactions",
-                            component: () => import("@/views/analysis/Transactions.vue")
-                        }
-                    ]
+                    name: "Analysis",
+                    component: () => import("@/views/Analysis.vue")
                 }
             ]
         }

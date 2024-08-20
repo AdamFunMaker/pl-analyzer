@@ -59,10 +59,10 @@
 </script>
 
 <template>
-    <DataTable ref="table" v-model:selection="selection" v-model:editingRows="editingRows" :loading :value :dataKey :globalFilterFields :filters @row-edit-save="saveEdit" :exportFilename :exportFunction rowHover paginator :alwaysShowPaginator="false" :rows="10" paginatorTemplate="FirstPageLink PrevPageLink JumpToPageInput CurrentPageReport NextPageLink LastPageLink" currentPageReportTemplate="of {totalPages}" removableSort scrollable scrollHeight="flex" editMode="row" :stateKey="`table${title}State`">
+    <DataTable ref="table" v-model:selection="selection" v-model:editingRows="editingRows" :loading :value :dataKey :globalFilterFields :filters @row-edit-save="saveEdit" :exportFilename :exportFunction rowHover paginator :alwaysShowPaginator="false" :rows="10" paginatorTemplate="FirstPageLink PrevPageLink JumpToPageInput CurrentPageReport NextPageLink LastPageLink" currentPageReportTemplate="of {totalPages}" removableSort scrollable scrollHeight="flex" editMode="row">
         <template #header>
             <section class="flex flex-wrap items-center justify-between">
-                <h4 class="!m-0"> {{ title }} </h4>
+                <h4> {{ title }} </h4>
                 <IconField>
                     <InputIcon class="pi pi-search"></InputIcon>
                     <InputText v-model="filters.global.value" placeholder="Search" fluid></InputText>
@@ -70,8 +70,8 @@
             </section>
         </template>
         <template #empty><span class="block w-full text-center">No record(s) found</span></template>
-        <Column selectionMode="multiple" style="width: var(--p-checkbox-width)" :exportable="false"></Column>
+        <Column selectionMode="multiple" style="width: var(--p-checkbox-width)"></Column>
         <slot></slot>
-        <Column :rowEditor="true" style="width: fit-content" :exportable="false"></Column>
+        <Column rowEditor class="w-fit"></Column>
     </DataTable>
 </template>

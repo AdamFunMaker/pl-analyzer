@@ -6,19 +6,19 @@
     import Column from "primevue/column";
     import TreeTable from "primevue/treetable";
 
-    const primevue = usePrimeVue();
-    const analysis = new AnalysisService();
-    const toast = useToast();
-    const value = ref([]);
-    const expandedKeys = ref([]);
-    const loading = ref(true);
-
     const props = defineProps({
         transaction: {
             type: String,
             required: true
         }
     });
+
+    const primevue = usePrimeVue();
+    const analysis = new AnalysisService();
+    const toast = useToast();
+    const value = ref([]);
+    const expandedKeys = ref([]);
+    const loading = ref(true);
 
     function loadData() {
         loading.value = true;

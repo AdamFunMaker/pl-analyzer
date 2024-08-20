@@ -1,4 +1,9 @@
 /* Utils */
+.required-indicator {
+    color: var(--p-red-400);
+    padding-inline-start: 0.125rem;
+}
+
 .mark {
     border-radius: 6px;
     padding: 2px 6px;
@@ -7,9 +12,4 @@
     font-style: normal;
     background: var(--mark-background);
     color: var(--mark-text);
-}
-
-.required-indicator {
-    color: var(--p-red-400);
-    padding-inline-start: 0.125rem;
 }

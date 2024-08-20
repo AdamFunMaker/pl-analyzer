@@ -108,11 +108,11 @@
                     data: null
                 },
                 fields: [
-                    { name: "date", label: "Date", type: "date", mapping: null },
-                    { name: "category", label: "Category", type: "string", mapping: null },
-                    { name: "item", label: "Description", type: "string", mapping: null },
-                    { name: "weight", label: "Weight", type: "numeric", mapping: null },
-                    { name: "price", label: "Unit Price", type: "numeric", mapping: null }
+                    { name: "date", label: "Date", type: "date", mapping: null},
+                    { name: "category", label: "Category", type: "string", mapping: null},
+                    { name: "item", label: "Description", type: "string", mapping: null},
+                    { name: "weight", label: "Weight", type: "numeric", mapping: null},
+                    { name: "price", label: "Unit Price", type: "numeric", mapping: null}
                 ],
                 options: {
                     overwrite: false,
@@ -230,7 +230,7 @@
                 {{ `${data[field].toLocaleString("en-MY", {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg` }}
             </template>
             <template #editor="{ data, field }">
-                <InputNumber v-model="data[field]" :min="0" :step="0.1" :minFractionDigits="2" :maxFractionDigits="5" showButtons :allowEmpty="false" :invalid="!data[field]" autofocus :highlightOnFocus="true"></InputNumber>
+                <InputNumber v-model="data[field]" :min="0" :step="0.1" :minFractionDigits="2" :maxFractionDigits="5" suffix=" kg" showButtons :allowEmpty="false" :invalid="!data[field]" autofocus highlightOnFocus></InputNumber>
             </template>
         </Column>
         <Column field="price" header="Unit Price" sortable>
@@ -241,7 +241,7 @@
                 {{ data[field].toLocaleString("en-MY", {style: "currency", currency: "MYR"}) }}
             </template>
             <template #editor="{ data, field }">
-                <InputNumber mode="currency" currency="MYR" v-model="data[field]" :min="0" :step="0.01" :minFractionDigits="2" :maxFractionDigits="2" showButtons :allowEmpty="false" :invalid="!data[field]" autofocus :highlightOnFocus="true"></InputNumber>
+                <InputNumber mode="currency" currency="MYR" v-model="data[field]" :min="0" :step="0.01" :minFractionDigits="2" :maxFractionDigits="2" showButtons :allowEmpty="false" :invalid="!data[field]" autofocus highlightOnFocus></InputNumber>
             </template>
         </Column>        
         <Column field="selling_price" header="Selling Price" sortable>

@@ -6,8 +6,7 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "pl-analyzer",
-    "version": "1.0.1"
+    "productName": "pl-analyzer"
   },
   "tauri": {
     "allowlist": {
@@ -35,16 +34,13 @@
     },
     "windows": [
       {
+        "fileDropEnabled": false,
         "maximized": true,
         "title": "P&L Analyzer"
       }
     ],
-    "security": {
-      "csp": null
-    },
     "bundle": {
       "active": true,
-      "targets": ["nsis", "updater"],
       "identifier": "pl-analyzer",
       "publisher": "Lim Tze Yang",
       "icon": [
@@ -54,6 +50,8 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
+      "category": "Business",
+      "targets": ["nsis", "updater"],
       "windows": {        
         "webviewInstallMode": {
           "type": "offlineInstaller"

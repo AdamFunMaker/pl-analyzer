@@ -200,7 +200,7 @@
                 <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
             </template>            
             <template #editor="{ data, field }">
-                <InputNumber v-model="data[field]" :min="0" :max="9999" :step="1" :useGrouping="false" showButtons :allowEmpty="false" :invalid="!data[field]" autofocus highlightOnFocus inputStyle="width: calc(6ch + var(--p-inputnumber-button-width))"></InputNumber>
+                <InputNumber v-model="data[field]" :min="0" :max="9999" :step="1" :useGrouping="false" showButtons :allowEmpty="false" :invalid="!data[field]" autofocus highlightOnFocus :inputStyle="{width: 'calc(6ch + var(--p-inputnumber-button-width))'}"></InputNumber>
             </template>
         </Column>
         <Column field="month" header="Month" style="width: 7ch" sortable>

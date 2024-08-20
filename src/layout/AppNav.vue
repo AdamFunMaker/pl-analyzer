@@ -7,7 +7,7 @@
         {
             label: "Manage", icon: "pi pi-fw pi-wrench", 
             items: [
-                {label: "Item Categories", icon: "pi pi-fw pi-tag", to: "/manage/item-categories"}, 
+                {label: "Categories", icon: "pi pi-fw pi-tag", to: "/manage/categories"}, 
                 {
                     label: "Items", icon: "pi pi-fw pi-barcode", 
                     items: [
@@ -25,13 +25,7 @@
             ]
         },
         {label: "Cash Flow", icon: "pi pi-fw pi-money-bill", to: "/cash-flow"},
-        {
-            label: "Analysis", icon: "pi pi-fw pi-chart-line", 
-            items: [
-                {label: "Overview", icon: "pi pi-fw pi-sitemap", to: "/analysis/overview"},
-                {label: "Transactions", icon: "pi pi-fw pi-tags", to: "/analysis/transactions"}
-            ]
-        }
+        {label: "Analysis", icon: "pi pi-fw pi-chart-line", to: "/analysis"}
     ]);
 </script>
 
@@ -39,10 +33,10 @@
     <nav>
         <Menubar :model="navItems" breakpoint="1080px" :pt="{
             root: {
-                style: 'border: none'
+                class: 'border-none'
             },
             buttonIcon: {
-                style: 'width: 1.75rem; height: 1.75rem'
+                class: 'w-7 h-7'
             }
         }">
             <template #item="{item, label, props, root, hasSubmenu}">

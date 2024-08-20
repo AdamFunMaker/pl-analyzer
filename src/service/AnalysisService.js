@@ -11,11 +11,12 @@ export class AnalysisService {
         }
     }
 
-    async getOverview(period) {
+    async getOverview(interval, period) {
         try {
             if (period[0]) {
-                const params = period[1] ? period : [period[0].getFullYear(), period[0].getMonth() + 1];
-                const result = await database.select(`SELECT * FROM overview WHERE ${period[1] ? "\`date\` BETWEEN $1 AND $2" : "year = $1 AND month = $2"}`, params);
+                const criteria = `${interval === "Monthly" ? period[1] ? "\`date\` BETWEEN ? AND ?" : "year = ? AND month = ?" : period[1] ? "year BETWEEN ? AND ?" : "year = ?"}`;
+                const sql = formatSQLString(`SELECT year, ${interval === "Monthly" ? "month, " : ""} ${interval === "Monthly" ? "buy_weight, buy_price, buy_average_price, sell_weight, sell_price, sell_average_price, salary, expenses, petty_cash, profit_loss" : "SUM(buy_weight) AS buy_weight, SUM(buy_price) AS buy_price, ifnull(SUM(buy_price) / SUM(buy_weight), 0) AS buy_average_price, SUM(sell_weight) AS sell_weight, SUM(sell_price) AS sell_price, ifnull(SUM(sell_price) / SUM(sell_weight), 0) AS sell_average_price, SUM(salary) AS salary, SUM(expenses) AS expenses, SUM(petty_cash) AS petty_cash, SUM(profit_loss) AS profit_loss"} FROM overview WHERE ${criteria} ${interval === "Yearly" ? "GROUP BY year" : ""}`, interval === "Monthly" ? period[1] ? period : [period[0].getFullYear(), period[0].getMonth() + 1] : period[1] ? period.map(date => date.getFullYear()) : period[0].getFullYear());
+                const result = await database.select(sql);
                 return {success: true, data: result}
             } else {
                 throw new Error("No records found");
@@ -25,10 +26,11 @@ export class AnalysisService {
         }
     }
 
-    async getOverviewCategories(transaction, period) {
+    async getOverviewCategories(interval, period) {
         try {
             if (period[0]) {
-                const sql = formatSQLString(`SELECT category, SUM(weight) AS weight, SUM(price) AS price FROM categorical_${transaction} WHERE \`date\` BETWEEN ? AND ? GROUP BY category`, period[1] ? period : [period[0], new Date(period[0].getFullYear(), period[0].getMonth() + 1, 0)]);
+                const criteria = `${interval === "Monthly" ? period[1] ? "\`date\` BETWEEN ? AND ?" : "year = ? AND month = ?" : period[1] ? "year BETWEEN ? AND ?" : "year = ?"}`;
+                const sql = formatSQLString(`SELECT year, ${interval === "Monthly" ? "month, " : ""}category, ${interval === "Monthly" ? "buy_weight, buy_price, buy_average_price, sell_weight, sell_price, sell_average_price" : "SUM(buy_weight) AS buy_weight, SUM(buy_price) AS buy_price, ifnull(SUM(buy_price) / SUM(buy_weight), 0) AS buy_average_price, SUM(sell_weight) AS sell_weight, SUM(sell_price) AS sell_price, ifnull(SUM(sell_price) / SUM(sell_weight), 0) AS sell_average_price"} FROM overview_categories WHERE ${criteria} GROUP BY year, ${interval === "Monthly" ? "month," : ""} category`, interval === "Monthly" ? period[1] ? period : [period[0].getFullYear(), period[0].getMonth() + 1] : period[1] ? period.map(date => date.getFullYear()) : period[0].getFullYear());
                 const result = await database.select(sql);
                 return {success: true, data: result}
             } else {
@@ -273,7 +275,7 @@ export class AnalysisService {
                 });
                 return {success: true, data: data}
             } else {
-                throw new Error("No records found");
+                throw new Error("Invalid period");
             }
         } catch (err) {
             return {success: false, error: err}

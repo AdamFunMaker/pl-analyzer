@@ -1,5 +1,4 @@
 <script setup>
-    import { ref } from "vue";
     import Accordion from "primevue/accordion";
     import AccordionContent from "primevue/accordioncontent";
     import AccordionHeader from "primevue/accordionheader";
@@ -14,11 +13,10 @@
             required: true
         }
     });
-    const isChartsLoading = ref(true);
 </script>
 
 <template>
-    <Accordion :value="[]" multiple lazy>
+    <Accordion multiple lazy>
         <AccordionPanel value="data">
             <AccordionHeader>Data</AccordionHeader>
             <AccordionContent>
@@ -26,7 +24,7 @@
             </AccordionContent>
         </AccordionPanel>
         <AccordionPanel value="comparison">
-            <AccordionHeader>Comparison</AccordionHeader>
+            <AccordionHeader>Periods Comparison</AccordionHeader>
             <AccordionContent>
                 <ComparisonPanel :transaction></ComparisonPanel>
             </AccordionContent>
@@ -34,19 +32,7 @@
         <AccordionPanel value="charts">
             <AccordionHeader>Charts</AccordionHeader>
             <AccordionContent>
-                <BlockUI :blocked="isChartsLoading" :autoZIndex="false" :pt="{
-                    mask: {
-                        style: 'backdrop-filter: blur(2px)'
-                    }
-                }">
-                    <ProgressSpinner v-if="isChartsLoading" :pt="{
-                        root: {
-                            style: 'position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2'
-                        }
-                    }">
-                    </ProgressSpinner>
-                    <ChartsPanel v-model="isChartsLoading" :transaction></ChartsPanel>
-                </BlockUI>
+                <ChartsPanel :transaction></ChartsPanel>
             </AccordionContent>
         </AccordionPanel>
     </Accordion>

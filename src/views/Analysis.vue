@@ -5,12 +5,12 @@
     import TabList from "primevue/tablist";
     import TabPanel from "primevue/tabpanel";
     import TabPanels from "primevue/tabpanels";
-    import Accordion from "@/components/analysis/Accordion.vue";
+    import Accordion from "@/components/analysis/AnalysisAccordion.vue";
 
     const emit = defineEmits(["update-breadcrumbs"]);
 
     onMounted(() => {
-        emit("update-breadcrumbs", [{label: "Analysis"}, {label: "Transactions", to: "/analysis/transactions"}]);
+        emit("update-breadcrumbs", [{label: "Analysis"}]);
     });    
 </script>
 

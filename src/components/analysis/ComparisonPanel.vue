@@ -4,6 +4,7 @@
     import { FilterMatchMode } from "@primevue/core/api";
     import { AnalysisService } from "@/service/AnalysisService.js";
     import { exportXLSX } from "@/utils/exports.js";
+    import { toTitleCase } from "@/utils/text.js";
     import Button from "primevue/button";
     import Column from "primevue/column";
     import ColumnGroup from "primevue/columngroup";
@@ -14,7 +15,14 @@
     import InputText from "primevue/inputtext";
     import Row from "primevue/row";
     import Toolbar from "primevue/toolbar";
-    import ColumnsToggler from "./ColumnsToggler.vue";
+    import ColumnsToggler from "../ColumnsToggler.vue";
+
+    const props = defineProps({
+        transaction: {
+            type: String,
+            required: true
+        }
+    });
 
     const toast = useToast();
     const analysis = new AnalysisService();
@@ -40,36 +48,29 @@
     const range2TotalPrice = computed(() => filteredData.value.length ? filteredData.value.map(record => record.price2).reduce((total, val) => total + val) : null);
     const range2TotalAveragePrice = computed(() => ((range2TotalPrice.value / range2TotalWeight.value) || 0).toLocaleString("en-MY", {style: "currency", currency: "MYR"}));
 
-    const props = defineProps({
-        transaction: {
-            type: String,
-            required: true
-        }
-    });
-
     onBeforeMount(() => {
         columns.value = [{
             label: "Range 1",
             items: props.transaction === "purchases" ? [
-                {shown: true, field: "weight1", header: "Weight", exportHeader: "Weight"},
-                {shown: true, field: "price1", header: "Buying Price", exportHeader: "Buying Price"},
-                {shown: true, field: "average_price1", header: "Average Price", exportHeader: "Average Price"}
+                {shown: true, field: "weight1", header: "Weight"},
+                {shown: true, field: "price1", header: "Buying Price"},
+                {shown: true, field: "average_price1", header: "Average Price"}
             ] : [
-                {shown: true, field: "weight1", header: "Weight", exportHeader: "Weight"},
-                {shown: true, field: "price1", header: "Selling Price", exportHeader: "Selling Price"},
-                {shown: true, field: "average_price1", header: "Average Price", exportHeader: "Average Price"}
+                {shown: true, field: "weight1", header: "Weight"},
+                {shown: true, field: "price1", header: "Selling Price"},
+                {shown: true, field: "average_price1", header: "Average Price"}
             ]
         },
         {
             label: "Range 2",
             items: props.transaction === "purchases" ? [
-                {shown: true, field: "weight2", header: "Weight", exportHeader: "Weight"},
-                {shown: true, field: "price2", header: "Buying Price", exportHeader: "Buying Price"},
-                {shown: true, field: "average_price2", header: "Average Price", exportHeader: "Average Price"}
+                {shown: true, field: "weight2", header: "Weight"},
+                {shown: true, field: "price2", header: "Buying Price"},
+                {shown: true, field: "average_price2", header: "Average Price"}
             ] : [
-                {shown: true, field: "weight2", header: "Weight", exportHeader: "Weight"},
-                {shown: true, field: "price2", header: "Selling Price", exportHeader: "Selling Price"},
-                {shown: true, field: "average_price2", header: "Average Price", exportHeader: "Average Price"}
+                {shown: true, field: "weight2", header: "Weight"},
+                {shown: true, field: "price2", header: "Selling Price"},
+                {shown: true, field: "average_price2", header: "Average Price"}
             ]
         }];
     });
@@ -92,8 +93,8 @@
         analysis.getComparisonRange(props.transaction).then((res) => {
             if (res.success) {
                 period.value = [res.data.min_date, res.data.max_date];
-                range1.value = period.value;
-                range2.value = period.value;
+                range1.value = [new Date(res.data.max_date).setMonth(0) < res.data.min_date ? res.data.min_date : new Date(new Date(res.data.max_date).setMonth(0)), res.data.max_date];
+                range2.value = [new Date(res.data.max_date).setMonth(0) < res.data.min_date ? res.data.min_date : new Date(new Date(res.data.max_date).setMonth(0)), res.data.max_date];
                 loadComparison();
             } else {
                 toast.add({ severity: "error", summary: `Error Loading ${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Analysis Comparison Range`, detail: res.error, life: 3000 });
@@ -111,16 +112,6 @@
 
     function toggleColumnsToggler(event) {
         columns_toggler.value.toggle(event);
-    }
-
-    function formatExport(record) {
-        if (record.field.match(/weight/gi)) {
-            return record.data.toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 5 });
-        } else if (record.field.match(/price/gi)) {
-            return record.data.toLocaleString("en-MY", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        } else {
-            return record.data;
-        }
     }
 
     function exportComparison() {
@@ -147,20 +138,22 @@
             </article>
         </template>
     </Toolbar>
-    <DataTable ref="table" v-model:selection="selection" :loading :value="data" :filters :exportFilename="`${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Comparison Analysis`" :exportFunction="formatExport" rowHover removableSort scrollable scrollHeight="flex" @filter="updateFilteredData">
+    <DataTable ref="table" v-model:selection="selection" :loading :value="data" :filters rowHover removableSort scrollable scrollHeight="flex" @filter="updateFilteredData">
         <template #header>
             <section class="flex items-center justify-between">
-                <h4 class="!m-0">{{ props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase()) }} Comparison</h4>
-                <IconField>
-                    <InputIcon class="pi pi-search"></InputIcon>
-                    <InputText v-model="filters.global.value" placeholder="Search" fluid></InputText>
-                </IconField>
-                <Button label="Export" icon="pi pi-file-export" :disabled="!data.length" @click="exportComparison"></Button>
+                <h4>{{ toTitleCase(props.transaction) }} Comparison</h4>
+                <article class="flex items-center gap-2">
+                    <Button label="Export" icon="pi pi-file-export" :disabled="!data.length" @click="exportComparison"></Button>
+                    <IconField>
+                        <InputIcon class="pi pi-search"></InputIcon>
+                        <InputText v-model="filters.global.value" placeholder="Search" fluid></InputText>
+                    </IconField>
+                </article>
             </section>
         </template>
         <ColumnGroup type="header">
             <Row>
-                <Column selectionMode="multiple" :rowspan="2"></Column>
+                <Column selectionMode="multiple" :rowspan="2" style="width: var(--p-checkbox-width)"></Column>
                 <Column header="Category" field="category" :rowspan="2" sortable>
                     <template #sorticon="{sorted, sortOrder}">
                         <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
@@ -168,7 +161,7 @@
                 </Column>
                 <Column v-if="columns[0].items.filter(column => column.shown).length" :header="range1String" :colspan="columns[0].items.filter(column => column.shown).length"></Column>
                 <Column v-if="columns[1].items.filter(column => column.shown).length" :header="range2String" :colspan="columns[1].items.filter(column => column.shown).length"></Column>
-            </Row>                    
+            </Row>
             <Row>
                 <Column v-for="column of [...columns[0].items, ...columns[1].items].filter(column => column.shown)" :header="column.header" :field="column.field" sortable>
                     <template #sorticon="{sorted, sortOrder}">
@@ -177,23 +170,23 @@
                 </Column>
             </Row>
         </ColumnGroup>
-        <template #empty><span class="inline-block w-full text-center">No record(s) found</span></template> 
-        <Column selectionMode="multiple"></Column>
-        <Column field="category" exportHeader="Category" sortable></Column>
-        <Column v-for="column of [...columns[0].items, ...columns[1].items].filter(column => column.shown)" :field="column.field" :exportHeader="column.exportHeader">
+        <template #empty><span class="inline-block w-full text-center">No record(s) found</span></template>
+        <Column selectionMode="multiple" style="width: var(--p-checkbox-width)"></Column>
+        <Column field="category" sortable></Column>
+        <Column v-for="column of [...columns[0].items, ...columns[1].items].filter(column => column.shown)" :field="column.field">
             <template #body="{ data, field }">
                 {{ field.match(/price/gi) ? data[field].toLocaleString("en-MY", {style: "currency", currency: "MYR"}) : `${data[field].toLocaleString("en-MY", {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg` }}
             </template>
         </Column>
         <ColumnGroup type="footer">
             <Row v-if="!(range1TotalWeight === null || range1TotalPrice === null || range2TotalWeight === null || range2TotalPrice === null) && [...columns[0].items, ...columns[1].items].filter(column => column.shown).length">
-                <Column footer="Total:" :colspan="2" footerStyle="text-align: right"></Column>
+                <Column footer="Total:" :colspan="2" footerClass="text-right"></Column>
                 <Column v-if="columns[0].items.filter(column => column.field === 'weight1' && column.shown === true).length" :footer="`${range1TotalWeight.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`"></Column>
                 <Column v-if="columns[0].items.filter(column => column.field === 'price1' && column.shown === true).length" :footer="range1TotalPrice.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})"></Column>
-                <Column :footer="range1TotalAveragePrice"></Column>
+                <Column v-if="columns[0].items.filter(column => column.field === 'average_price1' && column.shown === true).length" :footer="range1TotalAveragePrice"></Column>
                 <Column v-if="columns[1].items.filter(column => column.field === 'weight2' && column.shown === true).length" :footer="`${range2TotalWeight.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`"></Column>
                 <Column v-if="columns[1].items.filter(column => column.field === 'price2' && column.shown === true).length" :footer="range2TotalPrice.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})"></Column>
-                <Column :footer="range2TotalAveragePrice"></Column>
+                <Column v-if="columns[1].items.filter(column => column.field === 'average_price2' && column.shown === true).length" :footer="range2TotalAveragePrice"></Column>
             </Row>
         </ColumnGroup>
     </DataTable>
