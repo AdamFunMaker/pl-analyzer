@@ -1,5 +1,5 @@
 <script setup>
-    import { ref } from "vue";
+    import { inject, ref } from "vue";
     import { usePrimeVue } from "primevue/config";
     import { FilterMatchMode } from "@primevue/core/api";
     import { exportXLSX } from "@/utils/exports.js";
@@ -9,40 +9,28 @@
     import InputIcon from "primevue/inputicon";
     import InputText from "primevue/inputtext";
 
-    const props = defineProps({
-        loading: {
-            type: Boolean,
-            default: true
-        },
-        value: {
-            type: Array,
-            default: () => []
-        },
-        interval: {
-            type: String,
-            required: true
-        }
-    });
-
     const primevue = usePrimeVue();
+    const interval = inject("interval");
     const table = ref();
+    const value = inject("overviewBreakdownData");
     const selection = ref([]);
     const filters = ref({
         "global": {value: null, matchMode: FilterMatchMode.CONTAINS}
     });
+    const loading = inject("isOverviewBreakdownLoading");
 
     function exportBreakdown() {
-        exportXLSX(table.value.$el.children[1].children[0], `Categorical Breakdown (${range.value[0] ? range.value[0].toLocaleString("en-MY", interval === "Monthly" ? {year: "numeric", month: "short"} : {year: "numeric"}) : ""} ${range.value[1] ? "- " + range.value[1].toLocaleString("en-MY", interval === "Monthly" ? {year: "numeric", month: "short"} : {year: "numeric"}) : ""}).xlsx`);
+        exportXLSX(table.value.$el.children[1].children[0], `Categorical Breakdown (${range.value[0] ? range.value[0].toLocaleString("en-MY", interval.value === "Monthly" ? {year: "numeric", month: "short"} : {year: "numeric"}) : ""} ${range.value[1] ? "- " + range.value[1].toLocaleString("en-MY", interval.value === "Monthly" ? {year: "numeric", month: "short"} : {year: "numeric"}) : ""}).xlsx`);
     }
 </script>
 
 <template>
-    <DataTable ref="table" v-model:selection="selection" :loading :value="props.value" dataKey="category" :filters rowHover paginator :alwaysShowPaginator="false" :rows="10" paginatorTemplate="FirstPageLink PrevPageLink JumpToPageInput CurrentPageReport NextPageLink LastPageLink" currentPageReportTemplate="of {totalPages}" removableSort reorderableColumns scrollable scrollHeight="flex" stateKey="tableBreakdownState">
+    <DataTable ref="table" v-model:selection="selection" :loading :value dataKey="category" :filters rowHover paginator :alwaysShowPaginator="false" :rows="10" paginatorTemplate="FirstPageLink PrevPageLink JumpToPageInput CurrentPageReport NextPageLink LastPageLink" currentPageReportTemplate="of {totalPages}" removableSort reorderableColumns scrollable scrollHeight="flex" stateKey="tableBreakdownState">
         <template #header>
             <section class="flex items-center justify-between">
                 <h4>Categorical Breakdown</h4>
                 <article class="flex items-center gap-2">
-                    <Button label="Export" icon="pi pi-file-export" :disabled="!props.value.length" @click="exportBreakdown"></Button>
+                    <Button label="Export" icon="pi pi-file-export" :disabled="!value.length" @click="exportBreakdown"></Button>
                     <IconField>
                         <InputIcon class="pi pi-search"></InputIcon>
                         <InputText v-model="filters.global.value" placeholder="Search" fluid></InputText>

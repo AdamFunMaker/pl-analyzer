@@ -4,7 +4,7 @@ import { formatSQLString, parseDate, parseFile } from "./utils.js";
 export class CashFlowService {
     async getCashFlow() {
         try {
-            const result = await database.select("SELECT `date`, CAST(strftime('%Y', `date`) AS INTEGER) AS year, CAST(strftime('%m', `date`) AS INTEGER) AS month, salary, expenses, petty_cash FROM cash_flow ORDER BY `date` DESC");
+            const result = await database.select("SELECT `date`, CAST(strftime('%Y', `date`) AS INTEGER) AS year, CAST(strftime('%m', `date`) AS INTEGER) AS month, salary, expenses, petty_cash FROM cash_flow ORDER BY CAST(strftime('%Y', `date`) AS INTEGER) DESC, CAST(strftime('%m', `date`) AS INTEGER)");
             result.map(cashFlow => cashFlow.date = parseDate(cashFlow.date));
             return {success: true, data: result}
         } catch (err) {

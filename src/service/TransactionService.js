@@ -5,7 +5,7 @@ import { toTitleCase } from "@/utils/text.js";
 export class TransactionService {
     async getTransactions(transaction) {
         try {
-            const result = await database.select(`SELECT * FROM ${transaction} ORDER BY \`date\` DESC, item ASC`);
+            const result = await database.select(`SELECT * FROM ${transaction}`);
             result.map(transaction => transaction.date = parseDate(transaction.date));
             return {success: true, data: result}
         } catch (err) {
@@ -98,8 +98,7 @@ export class TransactionService {
 
     async deleteTransactions(transaction, keys) {
         try {
-            keys.map(key => [key.date, key.item]);
-            const sql = formatSQLString(`DELETE FROM transaction_${transaction} WHERE (\`date\`, item) IN (?)`, [keys]);
+            const sql = formatSQLString(`DELETE FROM transaction_${transaction} WHERE (\`date\`, item) IN (?)`, [keys.map(key => [key.date, key.item])]);
             const result = await database.execute(sql);
             return {success: true, data: result}
         } catch (err) {

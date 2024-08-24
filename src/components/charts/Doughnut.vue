@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, onMounted, watch } from "vue";
+    import { ref, watch } from "vue";
     import { useLayout } from "@/layout/composables/layout.js";
     import Chart from "primevue/chart";
     import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -18,9 +18,7 @@
         },
         tooltipLabelFunction: {
             type: Function,
-            default: (context) => {
-                return context.raw
-            }
+            default: context => context.raw
         }
     });
 
@@ -72,13 +70,7 @@
         };
     }
 
-    onMounted(() => {
-        watch(
-            () => isDarkTheme.value,
-            render,
-            { immediate: true }
-        );
-    });
+    watch(isDarkTheme, render, { immediate: true });
 </script>
 
 <template>

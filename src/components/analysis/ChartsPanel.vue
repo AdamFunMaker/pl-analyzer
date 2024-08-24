@@ -75,9 +75,10 @@
                 </article>
             </template>
         </Toolbar>
-        <section class="grid grid-cols-12 gap-8">
-            <DoughnutChart class="col-span-12 lg:col-span-6" :title="`${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Weight by Category`" :data="weightChartData" :tooltipLabelFunction="(context) => `${context.raw.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`"></DoughnutChart>
-            <DoughnutChart class="col-span-12 lg:col-span-6" :title="`${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Price by Category`" :data="priceChartData" :tooltipLabelFunction="(context) => context.raw.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})"></DoughnutChart>
+        <section v-if="data.length" class="grid grid-cols-12 gap-8">
+            <DoughnutChart class="col-span-12 lg:col-span-6" :title="`${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Weight by Category`" :data="weightChartData" :tooltipLabelFunction="context => `${context.raw.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`"></DoughnutChart>
+            <DoughnutChart class="col-span-12 lg:col-span-6" :title="`${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Price by Category`" :data="priceChartData" :tooltipLabelFunction="context => context.raw.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})"></DoughnutChart>
         </section>
+        <span v-else class="block w-full text-center">No data</span>
     </LoadingOverlay>
 </template>

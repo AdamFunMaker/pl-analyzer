@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, onMounted, watch } from "vue";
+    import { ref, watch } from "vue";
     import { useLayout } from "@/layout/composables/layout.js";
     import Chart from "primevue/chart";
 
@@ -14,27 +14,19 @@
         data: {
             type: Object,
             default: () => {}
+        },
+        tooltipLabelFunction: {
+            type: Function,
+            default: context => context.raw
+        },
+        yAxisTickFunction: {
+            type: Function,
+            default: value => value            
         }
     });
 
     const { isDarkTheme } = useLayout();
     const options = ref({});
-
-    const data = {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-        datasets: [
-            {
-                label: 'Buy',
-                data: [65, 59, 80, 81, 56, 55, 40],
-                tension: 0.4
-            },
-            {
-                label: 'Sell',
-                data: [28, 48, 40, 19, 86, 27, 90],
-                tension: 0.4
-            }
-        ]
-    };
 
     function render() {
         const documentStyle = getComputedStyle(document.documentElement);
@@ -64,9 +56,9 @@
                         family: fontFamily,
                         size: fontSize
                     },
-                //     callbacks: {
-                //         label: props.tooltipLabelFunction
-                //     }
+                    callbacks: {
+                        label: props.tooltipLabelFunction
+                    }
                 },
             },
             scales: {
@@ -75,7 +67,7 @@
                         color: surfaceBorder
                     },
                     ticks: {
-                        color: textColor
+                        color: textColor                        
                     }
                 },
                 y: {
@@ -83,32 +75,21 @@
                         color: surfaceBorder
                     },
                     ticks: {
-                        color: textColor
+                        color: textColor,
+                        callback: props.yAxisTickFunction
                     }
                 }
             }
         };
     }
 
-    onMounted(() => {
-        watch(
-            () => isDarkTheme.value,
-            render,
-            { immediate: true }
-        );
-    });
+    watch(isDarkTheme, render, { immediate: true });
 </script>
 
 <template>
     <section :class="`flex flex-col items-center gap-4 ${props.class}`">
         <h5>{{ props.title }}</h5>
-        <!-- <Chart type="line" :options :data="props.data" :pt="{
-            root: {
-                class: 'aspect-video'
-            }
-        }">
-        </Chart> -->
-        <Chart type="line" :options :data :pt="{
+        <Chart type="line" :options :data="props.data" :pt="{
             root: {
                 class: 'aspect-video'
             }

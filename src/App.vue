@@ -1,5 +1,5 @@
 <script setup>
-    import { nextTick } from "vue";
+    import { ref, nextTick } from "vue";
     import { useRouter } from "vue-router";
     import { usePrimeVue } from "primevue/config";
     import { useLayout } from "@/layout/composables/layout.js";
@@ -9,6 +9,7 @@
     const router = useRouter();
     const primevue = usePrimeVue();
     const { isLoading, setLoading } = useLayout();
+    const loading_mask = ref();
 
     primevue.config.locale.firstDayOfWeek = 1;
 
@@ -22,18 +23,18 @@
 </script>
 
 <template>
-    <BlockUI :blocked="isLoading" fullScreen :pt="{
+    <BlockUI ref="loading_mask" :blocked="isLoading" fullScreen :pt="{
         mask: {
             class: 'backdrop-blur-sm'
         }
     }">
+        <ProgressSpinner v-if="loading_mask?.isBlocked" :pt="{
+            root: {
+                class: 'fixed top-2/4 left-2/4',
+                style: 'transform: translate(-50%, -50%); z-index: 1102'
+            }
+        }">
+        </ProgressSpinner>
     </BlockUI>
-    <ProgressSpinner v-if="isLoading" :pt="{
-        root: {
-            class: 'fixed top-2/4 left-2/4',
-            style: 'transform: translate(-50%, -50%); z-index: 1102'
-        }
-    }">
-    </ProgressSpinner>
     <RouterView></RouterView>
 </template>

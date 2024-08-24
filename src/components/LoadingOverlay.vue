@@ -1,4 +1,5 @@
 <script setup>
+    import { ref } from "vue";
     import BlockUI from "primevue/blockui";
     import ProgressSpinner from "primevue/progressspinner";
 
@@ -8,15 +9,16 @@
             default: true
         }
     });
+    const mask = ref();
 </script>
 
 <template>
-    <BlockUI :blocked="loading" :autoZIndex="false" :pt="{
+    <BlockUI ref="mask" :blocked="loading" :autoZIndex="false" :pt="{
         mask: {
             class: 'backdrop-blur-sm'
         }
     }">
-        <ProgressSpinner v-if="loading" :pt="{
+        <ProgressSpinner v-if="mask?.isBlocked" :pt="{
             root: {
                 class: 'absolute top-2/4 left-2/4',
                 style: 'transform: translate(-50%, -50%); z-index: 1102'

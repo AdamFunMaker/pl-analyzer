@@ -45,7 +45,7 @@ fn main() {
             PRIMARY KEY (`date`, item),
             FOREIGN KEY(item) REFERENCES item_sales(id)
         );",
-      kind: MigrationKind::Up,
+      kind: MigrationKind::Up
     },
     Migration {
       version: 2,
@@ -86,7 +86,47 @@ fn main() {
         ) transactions
         ON cash_flow.`date` = transactions.`date`
         WHERE transactions.category IS NOT NULL;",
-      kind: MigrationKind::Up,
+      kind: MigrationKind::Up
+    },
+    Migration {
+      version: 3,
+      description: "update_views",
+      sql: r"DROP VIEW IF EXISTS purchases_items;
+        CREATE VIEW purchases_items AS SELECT item_purchases.id AS id, description, item_categories.id AS category_id, name AS category FROM item_purchases LEFT JOIN item_categories ON item_purchases.category = item_categories.id ORDER BY id;
+        DROP VIEW IF EXISTS sales_items;
+        CREATE VIEW sales_items AS SELECT item_sales.id AS id, description, item_categories.id AS category_id, name AS category FROM item_sales LEFT JOIN item_categories ON item_sales.category = item_categories.id ORDER BY id;
+        DROP VIEW IF EXISTS purchases;
+        CREATE VIEW purchases AS SELECT `date`, CAST(strftime('%Y', `date`) AS INTEGER) AS year, CAST(strftime('%m', `date`) AS INTEGER) AS month, item_categories.id AS category_id, name AS category, item AS item_id, description AS item, weight, price, price / weight AS average_price FROM transaction_purchases LEFT JOIN item_purchases ON item = item_purchases.id LEFT JOIN item_categories ON item_purchases.category = item_categories.id ORDER BY year DESC, month, item_id;
+        DROP VIEW IF EXISTS sales;
+        CREATE VIEW sales AS SELECT `date`, CAST(strftime('%Y', `date`) AS INTEGER) AS year, CAST(strftime('%m', `date`) AS INTEGER) AS month, item_categories.id AS category_id, name AS category, item AS item_id, description AS item, weight, price, price * weight AS selling_price FROM transaction_sales LEFT JOIN item_sales ON item = item_sales.id LEFT JOIN item_categories ON item_sales.category = item_categories.id ORDER BY year DESC, month, item_id;
+        DROP VIEW IF EXISTS yearly_purchases;
+        CREATE VIEW yearly_purchases AS SELECT year, sum(weight) AS weight, sum(price) AS price, sum(price) / sum(weight) AS average_price FROM purchases GROUP BY year ORDER BY year DESC;
+        DROP VIEW IF EXISTS yearly_sales;
+        CREATE VIEW yearly_sales AS SELECT CAST(strftime('%Y', `date`) AS INTEGER) AS year, sum(weight) AS weight, sum(price * weight) AS price, sum(price * weight) / weight AS average_price FROM sales GROUP BY year ORDER BY year DESC;
+        DROP VIEW IF EXISTS monthly_purchases;
+        CREATE VIEW monthly_purchases AS SELECT year, month, sum(weight) AS weight, sum(price) AS price, sum(price) / sum(weight) AS average_price FROM purchases GROUP BY year, month ORDER BY year DESC, month;
+        DROP VIEW IF EXISTS monthly_sales;
+        CREATE VIEW monthly_sales AS SELECT CAST(strftime('%Y', `date`) AS INTEGER) AS year, CAST(strftime('%m', `date`) AS INTEGER) AS month, sum(weight) AS weight, sum(price * weight) AS price, sum(price * weight) / sum(weight) AS average_price FROM sales GROUP BY year, month ORDER BY year DESC, month;
+        DROP VIEW IF EXISTS categorical_purchases;
+        CREATE VIEW categorical_purchases AS SELECT `date`, year, month, name AS category, sum(weight) AS weight, sum(price) AS price, sum(price) / sum(weight) AS average_price FROM item_categories LEFT JOIN purchases ON id = category_id GROUP BY year, month, category ORDER BY year DESC, month, category;
+        DROP VIEW IF EXISTS categorical_sales;
+        CREATE VIEW categorical_sales AS SELECT `date`, CAST(strftime('%Y', `date`) AS INTEGER) AS year, CAST(strftime('%m', `date`) AS INTEGER) AS month, category, sum(weight) AS weight, sum(price * weight) AS price, sum(price * weight) / sum(weight) AS average_price FROM item_categories LEFT JOIN sales ON id = category_id GROUP BY year, month, category ORDER BY year DESC, month, category;
+        DROP VIEW IF EXISTS overview;
+        CREATE VIEW overview AS SELECT `date`, CAST(strftime('%Y', `date`) AS INTEGER) AS year, CAST(strftime('%m', `date`) AS INTEGER) AS month, ifnull(monthly_purchases.weight, 0) AS buy_weight, ifnull(monthly_purchases.price, 0) AS buy_price, ifnull(monthly_purchases.average_price, 0) AS buy_average_price, ifnull(monthly_sales.weight, 0) AS sell_weight, ifnull(monthly_sales.price, 0) AS sell_price, ifnull(monthly_sales.average_price, 0) AS sell_average_price, salary, expenses, petty_cash, ifnull(monthly_sales.price, 0) - ifnull(monthly_purchases.price, 0) - salary - expenses - petty_cash AS profit_loss FROM cash_flow LEFT JOIN monthly_purchases ON CAST(strftime('%Y', `date`) AS INTEGER) = monthly_purchases.year AND CAST(strftime('%m', `date`) AS INTEGER) = monthly_purchases.month LEFT JOIN monthly_sales ON CAST(strftime('%Y', `date`) AS INTEGER) = monthly_sales.year AND CAST(strftime('%m', `date`) AS INTEGER) = monthly_sales.month ORDER BY year DESC, month;
+        DROP VIEW IF EXISTS overview_categories;
+        CREATE VIEW overview_categories AS SELECT cash_flow.`date`, CAST(strftime('%Y', cash_flow.`date`) AS INTEGER) AS year, CAST(strftime('%m', cash_flow.`date`) AS INTEGER) AS month, transactions.category, ifnull(buy_weight, 0) AS buy_weight, ifnull(buy_price, 0) AS buy_price, ifnull(buy_average_price, 0) AS buy_average_price, ifnull(sell_weight, 0) AS sell_weight, ifnull(sell_price, 0) AS sell_price, ifnull(sell_average_price, 0) AS sell_average_price FROM cash_flow
+        LEFT JOIN
+        (
+        SELECT categorical_purchases.`date`, categorical_purchases.year, categorical_purchases.month, name AS category, categorical_purchases.weight AS buy_weight, categorical_purchases.price AS buy_price, categorical_purchases.average_price AS buy_average_price, categorical_sales.price AS sell_price, categorical_sales.weight AS sell_weight, categorical_sales.average_price AS sell_average_price
+        FROM item_categories
+        LEFT JOIN categorical_purchases
+        ON name = categorical_purchases.category
+        FULL JOIN categorical_sales
+        ON name = categorical_sales.category AND categorical_purchases.year = categorical_sales.year AND categorical_purchases.month = categorical_sales.month
+        GROUP BY categorical_purchases.year, categorical_purchases.month, name
+        ) transactions
+        ON cash_flow.`date` = transactions.`date` WHERE transactions.category IS NOT NULL ORDER BY year DESC, month, category;",
+      kind: MigrationKind::Up
     }
   ];
 

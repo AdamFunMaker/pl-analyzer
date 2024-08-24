@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, computed, onMounted, onBeforeMount } from "vue";
+    import { ref, computed, provide, onBeforeMount, onMounted } from "vue";
     import { usePrimeVue } from "primevue/config";
     import { useToast } from "primevue/usetoast";
     import { FilterMatchMode } from "@primevue/core/api";
@@ -54,8 +54,12 @@
     const totalExpenses = computed(() => filteredData.value.length ? filteredData.value.map(record => record.expenses).reduce((total, val) => total + val) : null);
     const totalPettyCash = computed(() => filteredData.value.length ? filteredData.value.map(record => record.petty_cash).reduce((total, val) => total + val) : null);
     const totalPL = computed(() => filteredData.value.length ? filteredData.value.map(record => record.profit_loss).reduce((total, val) => total + val) : null);
-    const breakdownData = ref([]);
-    const isBreakdownLoading = ref(true);
+    const overviewBreakdownData = ref([]);
+    const isOverviewBreakdownLoading = ref(true);
+
+    provide("interval", interval);
+    provide("overviewBreakdownData", overviewBreakdownData)
+    provide("isOverviewBreakdownLoading", isOverviewBreakdownLoading);
 
     onBeforeMount(() => {
         columns.value = [            
@@ -104,7 +108,7 @@
 
     function loadOverview() {
         isLoading.value = true;
-        isBreakdownLoading.value = true;
+        isOverviewBreakdownLoading.value = true;
         analysis.getOverview(interval.value, range.value).then(res => {
             if (res.success) {
                 data.value = res.data;
@@ -115,14 +119,14 @@
 
             isLoading.value = false;
         });
-        analysis.getOverviewCategories(interval.value, range.value).then(res => {
+        analysis.getOverviewBreakdown(interval.value, range.value).then(res => {
             if (res.success) {
-                breakdownData.value = res.data;
+                overviewBreakdownData.value = res.data;
             } else {
                 toast.add({ severity: "error", summary: "Error Loading Overview Breakdown", detail: res.error, life: 3000 });
             }
 
-            isBreakdownLoading.value = false;
+            isOverviewBreakdownLoading.value = false;
         })
     }
 
@@ -130,7 +134,7 @@
         analysis.getOverviewRange().then((res) => {
             if (res.success) {
                 period.value = [res.data.min_date, res.data.max_date];
-                range.value = [new Date(res.data.max_date).setMonth(0) < res.data.min_date ? res.data.min_date : new Date(new Date(res.data.max_date).setMonth(0)), res.data.max_date];
+                range.value = res.data.min_date && res.data.max_date ? [new Date(new Date(res.data.max_date).setMonth(0)) < res.data.min_date ? res.data.min_date : new Date(new Date(res.data.max_date).setMonth(0)), res.data.max_date] : [null, null];
                 loadOverview();
             } else {
                 toast.add({ severity: "error", summary: "Error Loading Overview", detail: res.error, life: 3000 });
@@ -258,7 +262,7 @@
         </TabList>
         <TabPanels>
             <TabPanel value="data">
-                <DataTab :loading="isBreakdownLoading" :value="breakdownData" :interval></DataTab>
+                <DataTab></DataTab>
             </TabPanel>
             <TabPanel value="charts">
                 <ChartsTab></ChartsTab>

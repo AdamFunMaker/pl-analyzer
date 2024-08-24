@@ -44,7 +44,7 @@ export class ItemService {
 
     async getItems(transaction) {
         try {
-            const result = await database.select(`SELECT * FROM ${transaction}_items ORDER BY id`);
+            const result = await database.select(`SELECT * FROM ${transaction}_items`);
             return {success: true, data: result}
         } catch (err) {
             return {success: false, error: err}

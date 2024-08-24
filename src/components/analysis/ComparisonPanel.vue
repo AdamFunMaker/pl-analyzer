@@ -93,8 +93,8 @@
         analysis.getComparisonRange(props.transaction).then((res) => {
             if (res.success) {
                 period.value = [res.data.min_date, res.data.max_date];
-                range1.value = [new Date(res.data.max_date).setMonth(0) < res.data.min_date ? res.data.min_date : new Date(new Date(res.data.max_date).setMonth(0)), res.data.max_date];
-                range2.value = [new Date(res.data.max_date).setMonth(0) < res.data.min_date ? res.data.min_date : new Date(new Date(res.data.max_date).setMonth(0)), res.data.max_date];
+                range1.value = res.data.min_date && res.data.max_date ? [new Date(res.data.max_date).setMonth(0) < res.data.min_date ? res.data.min_date : new Date(new Date(res.data.max_date).setMonth(0)), res.data.max_date] : [null, null];
+                range2.value = res.data.min_date && res.data.max_date ? [new Date(res.data.max_date).setMonth(0) < res.data.min_date ? res.data.min_date : new Date(new Date(res.data.max_date).setMonth(0)), res.data.max_date] : [null, null];
                 loadComparison();
             } else {
                 toast.add({ severity: "error", summary: `Error Loading ${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Analysis Comparison Range`, detail: res.error, life: 3000 });
