@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="/favicon.ico">
+        <style>
+            html,
+            body {
+                height: 100%;
+                margin: 0;
+                font-size: 16px;
+                font-family: Verdana, Helvetica, Arial, sans-serif;
+                font-feature-settings: "cv02","cv03","cv04","cv11";
+            }
+
+            body {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 2.5rem;
+            }
+
+            img {
+                width: 125px;
+            }
+
+            .progress-spinner {
+                position: relative;
+                width: 125px;
+                height: 125px;
+                display: inline-block;
+            }
+
+            .progress-spinner::before {
+                content: "";
+                display: block;
+                padding-top: 100%;
+            }
+
+            .progress-spinner-svg {
+                height: 100%;
+                transform-origin: center center;
+                width: 100%;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+            }
+
+            .progress-spinner-svg {
+                animation: progress-spinner-rotate 2s linear infinite;
+            }
+
+            .progress-spinner-circle {
+                stroke-dasharray: 89, 200;
+                stroke-dashoffset: 0;
+                stroke: #EF4444;
+                animation: progress-spinner-dash 1.5s ease-in-out infinite, progress-spinner-color 6s ease-in-out infinite;
+                stroke-linecap: round;
+            }
+
+            @keyframes progress-spinner-rotate {
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+            @keyframes progress-spinner-dash {
+                0% {
+                    stroke-dasharray: 1, 200;
+                    stroke-dashoffset: 0;
+                }
+                50% {
+                    stroke-dasharray: 89, 200;
+                    stroke-dashoffset: -35px;
+                }
+                100% {
+                    stroke-dasharray: 89, 200;
+                    stroke-dashoffset: -124px;
+                }
+            }                  
+            @keyframes progress-spinner-color {
+                100%, 0% {
+                    stroke: #DC2626;
+                }
+                40% {
+                    stroke: #2563EB;
+                }
+                66% {
+                    stroke: #16A34A;
+                }
+                80%, 90% {
+                    stroke: #CA8A04;
+                }
+            }
+
+            @media (prefers-color-scheme: dark) {
+                body {
+                    background: #09090B;
+                    color: #FFFFFF;
+                }
+
+                @keyframes progress-spinner-color {
+                    100%, 0% {
+                        stroke: #EF4444;
+                    }
+                    40% {
+                        stroke: #3B82F6;
+                    }
+                    66% {
+                        stroke: #22C55E;
+                    }
+                    80%, 90% {
+                        stroke: #EAB308;
+                    }
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <img src="logo.png"></img>
+        <div class="progress-spinner">
+            <svg class="progress-spinner-svg" viewBox="25 25 50 50" style="animation-duration: 2s;" >
+                    <circle class="progress-spinner-circle" cx="50" cy="50" r="20" fill="none" stroke-width="2" strokeMiterlimit="10"></circle>
+            </svg>
+        </div>
+        <span>Launching P&L Analyzer...</span>
+    </body>
+</html>

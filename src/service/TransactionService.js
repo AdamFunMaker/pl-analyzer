@@ -31,10 +31,10 @@ export class TransactionService {
                 const newCategory = record.category.trim().localeCompare("Aluminimium", "en", {sensitivity: "accent"}) === 0 ? "Aluminium" : toTitleCase(record.category.trim());
 
                 if (newCategory) {
-                    return {name: newCategory}
+                    return {name: newCategory, ferous: false}
                 }
-            }).filter((record, index, records) => index === records.findIndex(category => category.name === record.name)).filter(record => !categories.map(category => category.name).includes(record.name)).map(record => [record.name]);
-            const sqlNewCategories = formatSQLString("INSERT INTO item_categories (name) VALUES ?", [newCategories]);
+            }).filter((record, index, records) => index === records.findIndex(category => category.name === record.name)).filter(record => !categories.map(category => category.name).includes(record.name)).map(record => [record.name, record.ferous]).sort();
+            const sqlNewCategories = formatSQLString("INSERT INTO item_categories (name, ferous) VALUES ?", [newCategories]);
 
             if (newCategories.length) {
                 await database.execute(sqlNewCategories);

@@ -1,13 +1,19 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use tauri::Manager;
+use tauri::{Manager, Window};
 use tauri_plugin_sql::{Builder, Migration, MigrationKind};
 
 #[derive(Clone, serde::Serialize)]
 struct Payload {
   args: Vec<String>,
   cwd: String,
+}
+
+#[tauri::command]
+async fn close_splashscreen(window: Window) {
+  window.get_window("splashscreen").expect("no window labeled 'splashscreen' found").close().unwrap();
+  window.get_window("main").expect("no window labeled 'main' found").show().unwrap();
 }
 
 fn main() {
@@ -137,6 +143,7 @@ fn main() {
         app.emit_all("single-instance", Payload { args: argv, cwd }).unwrap();
     }))
     .plugin(Builder::default().add_migrations("sqlite:pl_analyzer.sqlite", migrations).build())
+    .invoke_handler(tauri::generate_handler![close_splashscreen])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }

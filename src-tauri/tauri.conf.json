@@ -34,9 +34,20 @@
     },
     "windows": [
       {
+        "label": "main",
         "fileDropEnabled": false,
         "maximized": true,
-        "title": "P&L Analyzer"
+        "title": "P&L Analyzer",
+        "visible": false
+      },
+      {
+        "label": "splashscreen",
+        "center": true,
+        "width": 300,
+        "height": 400,
+        "resizable": false,
+        "decorations": false,
+        "url": "splashscreen.html"
       }
     ],
     "bundle": {
