@@ -17,11 +17,11 @@
                 datasets: [
                     {
                         label: "Buy",
-                        data: newData.filter(record => record.category === category).map(record => record.buy_weight)
+                        data: newData.filter(record => record.category === category).map(record => record.buy_average_price)
                     },
                     {
                         label: "Sell",
-                        data: newData.filter(record => record.category === category).map(record => record.sell_weight)
+                        data: newData.filter(record => record.category === category).map(record => record.sell_average_price)
                     }
                 ]
             };
@@ -34,7 +34,7 @@
 <template>
     <LoadingOverlay :loading="loading">
         <section class="grid grid-cols-12 gap-8">
-            <LineChart v-for="(data, category) in chartsData" class="col-span-12 lg:col-span-6" :title="category" :data :tooltipLabelFunction="context => `${context.raw.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`" xAxisTitle="Date" yAxisTitle="Weight" :yAxisTickFunction="value => `${value.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`"></LineChart>
+            <LineChart v-for="(data, category) in chartsData" class="col-span-12 lg:col-span-6" :title="category" :data :tooltipLabelFunction="context => context.raw.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})" xAxisTitle="Date" yAxisTitle="Average Price (per kg)" :yAxisTickFunction="value => value.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})"</LineChart>
         </section>
     </LoadingOverlay>
 </template>

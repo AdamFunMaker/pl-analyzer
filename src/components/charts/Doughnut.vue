@@ -2,7 +2,8 @@
     import { ref, watch } from "vue";
     import { useLayout } from "@/layout/composables/layout.js";
     import Chart from "primevue/chart";
-    import ChartDataLabels from 'chartjs-plugin-datalabels';
+    import a11yLegend from "chartjs-plugin-a11y-legend";
+    import ChartDataLabels from "chartjs-plugin-datalabels";
 
     const props = defineProps({
         class: {
@@ -76,7 +77,7 @@
 <template>
     <section :class="`flex flex-col items-center gap-4 ${props.class}`">
         <h5>{{ props.title }}</h5>
-        <Chart type="doughnut" :options :data="props.data" :plugins="[ChartDataLabels]" :pt="{
+        <Chart type="doughnut" :options :data="props.data" :plugins="[a11yLegend, ChartDataLabels]" :pt="{
             root: {
                 class: 'aspect-square'
             }

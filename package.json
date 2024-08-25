@@ -1,7 +1,7 @@
 {
   "name": "pl-analyzer",
   "private": true,
-  "version": "1.1.1",
+  "version": "1.1.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,28 +10,29 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@primevue/themes": "^4.0.4",
+    "@primevue/themes": "^4",
     "@tauri-apps/api": "^1",
-    "@vueuse/core": "^10.11.0",
-    "chart.js": "^4.4.3",
+    "@vueuse/core": "^11",
+    "chart.js": "^4",
+    "chartjs-plugin-a11y-legend": "^0.1.2",
     "chartjs-plugin-datalabels": "^2.2.0",
-    "primeicons": "^7.0.0",
-    "primevue": "^4.0.4",
+    "primeicons": "^7",
+    "primevue": "^4",
     "tauri-plugin-sql-api": "github:tauri-apps/tauri-plugin-sql#v1",
-    "vue": "^3.4.35",
-    "vue-router": "^4.4.2",
+    "vue": "^3",
+    "vue-router": "^4",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "devDependencies": {
     "@primevue/auto-import-resolver": "^4.0.1",
     "@tauri-apps/cli": "^1",
-    "@vitejs/plugin-vue": "^5.0.5",
+    "@vitejs/plugin-vue": "^5",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.40",
     "sass": "^1.55.0",
     "tailwindcss": "^3.4.6",
     "tailwindcss-primeui": "^0.3.4",
     "unplugin-vue-components": "latest",
-    "vite": "^5.3.1"
+    "vite": "^5"
   }
 }

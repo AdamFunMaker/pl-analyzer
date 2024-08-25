@@ -2,6 +2,7 @@
     import { ref, watch } from "vue";
     import { useLayout } from "@/layout/composables/layout.js";
     import Chart from "primevue/chart";
+    import a11yLegend from "chartjs-plugin-a11y-legend";
 
     const props = defineProps({
         class: {
@@ -19,9 +20,21 @@
             type: Function,
             default: context => context.raw
         },
+        xAxisTitle: {
+            type: String
+        },
+        yAxisTitle: {
+            type: String
+        },
+        xAxisTickFunction: {
+            type: Function,
+            default: function(value) {
+                return this.getLabelForValue(value)
+            }
+        },
         yAxisTickFunction: {
             type: Function,
-            default: value => value            
+            default: value => value
         }
     });
 
@@ -59,18 +72,39 @@
                     callbacks: {
                         label: props.tooltipLabelFunction
                     }
-                },
+                }
             },
             scales: {
                 x: {
+                    title: {
+                        display: !!props.xAxisTitle,
+                        text: props.xAxisTitle,
+                        font: {
+                            family: fontFamily,
+                            size: fontSize,
+                            weight: "bold"
+                        },
+                        color: textColor
+                    },
                     grid: {
                         color: surfaceBorder
                     },
                     ticks: {
-                        color: textColor                        
+                        color: textColor,
+                        callback: props.xAxisTickFunction
                     }
                 },
                 y: {
+                    title: {
+                        display: !!props.yAxisTitle,
+                        text: props.yAxisTitle,
+                        font: {
+                            family: fontFamily,
+                            size: fontSize,
+                            weight: "bold"
+                        },
+                        color: textColor
+                    },
                     grid: {
                         color: surfaceBorder
                     },
@@ -89,7 +123,7 @@
 <template>
     <section :class="`flex flex-col items-center gap-4 ${props.class}`">
         <h5>{{ props.title }}</h5>
-        <Chart type="line" :options :data="props.data" :pt="{
+        <Chart type="line" :options :data="props.data" :plugins="[a11yLegend]" :pt="{
             root: {
                 class: 'aspect-video'
             }

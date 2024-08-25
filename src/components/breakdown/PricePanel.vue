@@ -34,7 +34,7 @@
 <template>
     <LoadingOverlay :loading="loading">
         <section class="grid grid-cols-12 gap-8">
-            <LineChart v-for="(data, category) in chartsData" class="col-span-12 lg:col-span-6" :title="category" :data :tooltipLabelFunction="context => context.raw.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})" :yAxisTickFunction="value => value.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})"</LineChart>
+            <LineChart v-for="(data, category) in chartsData" class="col-span-12 lg:col-span-6" :title="category" :data :tooltipLabelFunction="context => context.raw.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})" xAxisTitle="Date" yAxisTitle="Price" :yAxisTickFunction="value => value.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})"</LineChart>
         </section>
     </LoadingOverlay>
 </template>
