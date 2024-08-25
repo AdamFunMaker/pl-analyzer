@@ -1,7 +1,7 @@
 <script setup>    
     import { ref } from "vue";
     import { FilterMatchMode } from "@primevue/core/api";
-    import { exportXLSX } from "@/utils/exports.js";
+    import { exportXLSX, exportTableXLSX } from "@/utils/exports.js";
     import Column from "primevue/column";
     import DataTable from "primevue/datatable";
     import IconField from "primevue/iconfield";
@@ -54,7 +54,7 @@
 
     defineExpose({
         exportCSV: () => table.value.exportCSV(),
-        exportXLSX: () => exportXLSX(table.value.$el.children[1].children[0], `${props.exportFilename}.xlsx`)
+        exportXLSX: () => exportXLSX(table, `${props.exportFilename}.xlsx`)
     });
 </script>
 
@@ -70,8 +70,8 @@
             </section>
         </template>
         <template #empty><span class="block w-full text-center">No record(s) found</span></template>
-        <Column selectionMode="multiple" style="width: var(--p-checkbox-width)"></Column>
+        <Column selectionMode="multiple" style="width: var(--p-checkbox-width)" :exportable="false"></Column>
         <slot></slot>
-        <Column rowEditor class="w-fit"></Column>
+        <Column rowEditor class="w-fit" :exportable="false"></Column>
     </DataTable>
 </template>

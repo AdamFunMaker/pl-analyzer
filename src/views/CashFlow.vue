@@ -169,17 +169,11 @@
 
     function formatExport(record) {
         switch (record.field) {
-            case "salary":
-            case "expenses":
-            case "petty_cash":
-                return record.data.toLocaleString("en-MY", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            case "month":
+                primevue.config.locale.monthNamesShort[record.data - 1]
             default:
                 return record.data;
         }
-    }
-
-    function exportTable() {
-        cash_flow_table.value.exportXLSX();
     }
 </script>
 
@@ -191,7 +185,7 @@
         </template>
         <template #end>
             <Button label="Import" icon="pi pi-file-import" iconPos="right" class="mr-2" @click="openImportDialog"></Button>
-            <Button label="Export" icon="pi pi-file-export" iconPos="right" severity="info" :disabled="!data.length" @click="exportTable($event)"></Button>
+            <Button label="Export" icon="pi pi-file-export" iconPos="right" severity="info" :disabled="!data.length" @click="() => cash_flow_table.exportXLSX()"></Button>
         </template>
     </Toolbar>
     <Table ref="cash_flow_table" v-model:selection="selection" v-model:editingRows="editingRows" :loading="isLoading" title="Cash Flow" :value="data" dataKey="date" :globalFilterFields="['year', (data) => primevue.config.locale.monthNamesShort[data.month - 1], 'salary', 'expenses', 'petty_cash']" :saveEdit="editCashFlow" exportFilename="Cash Flow" :exportFunction="formatExport">

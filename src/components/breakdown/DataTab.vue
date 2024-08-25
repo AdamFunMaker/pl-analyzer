@@ -2,7 +2,7 @@
     import { inject, ref } from "vue";
     import { usePrimeVue } from "primevue/config";
     import { FilterMatchMode } from "@primevue/core/api";
-    import { exportXLSX } from "@/utils/exports.js";
+    import { exportTableXLSX } from "@/utils/exports.js";
     import Button from "primevue/button";
     import DataTable from "primevue/datatable";
     import IconField from "primevue/iconfield";
@@ -11,6 +11,7 @@
 
     const primevue = usePrimeVue();
     const interval = inject("interval");
+    const range = inject("range");
     const table = ref();
     const value = inject("overviewBreakdownData");
     const selection = ref([]);
@@ -18,19 +19,15 @@
         "global": {value: null, matchMode: FilterMatchMode.CONTAINS}
     });
     const loading = inject("isOverviewBreakdownLoading");
-
-    function exportBreakdown() {
-        exportXLSX(table.value.$el.children[1].children[0], `Categorical Breakdown (${range.value[0] ? range.value[0].toLocaleString("en-MY", interval.value === "Monthly" ? {year: "numeric", month: "short"} : {year: "numeric"}) : ""} ${range.value[1] ? "- " + range.value[1].toLocaleString("en-MY", interval.value === "Monthly" ? {year: "numeric", month: "short"} : {year: "numeric"}) : ""}).xlsx`);
-    }
 </script>
 
 <template>
-    <DataTable ref="table" v-model:selection="selection" :loading :value dataKey="category" :filters rowHover paginator :alwaysShowPaginator="false" :rows="10" paginatorTemplate="FirstPageLink PrevPageLink JumpToPageInput CurrentPageReport NextPageLink LastPageLink" currentPageReportTemplate="of {totalPages}" removableSort reorderableColumns scrollable scrollHeight="flex" stateKey="tableBreakdownState">
+    <DataTable ref="table" v-model:selection="selection" :loading :value :dataKey="(data) => `${data.year}${interval === 'Monthly' ? primevue.config.locale.monthNamesShort[data.month - 1] : ''}${data.category}`" :filters rowHover paginator :alwaysShowPaginator="false" :rows="10" paginatorTemplate="FirstPageLink PrevPageLink JumpToPageInput CurrentPageReport NextPageLink LastPageLink" currentPageReportTemplate="of {totalPages}" removableSort reorderableColumns scrollable scrollHeight="flex" stateKey="tableBreakdownState">
         <template #header>
             <section class="flex items-center justify-between">
                 <h4>Categorical Breakdown</h4>
                 <article class="flex items-center gap-2">
-                    <Button label="Export" icon="pi pi-file-export" :disabled="!value.length" @click="exportBreakdown"></Button>
+                    <Button label="Export" icon="pi pi-file-export" :disabled="!value.length" @click="() => exportTableXLSX(table.$el.children[1].children[0], `Overview Categorical Breakdown (${range[0] ? range[0].toLocaleString('en-MY', interval === 'Monthly' ? {year: 'numeric', month: 'short'} : {year: 'numeric'}) : ''} ${range[1] ? '- ' + range[1].toLocaleString('en-MY', interval === 'Monthly' ? {year: 'numeric', month: 'short'} : {year: 'numeric'}) : ''}).xlsx`)"></Button>
                     <IconField>
                         <InputIcon class="pi pi-search"></InputIcon>
                         <InputText v-model="filters.global.value" placeholder="Search" fluid></InputText>

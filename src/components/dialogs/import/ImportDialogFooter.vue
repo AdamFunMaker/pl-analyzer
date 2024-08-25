@@ -66,5 +66,5 @@
 
 <template>
     <Button label="Cancel" severity="danger" text @click="closeDialog"></Button>
-    <Button :class="isProcessing ? 'cursor-wait' : ''" label="Import" iconPos="right" severity="success" :loading="isProcessing" :disabled="!file.data || isProcessing" autofocus @click="dialogRef.data.hasSubmitted = true"></Button>
+    <Button :class="isProcessing ? 'cursor-wait' : ''" label="Import" iconPos="right" severity="success" :loading="isProcessing" :disabled="!file.data || isProcessing" @click="dialogRef.data.hasSubmitted = true"></Button>
 </template>

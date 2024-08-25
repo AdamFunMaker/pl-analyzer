@@ -181,8 +181,13 @@
         });
     }
 
-    function exportTable() {
-        purchases_table.value.exportXLSX();
+    const formatExport = (record) => {
+        switch (record.field) {
+            case "month":
+                return primevue.config.locale.monthNamesShort[record.data - 1]
+            default:
+                return record.data
+        }
     }
 </script>
 
@@ -194,10 +199,10 @@
         </template>
         <template #end>
             <Button label="Import" icon="pi pi-file-import" iconPos="right" class="mr-2" @click="openImportDialog"></Button>
-            <Button label="Export" icon="pi pi-file-export" iconPos="right" severity="info" :disabled="!purchases.length" @click="exportTable($event)"></Button>
+            <Button label="Export" icon="pi pi-file-export" iconPos="right" severity="info" :disabled="!purchases.length" @click="() => purchases_table.exportXLSX()"></Button>
         </template>
     </Toolbar>
-    <Table ref="purchases_table" v-model:selection="selection" v-model:editingRows="editingRows" title="Purchases" :loading="isLoading" :value="purchases" :dataKey="(data) => data.date + data.item_id" :globalFilterFields="['year', (data) => primevue.config.locale.monthNamesShort[data.month - 1], 'category', 'item', 'weight', 'price', 'average_price']" :saveEdit="editPurchase" exportFilename="Purchases">
+    <Table ref="purchases_table" v-model:selection="selection" v-model:editingRows="editingRows" title="Purchases" :loading="isLoading" :value="purchases" :dataKey="(data) => data.date + data.item_id" :globalFilterFields="['year', (data) => primevue.config.locale.monthNamesShort[data.month - 1], 'category', 'item', 'weight', 'price', 'average_price']" :saveEdit="editPurchase" exportFilename="Purchases" :exportFunction="formatExport">
         <Column field="year" header="Year" style="width: 6ch" sortable>
             <template #sorticon="{sorted, sortOrder}">
                 <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>

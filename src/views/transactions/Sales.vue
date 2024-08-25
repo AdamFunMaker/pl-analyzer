@@ -177,10 +177,6 @@
             defaultFocus: "accept"
         });
     }
-
-    function exportTable() {
-        sales_table.value.exportXLSX();
-    }
 </script>
 
 <template>
@@ -191,7 +187,7 @@
         </template>
         <template #end>
             <Button label="Import" icon="pi pi-file-import" iconPos="right" class="mr-2" @click="openImportDialog"></Button>
-            <Button label="Export" icon="pi pi-file-export" iconPos="right" severity="info" :disabled="!sales.length" @click="exportTable($event)"></Button>
+            <Button label="Export" icon="pi pi-file-export" iconPos="right" severity="info" :disabled="!sales.length" @click="() => sales_table.exportXLSX()"></Button>
         </template>
     </Toolbar>
     <Table ref="sales_table" title="Sales" :loading="isLoading" :value="sales" :dataKey="(data) => data.date + data.item_id" v-model:selection="selection" v-model:editingRows="editingRows" :saveEdit="editSale" exportFilename="Sales">

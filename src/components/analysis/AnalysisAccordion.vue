@@ -23,16 +23,16 @@
                 <DataPanel :transaction></DataPanel>
             </AccordionContent>
         </AccordionPanel>
-        <AccordionPanel value="comparison">
-            <AccordionHeader>Periods Comparison</AccordionHeader>
-            <AccordionContent>
-                <ComparisonPanel :transaction></ComparisonPanel>
-            </AccordionContent>
-        </AccordionPanel>
         <AccordionPanel value="charts">
             <AccordionHeader>Charts</AccordionHeader>
             <AccordionContent>
                 <ChartsPanel :transaction></ChartsPanel>
+            </AccordionContent>
+        </AccordionPanel>
+        <AccordionPanel value="comparison">
+            <AccordionHeader>Periods Comparison</AccordionHeader>
+            <AccordionContent>
+                <ComparisonPanel :transaction></ComparisonPanel>
             </AccordionContent>
         </AccordionPanel>
     </Accordion>

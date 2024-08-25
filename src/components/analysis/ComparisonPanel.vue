@@ -3,7 +3,7 @@
     import { useToast } from "primevue/usetoast";
     import { FilterMatchMode } from "@primevue/core/api";
     import { AnalysisService } from "@/service/AnalysisService.js";
-    import { exportXLSX } from "@/utils/exports.js";
+    import { exportTableXLSX } from "@/utils/exports.js";
     import { toTitleCase } from "@/utils/text.js";
     import Button from "primevue/button";
     import Column from "primevue/column";
@@ -113,10 +113,6 @@
     function toggleColumnsToggler(event) {
         columns_toggler.value.toggle(event);
     }
-
-    function exportComparison() {
-        exportXLSX(table.value.$el.children[1].children[0], `Comparison Analysis (${range1String.value}, ${range2String.value}).xlsx`);
-    }
 </script>
 
 <template>
@@ -143,7 +139,7 @@
             <section class="flex items-center justify-between">
                 <h4>{{ toTitleCase(props.transaction) }} Comparison</h4>
                 <article class="flex items-center gap-2">
-                    <Button label="Export" icon="pi pi-file-export" :disabled="!data.length" @click="exportComparison"></Button>
+                    <Button label="Export" icon="pi pi-file-export" :disabled="!data.length" @click="() => exportTableXLSX(table.$el.children[1].children[0], `${toTitleCase(props.transaction)} Comparison (${range1String}, ${range2String}).xlsx`)"></Button>
                     <IconField>
                         <InputIcon class="pi pi-search"></InputIcon>
                         <InputText v-model="filters.global.value" placeholder="Search" fluid></InputText>
@@ -153,7 +149,6 @@
         </template>
         <ColumnGroup type="header">
             <Row>
-                <Column selectionMode="multiple" :rowspan="2" style="width: var(--p-checkbox-width)"></Column>
                 <Column header="Category" field="category" :rowspan="2" sortable>
                     <template #sorticon="{sorted, sortOrder}">
                         <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
@@ -171,7 +166,6 @@
             </Row>
         </ColumnGroup>
         <template #empty><span class="inline-block w-full text-center">No record(s) found</span></template>
-        <Column selectionMode="multiple" style="width: var(--p-checkbox-width)"></Column>
         <Column field="category" sortable></Column>
         <Column v-for="column of [...columns[0].items, ...columns[1].items].filter(column => column.shown)" :field="column.field">
             <template #body="{ data, field }">

@@ -4,7 +4,7 @@
     import { useToast } from "primevue/usetoast";
     import { FilterMatchMode } from "@primevue/core/api";
     import { AnalysisService } from "@/service/AnalysisService.js";
-    import { exportXLSX } from "@/utils/exports.js";
+    import { exportTableXLSX } from "@/utils/exports.js";
     import Button from "primevue/button";
     import Column from "primevue/column";
     import ColumnGroup from "primevue/columngroup";
@@ -58,6 +58,7 @@
     const isOverviewBreakdownLoading = ref(true);
 
     provide("interval", interval);
+    provide("range", range);
     provide("overviewBreakdownData", overviewBreakdownData)
     provide("isOverviewBreakdownLoading", isOverviewBreakdownLoading);
 
@@ -143,7 +144,7 @@
     }
 
     onMounted(() => {
-        emit("update-breadcrumbs", [{label: "Dashboard"}]);
+        emit("update-breadcrumbs", [{label: "Overview", to: "/"}]);
         loadRange();
     });
 
@@ -153,10 +154,6 @@
 
     function toggleColumnsToggler(event) {
         columns_toggler.value.toggle(event);
-    }
-
-    function exportOverview() {
-        exportXLSX(table.value.$el.children[1].children[0], `Overview (${range.value[0] ? range.value[0].toLocaleString("en-MY", interval === "Monthly" ? {year: "numeric", month: "short"} : {year: "numeric"}) : ""} ${range.value[1] ? "- " + range.value[1].toLocaleString("en-MY", interval === "Monthly" ? {year: "numeric", month: "short"} : {year: "numeric"}) : ""}).xlsx`);
     }
 </script>
 
@@ -173,12 +170,12 @@
             <ColumnsToggler ref="columns_toggler" :columns></ColumnsToggler>
         </template>        
     </Toolbar>
-    <DataTable ref="table" v-model:selection="selection" :loading="isLoading" :value="data" :dataKey="(data) => `${data.year} ${primevue.config.locale.monthNamesShort[data.month - 1]}`" :globalFilterFields="['year', (data) => primevue.config.locale.monthNamesShort[data.month - 1], 'buy_weight', 'buy_price', 'buy_average_price', 'sell_weight', 'sell_price', 'sell_average_price', 'salary', 'expenses', 'petty_cash', 'profit_loss']" :filters rowHover removableSort reorderableColumns scrollable scrollHeight="flex" stateKey="tableOverviewState" @filter="updateFilteredData">
+    <DataTable ref="table" v-model:selection="selection" :loading="isLoading" :value="data" :dataKey="(data) => `${data.year}${interval === 'Monthly' ? primevue.config.locale.monthNamesShort[data.month - 1] : ''}`" :globalFilterFields="['year', (data) => primevue.config.locale.monthNamesShort[data.month - 1], 'buy_weight', 'buy_price', 'buy_average_price', 'sell_weight', 'sell_price', 'sell_average_price', 'salary', 'expenses', 'petty_cash', 'profit_loss']" :filters rowHover removableSort reorderableColumns scrollable scrollHeight="flex" stateKey="tableOverviewState" @filter="updateFilteredData">
         <template #header>
             <section class="flex items-center justify-between">
                 <h4>Overview</h4>
                 <article class="flex items-center gap-2">
-                    <Button label="Export" icon="pi pi-file-export" :disabled="!data.length" @click="exportOverview"></Button>
+                    <Button label="Export" icon="pi pi-file-export" :disabled="!data.length" @click="() => exportTableXLSX(table.$el.children[1].children[0], `Overview (${range[0] ? range[0].toLocaleString('en-MY', interval === 'Monthly' ? {year: 'numeric', month: 'short'} : {year: 'numeric'}) : ''} ${range[1] ? '- ' + range[1].toLocaleString('en-MY', interval === 'Monthly' ? {year: 'numeric', month: 'short'} : {year: 'numeric'}) : ''}).xlsx`)"></Button>
                     <IconField>
                         <InputIcon class="pi pi-search"></InputIcon>
                         <InputText v-model="filters.global.value" placeholder="Search" fluid></InputText>
