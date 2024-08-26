@@ -4,6 +4,7 @@
     import { useConfirm } from "primevue/useconfirm";
     import { useToast } from "primevue/usetoast";
     import { ItemService } from "@/service/ItemService.js";
+    import { highlightMatch } from "@/utils/text.js";
     import Button from "primevue/button";
     import Column from "primevue/column";
     import InputText from "primevue/inputtext";
@@ -18,6 +19,7 @@
     const dialog = useDialog();
     const confirm = useConfirm();
     const toast = useToast();
+    const categories_table = ref();
     const categories = ref([]);
     const selection = ref([]);
     const editingRows = ref([]);
@@ -123,11 +125,14 @@
             <Button label="Delete" icon="pi pi-trash" severity="danger" :disabled="!selection || !selection.length" @click="confirmDelete"></Button>
         </template>
     </Toolbar>    
-    <Table v-model:selection="selection" v-model:editingRows="editingRows" title="Categories" :loading="isLoading" :value="categories" dataKey="id" :saveEdit="editCategory">
+    <Table ref="categories_table" v-model:selection="selection" v-model:editingRows="editingRows" title="Categories" :loading="isLoading" :value="categories" dataKey="id" :globalFilterFields="['name']" :saveEdit="editCategory">
         <Column field="name" header="Name" style="width: 40%" sortable>
             <template #sorticon="{sorted, sortOrder}">
                 <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
-            </template>            
+            </template>
+            <template #body="{data, field}">
+                <span v-html="highlightMatch(data[field], categories_table.filters.global)"></span>
+            </template>
             <template #editor="{ data, field }">
                 <InputText v-model.trim="data[field]" :invalid="!data[field]" autofocus></InputText>
             </template>

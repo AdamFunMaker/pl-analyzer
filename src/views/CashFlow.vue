@@ -5,6 +5,7 @@
     import { useConfirm } from "primevue/useconfirm";
     import { useToast } from "primevue/usetoast";
     import { CashFlowService } from "@/service/CashFlowService.js";
+    import { highlightMatch } from "@/utils/text.js";
     import Button from "primevue/button";
     import Column from "primevue/column";
     import InputNumber from "primevue/inputnumber";
@@ -188,11 +189,14 @@
             <Button label="Export" icon="pi pi-file-export" iconPos="right" severity="info" :disabled="!data.length" @click="() => cash_flow_table.exportXLSX()"></Button>
         </template>
     </Toolbar>
-    <Table ref="cash_flow_table" v-model:selection="selection" v-model:editingRows="editingRows" :loading="isLoading" title="Cash Flow" :value="data" dataKey="date" :globalFilterFields="['year', (data) => primevue.config.locale.monthNamesShort[data.month - 1], 'salary', 'expenses', 'petty_cash']" :saveEdit="editCashFlow" exportFilename="Cash Flow" :exportFunction="formatExport">
+    <Table ref="cash_flow_table" v-model:selection="selection" v-model:editingRows="editingRows" :loading="isLoading" title="Cash Flow" :value="data" dataKey="date" :globalFilterFields="['year', data => primevue.config.locale.monthNamesShort[data.month - 1], data => data.salary.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => data.expenses.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => data.petty_cash.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})]" :saveEdit="editCashFlow" exportFilename="Cash Flow" :exportFunction="formatExport">
         <Column field="year" header="Year" style="width: 6ch" sortable>
             <template #sorticon="{sorted, sortOrder}">
                 <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
-            </template>            
+            </template>
+            <template #body="{ data, field }">
+                <span v-html="highlightMatch(data[field], cash_flow_table.filters.global)"></span>
+            </template>
             <template #editor="{ data, field }">
                 <InputNumber v-model="data[field]" :min="0" :max="9999" :step="1" :useGrouping="false" showButtons :allowEmpty="false" :invalid="!data[field]" autofocus highlightOnFocus :inputStyle="{width: 'calc(6ch + var(--p-inputnumber-button-width))'}"></InputNumber>
             </template>
@@ -202,7 +206,7 @@
                 <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
             </template>
             <template #body="{ data, field }">
-                {{ primevue.config.locale.monthNamesShort[data[field] - 1] }}
+                <span v-html="highlightMatch(primevue.config.locale.monthNamesShort[data[field] - 1], cash_flow_table.filters.global)"></span>
             </template>
             <template #editor="{ data, field}">
                 <Select v-model="data[field]" :options="primevue.config.locale.monthNamesShort.map((value, index) => {return {label: value, value: index + 1}})" optionLabel="label" optionValue="value" autofocus></Select>
@@ -213,7 +217,7 @@
                 <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
             </template>            
             <template #body="{ data, field }">
-                {{ data[field].toLocaleString("en-MY", {style: "currency", currency: "MYR"}) }}
+                <span v-html="highlightMatch(data[field].toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), cash_flow_table.filters.global)"></span>
             </template>
             <template #editor="{ data, field }">
                 <InputNumber mode="currency" currency="MYR" v-model="data[field]" :min="0" :step="0.01" :minFractionDigits="2" :maxFractionDigits="2" showButtons :allowEmpty="false" :invalid="!data[field]" autofocus :highlightOnFocus="true"></InputNumber>
@@ -224,7 +228,7 @@
                 <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
             </template>            
             <template #body="{ data, field }">
-                {{ data[field].toLocaleString("en-MY", {style: "currency", currency: "MYR"}) }}
+                <span v-html="highlightMatch(data[field].toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), cash_flow_table.filters.global)"></span>
             </template>
             <template #editor="{ data, field }">
                 <InputNumber mode="currency" currency="MYR" v-model="data[field]" :min="0" :step="0.01" :minFractionDigits="2" :maxFractionDigits="2" showButtons :allowEmpty="false" :invalid="!data[field]" autofocus :highlightOnFocus="true"></InputNumber>
@@ -235,7 +239,7 @@
                 <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
             </template>            
             <template #body="{ data, field }">
-                {{ data[field].toLocaleString("en-MY", {style: "currency", currency: "MYR"}) }}
+                <span v-html="highlightMatch(data[field].toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), cash_flow_table.filters.global)"></span>
             </template>
             <template #editor="{ data, field }">
                 <InputNumber mode="currency" currency="MYR" v-model="data[field]" :min="0" :step="0.01" :minFractionDigits="2" :maxFractionDigits="2" showButtons :allowEmpty="false" :invalid="!data[field]" autofocus :highlightOnFocus="true"></InputNumber>

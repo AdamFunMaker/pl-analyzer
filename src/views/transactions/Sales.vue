@@ -5,6 +5,7 @@
     import { useToast } from "primevue/usetoast";
     import { ItemService } from "@/service/ItemService";
     import { TransactionService } from "@/service/TransactionService.js";
+    import { highlightMatch } from "@/utils/text.js";
     import Button from "primevue/button";
     import DatePicker from "primevue/datepicker";
     import Column from "primevue/column";
@@ -190,13 +191,13 @@
             <Button label="Export" icon="pi pi-file-export" iconPos="right" severity="info" :disabled="!sales.length" @click="() => sales_table.exportXLSX()"></Button>
         </template>
     </Toolbar>
-    <Table ref="sales_table" title="Sales" :loading="isLoading" :value="sales" :dataKey="(data) => data.date + data.item_id" v-model:selection="selection" v-model:editingRows="editingRows" :saveEdit="editSale" exportFilename="Sales">
+    <Table ref="sales_table"  v-model:selection="selection" v-model:editingRows="editingRows" title="Sales" :loading="isLoading" :value="sales" :dataKey="data => data.date + data.item_id" :globalFilterFields="[data => data.date.toLocaleString('en-MY', {dateStyle: 'short'}), 'category', 'item', data => `${data.weight.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`, data => data.price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => data.selling_price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})]" :saveEdit="editSale" exportFilename="Sales">
         <Column field="date" header="Date" style="width: 20ch" sortable>
             <template #sorticon="{sorted, sortOrder}">
                 <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
             </template>
             <template #body="{ data, field }">
-                {{ data[field].toLocaleString("en-MY", {dateStyle: "short"}) }}
+                <span v-html="highlightMatch(data[field].toLocaleString('en-MY', {dateStyle: 'short'}), sales_table.filters.global)"></span>
             </template>
             <template #editor="{ data, field}">
                 <DatePicker v-model="data[field]" dateFormat="dd/mm/yy" showIcon showButtonBar :invalid="!data[field]" autofocus></DatePicker>
@@ -205,7 +206,10 @@
         <Column field="category" header="Category" sortable>
             <template #sorticon="{sorted, sortOrder}">
                 <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
-            </template>            
+            </template>
+            <template #body="{data, field}">
+                <span v-html="highlightMatch(data[field], sales_table.filters.global)"></span>
+            </template>
             <template #editor="{ data }">
                  {{ items.filter(item => item.id == data["item_id"])[0].category }}
             </template>
@@ -213,7 +217,10 @@
         <Column field="item" header="Description" sortable>
             <template #sorticon="{sorted, sortOrder}">
                 <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
-            </template>            
+            </template>
+            <template #body="{data, field}">
+                <span v-html="highlightMatch(data[field], sales_table.filters.global)"></span>
+            </template>
             <template #editor="{ data }">
                 <Select v-model="data['item_id']" :options="items" optionLabel="description" optionValue="id" placeholder="Select an Item"></Select>
             </template>
@@ -223,7 +230,7 @@
                 <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
             </template>
             <template #body="{ data, field }">
-                {{ `${data[field].toLocaleString("en-MY", {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg` }}
+                <span v-html="highlightMatch(`${data[field].toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`, sales_table.filters.global)"></span>
             </template>
             <template #editor="{ data, field }">
                 <InputNumber v-model="data[field]" :min="0" :step="0.1" :minFractionDigits="2" :maxFractionDigits="5" suffix=" kg" showButtons :allowEmpty="false" :invalid="!data[field]" autofocus highlightOnFocus></InputNumber>
@@ -234,7 +241,7 @@
                 <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
             </template>
             <template #body="{ data, field }">
-                {{ data[field].toLocaleString("en-MY", {style: "currency", currency: "MYR"}) }}
+                <span v-html="highlightMatch(data[field].toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), sales_table.filters.global)"></span>
             </template>
             <template #editor="{ data, field }">
                 <InputNumber mode="currency" currency="MYR" v-model="data[field]" :min="0" :step="0.01" :minFractionDigits="2" :maxFractionDigits="2" showButtons :allowEmpty="false" :invalid="!data[field]" autofocus highlightOnFocus></InputNumber>
@@ -245,7 +252,7 @@
                 <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
             </template>
             <template #body="{ data, field }">
-                {{ data[field].toLocaleString("en-MY", {style: "currency", currency: "MYR"}) }}
+                <span v-html="highlightMatch(data[field].toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), sales_table.filters.global)"></span>
             </template>
             <template #editor="{ data }">
                  {{ (data["price"] * data["weight"]).toLocaleString("en-MY", {style: "currency", currency: "MYR"}) }}

@@ -2,6 +2,7 @@
     import { inject, ref } from "vue";
     import { usePrimeVue } from "primevue/config";
     import { FilterMatchMode } from "@primevue/core/api";
+    import { highlightMatch } from "@/utils/text.js";
     import { exportTableXLSX } from "@/utils/exports.js";
     import Button from "primevue/button";
     import DataTable from "primevue/datatable";
@@ -22,7 +23,7 @@
 </script>
 
 <template>
-    <DataTable ref="table" v-model:selection="selection" :loading :value :dataKey="(data) => `${data.year}${interval === 'Monthly' ? primevue.config.locale.monthNamesShort[data.month - 1] : ''}${data.category}`" :filters rowHover paginator :alwaysShowPaginator="false" :rows="10" paginatorTemplate="FirstPageLink PrevPageLink JumpToPageInput CurrentPageReport NextPageLink LastPageLink" currentPageReportTemplate="of {totalPages}" removableSort reorderableColumns scrollable scrollHeight="flex" stateKey="tableBreakdownState">
+    <DataTable ref="table" v-model:selection="selection" :loading :value :dataKey="data => `${data.year}${interval === 'Monthly' ? primevue.config.locale.monthNamesShort[data.month - 1] : ''}${data.category}`" :filters :globalFilterFields="['year', data => primevue.config.locale.monthNamesShort[data.month - 1], 'category', data => `${data.buy_weight.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`, data => data.buy_price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => data.buy_average_price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => `${data.sell_weight.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`, data => data.sell_price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => data.sell_average_price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})]" rowHover paginator :alwaysShowPaginator="false" :rows="10" paginatorTemplate="FirstPageLink PrevPageLink JumpToPageInput CurrentPageReport NextPageLink LastPageLink" currentPageReportTemplate="of {totalPages}" removableSort reorderableColumns scrollable scrollHeight="flex" stateKey="tableBreakdownState">
         <template #header>
             <section class="flex items-center justify-between">
                 <h4>Categorical Breakdown</h4>
@@ -91,47 +92,47 @@
         <template #empty><span class="inline-block w-full text-center">No record(s) found</span></template>
         <Column header="Year" field="year" sortable>
             <template #body="{ data, field }">
-                {{ data[field] }}
+                <span v-html="highlightMatch(data[field], filters.global)"></span>
             </template>
         </Column>
         <Column v-if="interval === 'Monthly'" header="Month" field="month" sortable>
             <template #body="{ data, field }">
-                {{ primevue.config.locale.monthNamesShort[data[field] - 1] }}
+                <span v-html="highlightMatch(primevue.config.locale.monthNamesShort[data[field] - 1], filters.global)"></span>
             </template>
         </Column>
         <Column header="Category" field="category" sortable>
             <template #body="{ data, field }">
-                {{ data[field] }}
+                <span v-html="highlightMatch(data[field], filters.global)"></span>
             </template>
         </Column>
         <Column header="Weight" field="buy_weight" sortable>
             <template #body="{ data, field }">
-                {{ `${data[field].toLocaleString("en-MY", {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg` }}
+                <span v-html="highlightMatch(`${data[field].toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`, filters.global)"></span>
             </template>
         </Column>
         <Column header="Buying Price" field="buy_price" sortable>
             <template #body="{ data, field }">
-                {{ data[field].toLocaleString("en-MY", {style: "currency", currency: "MYR"}) }}
+                <span v-html="highlightMatch(data[field].toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), filters.global)"></span>
             </template>
         </Column>
         <Column header="Average Price" field="buy_average_price" sortable>
             <template #body="{ data, field }">
-                {{ data[field].toLocaleString("en-MY", {style: "currency", currency: "MYR"}) }}
+                <span v-html="highlightMatch(data[field].toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), filters.global)"></span>
             </template>
         </Column>
         <Column header="Weight" field="sell_weight" sortable>
             <template #body="{ data, field }">
-                {{ `${data[field].toLocaleString("en-MY", {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg` }}
+                <span v-html="highlightMatch(`${data[field].toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`, filters.global)"></span>
             </template>
         </Column>
         <Column header="Selling Price" field="sell_price" sortable>
             <template #body="{ data, field }">
-                {{ data[field].toLocaleString("en-MY", {style: "currency", currency: "MYR"}) }}
+                <span v-html="highlightMatch(data[field].toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), filters.global)"></span>
             </template>
         </Column>
         <Column header="Average Price" field="sell_average_price" sortable>
             <template #body="{ data, field }">
-                {{ data[field].toLocaleString("en-MY", {style: "currency", currency: "MYR"}) }}
+                <span v-html="highlightMatch(data[field].toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), filters.global)"></span>
             </template>
         </Column>
     </DataTable>

@@ -47,12 +47,11 @@
     });
     const selection = defineModel("selection", {type: Array});
     const editingRows = defineModel("editingRows", {type: Array});
+    const filters = ref(props.filters);
     const table = ref();
-    const filters = ref({
-        "global": {value: null, matchMode: FilterMatchMode.CONTAINS},
-    });
 
     defineExpose({
+        filters: filters,
         exportCSV: () => table.value.exportCSV(),
         exportXLSX: () => exportXLSX(table, `${props.exportFilename}.xlsx`)
     });

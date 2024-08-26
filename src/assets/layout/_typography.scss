@@ -34,16 +34,21 @@ h6 {
 }
 
 mark {
-    background: #FFF8E1;
+    background: var(--p-yellow-300);
+}
+
+code {
+    background: var(--code-background);
     padding: 0.25rem 0.4rem;
     border-radius: var(--content-border-radius);
     font-family: monospace;
+    color: var(--code-text-color);
 }
 
 blockquote {
     margin: 1rem 0;
     padding: 0 2rem;
-    border-left: 4px solid #90A4AE;
+    border-left: 4px solid var(--surface-border);
 }
 
 hr {

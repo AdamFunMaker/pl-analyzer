@@ -1,3 +1,4 @@
+import { invoke } from "@tauri-apps/api/tauri";
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
@@ -32,15 +33,15 @@ const Noir = definePreset(Aura, {
             light: {
                 primary: {
                     color: "{neutral.950}",
-                    inverseColor: "#ffffff",
+                    inverseColor: "#FFFFFF",
                     hoverColor: "{neutral.900}",
                     activeColor: "{neutral.800}"
                 },
                 highlight: {
                     background: "{neutral.950}",
                     focusBackground: "{neutral.700}",
-                    color: "#ffffff",
-                    focusColor: "#ffffff"
+                    color: "#FFFFFF",
+                    focusColor: "#FFFFFF"
                 }
             },
             dark: {
@@ -53,8 +54,8 @@ const Noir = definePreset(Aura, {
                 highlight: {
                     background: "rgba(250, 250, 250, .16)",
                     focusBackground: "rgba(250, 250, 250, .24)",
-                    color: "rgba(255,255,255,.87)",
-                    focusColor: "rgba(255,255,255,.87)"
+                    color: "rgba(255, 255, 255, .87)",
+                    focusColor: "rgba(255, 255, 255, .87)"
                 }
             }
         }
@@ -69,6 +70,11 @@ const Noir = definePreset(Aura, {
                 font: {
                     weight: 600
                 }
+            }
+        },
+        confirmdialog: {
+            icon: {
+                size: "5rem"
             }
         },
         paginator: {
@@ -93,7 +99,7 @@ createApp(App)
         theme: {
             preset: Noir,
             options: {
-                darkModeSelector: ".app-dark",
+                darkModeSelector: ".theme-dark",
                 cssLayer: {
                     name: "primevue",
                     order: "tailwind-base, primevue, tailwind-utilities"
@@ -108,3 +114,5 @@ createApp(App)
     .directive("focustrap", FocusTrap)
     .directive("styleclass", StyleClass)
     .mount("#app");
+
+invoke("close_splashscreen");

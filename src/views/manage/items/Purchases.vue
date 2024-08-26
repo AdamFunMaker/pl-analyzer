@@ -4,6 +4,7 @@
     import { useConfirm } from "primevue/useconfirm";
     import { useToast } from "primevue/usetoast";
     import { ItemService } from "@/service/ItemService.js";
+    import { highlightMatch } from "@/utils/text.js";
     import Button from "primevue/button";
     import Column from "primevue/column";
     import InputText from "primevue/inputtext";
@@ -19,6 +20,7 @@
     const dialog = useDialog();
     const confirm = useConfirm();
     const toast = useToast();
+    const purchases_table = ref();
     const categories = ref([]);
     const items = ref([]);
     const selection = ref([]);
@@ -132,10 +134,13 @@
             <Button label="Delete" icon="pi pi-trash" severity="danger" :disabled="!selection || !selection.length" @click="confirmDelete"></Button>
         </template>
     </Toolbar>
-    <Table v-model:selection="selection" v-model:editingRows="editingRows" title="Purchases Items" :loading="isLoading" :value="items" dataKey="id" :saveEdit="editItem">
+    <Table ref="purchases_table" v-model:selection="selection" v-model:editingRows="editingRows" title="Purchases Items" :loading="isLoading" :value="items" dataKey="id" :saveEdit="editItem">
         <Column field="description" header="Description" style="width: 40%" sortable>
             <template #sorticon="{sorted, sortOrder}">
                 <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
+            </template>
+            <template #body="{data, field}">
+                <span v-html="highlightMatch(data[field], purchases_table.filters.global)"></span>
             </template>
             <template #editor="{ data, field }">
                 <InputText v-model.trim="data[field]" :invalid="!data[field]" autofocus></InputText>
@@ -144,6 +149,9 @@
         <Column field="category" header="Category" style="width: 40%" sortable>
             <template #sorticon="{sorted, sortOrder}">
                 <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
+            </template>
+            <template #body="{data, field}">
+                <span v-html="highlightMatch(data[field], purchases_table.filters.global)"></span>
             </template>
             <template #editor="{ data }">
                 <Select v-model="data['category_id']" :options="categories" optionLabel="name" optionValue="id" placeholder="Select a Category"></Select>

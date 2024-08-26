@@ -13,7 +13,7 @@ watch(usePreferredDark(), (preferDark) => {
 });
 
 watch(() => layoutState.darkTheme, (darkTheme) => {
-    darkTheme ? document.documentElement.classList.add("app-dark") : document.documentElement.classList.remove("app-dark");
+    darkTheme ? document.documentElement.classList.add("theme-dark") : document.documentElement.classList.remove("theme-dark");
 }, {immediate: true});
 
 export function useLayout() {
@@ -30,7 +30,7 @@ export function useLayout() {
     };
     const executeDarkModeToggle = () => {
         layoutState.darkTheme = !layoutState.darkTheme;
-        document.documentElement.classList.toggle("app-dark");
+        document.documentElement.classList.toggle("theme-dark");
     };
     const isLoading = computed(() => layoutState.loading);
     const isDarkTheme = computed(() => layoutState.darkTheme);

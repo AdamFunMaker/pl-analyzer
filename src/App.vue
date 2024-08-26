@@ -1,5 +1,4 @@
 <script setup>
-    import { invoke } from "@tauri-apps/api/tauri";
     import { ref, nextTick, onMounted } from "vue";
     import { useRouter } from "vue-router";
     import { usePrimeVue } from "primevue/config";
@@ -20,10 +19,6 @@
         nextTick(() => {
             setLoading(false);
         });
-    });
-
-    onMounted(() => {
-        invoke("close_splashscreen");
     });
 </script>
 

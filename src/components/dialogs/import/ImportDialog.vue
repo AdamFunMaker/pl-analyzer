@@ -82,7 +82,7 @@
                 <label for="file">Select File to Import<span title="required" class="required-indicator" aria-hidden="true">*</span></label>
                 <div class="flex items-center gap-2">
                     <Button icon="pi pi-upload" label="Browse" size="small" :loading="isLoading" @click="selectFile"></Button>
-                    <small>{{ file.name ? file.name : "No file selected" }}</small>
+                    <span>{{ file.name ? file.name : "No file selected" }}</span>
                 </div>
                 <small v-if="validateFile()" id="file-error" class="text-red-500">File is required.</small>
             </article>
