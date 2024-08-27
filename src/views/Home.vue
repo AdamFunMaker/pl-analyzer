@@ -109,7 +109,7 @@
 
     function loadOverview() {
         isLoading.value = true;
-        isOverviewBreakdownLoading.value = true;
+        isOverviewBreakdownLoading.value = true;        
         analysis.getOverview(interval.value, range.value).then(res => {
             if (res.success) {
                 data.value = res.data;
@@ -170,7 +170,7 @@
             <section class="flex items-center justify-between">
                 <h4>Overview</h4>
                 <article class="flex items-center gap-2">
-                    <Button label="Export" icon="pi pi-file-export" :disabled="!data.length" @click="() => exportTableXLSX(overview_table.$el.children[1].children[0], `Overview (${range[0] ? range[0].toLocaleString('en-MY', interval === 'Monthly' ? {year: 'numeric', month: 'short'} : {year: 'numeric'}) : ''} ${range[1] ? '- ' + range[1].toLocaleString('en-MY', interval === 'Monthly' ? {year: 'numeric', month: 'short'} : {year: 'numeric'}) : ''}).xlsx`)"></Button>
+                    <Button label="Export" icon="pi pi-file-export" size="small" :disabled="!data.length" @click="() => exportTableXLSX(overview_table.$el.children[1].children[0], `Overview (${range[0] ? range[0].toLocaleString('en-MY', interval === 'Monthly' ? {year: 'numeric', month: 'short'} : {year: 'numeric'}) : ''} ${range[1] ? '- ' + range[1].toLocaleString('en-MY', interval === 'Monthly' ? {year: 'numeric', month: 'short'} : {year: 'numeric'}) : ''}).xlsx`)"></Button>
                     <IconField>
                         <InputIcon class="pi pi-search"></InputIcon>
                         <InputText v-model="filters.global.value" placeholder="Search" fluid></InputText>

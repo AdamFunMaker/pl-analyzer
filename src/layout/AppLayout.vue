@@ -29,7 +29,7 @@
             </section>
             <section v-focustrap class="p-dialog-footer">
                 <Button class="p-confirmdialog-reject-button grow" :label="message.rejectLabel" :icon="message.rejectIcon" severity="secondary" @click="rejectCallback"></Button>
-                <Button class="p-confirmdialog-accept-button grow" :label="message.acceptLabel" :icon="message.acceptIcon" :severity="message.severity" @click="acceptCallback" autofocus></Button>
+                <Button class="p-confirmdialog-accept-button grow" :label="message.acceptLabel" :icon="message.acceptIcon" :severity="message.severity" autofocus @click="acceptCallback"></Button>
             </section>
         </template>
     </ConfirmDialog>

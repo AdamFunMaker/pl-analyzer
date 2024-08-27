@@ -5,10 +5,13 @@
     import { highlightMatch } from "@/utils/text.js";
     import { exportTableXLSX } from "@/utils/exports.js";
     import Button from "primevue/button";
+    import Column from "primevue/column";
+    import ColumnGroup from "primevue/columngroup";
     import DataTable from "primevue/datatable";
     import IconField from "primevue/iconfield";
     import InputIcon from "primevue/inputicon";
     import InputText from "primevue/inputtext";
+    import Row from "primevue/row";
 
     const primevue = usePrimeVue();
     const interval = inject("interval");
@@ -28,7 +31,7 @@
             <section class="flex items-center justify-between">
                 <h4>Categorical Breakdown</h4>
                 <article class="flex items-center gap-2">
-                    <Button label="Export" icon="pi pi-file-export" :disabled="!value.length" @click="() => exportTableXLSX(table.$el.children[1].children[0], `Overview Categorical Breakdown (${range[0] ? range[0].toLocaleString('en-MY', interval === 'Monthly' ? {year: 'numeric', month: 'short'} : {year: 'numeric'}) : ''} ${range[1] ? '- ' + range[1].toLocaleString('en-MY', interval === 'Monthly' ? {year: 'numeric', month: 'short'} : {year: 'numeric'}) : ''}).xlsx`)"></Button>
+                    <Button label="Export" icon="pi pi-file-export" size="small" :disabled="!value.length" @click="() => exportTableXLSX(table.$el.children[1].children[0], `Overview Categorical Breakdown (${range[0] ? range[0].toLocaleString('en-MY', interval === 'Monthly' ? {year: 'numeric', month: 'short'} : {year: 'numeric'}) : ''} ${range[1] ? '- ' + range[1].toLocaleString('en-MY', interval === 'Monthly' ? {year: 'numeric', month: 'short'} : {year: 'numeric'}) : ''}).xlsx`)"></Button>
                     <IconField>
                         <InputIcon class="pi pi-search"></InputIcon>
                         <InputText v-model="filters.global.value" placeholder="Search" fluid></InputText>

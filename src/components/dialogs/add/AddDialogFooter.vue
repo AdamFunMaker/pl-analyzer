@@ -7,12 +7,12 @@
     const isProcessing = ref(false);
 
     function closeDialog() {
-        dialogRef?.value.close();
+        dialogRef.value?.close();
     }
 
     function submit() {        
-        const fields = dialogRef?.value.data.fields;
-        const newRecord = dialogRef?.value.data.newRecord;
+        const fields = dialogRef.value?.data.fields;
+        const newRecord = dialogRef.value?.data.newRecord;
 
         let isInputValid = true;
 
@@ -25,10 +25,10 @@
         if (isInputValid) {
             isProcessing.value = true;
 
-            if (dialogRef?.value.data.addFunctionParam) {
-                dialogRef?.value.data.addFunction(dialogRef?.value.data.addFunctionParam, newRecord).then((res) => {
+            if (dialogRef.value?.data.addFunctionParam) {
+                dialogRef.value?.data.addFunction(dialogRef.value?.data.addFunctionParam, newRecord).then((res) => {
                     if (res.success) {
-                        dialogRef?.value.close({ success: true, record: newRecord });
+                        dialogRef.value?.close({ success: true, record: newRecord });
                     } else {
                         emit("error", res.error);
                     }
@@ -36,9 +36,9 @@
                     isProcessing.value = false;
                 });
             } else {
-                dialogRef?.value.data.addFunction(newRecord).then((res) => {
+                dialogRef.value?.data.addFunction(newRecord).then((res) => {
                     if (res.success) {
-                        dialogRef?.value.close({ success: true, record: newRecord });
+                        dialogRef.value?.close({ success: true, record: newRecord });
                     } else {
                         emit("error", res.error);
                     }
@@ -50,8 +50,8 @@
     }
 
     watch(
-        () => dialogRef?.value.data.hasSubmitted,
-        (hasSubmitted) => {
+        () => dialogRef.value?.data.hasSubmitted,
+        hasSubmitted => {
             if (hasSubmitted) {
                 submit();
             }

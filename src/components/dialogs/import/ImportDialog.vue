@@ -12,9 +12,9 @@
     import ToggleSwitch from "primevue/toggleswitch";
 
     const dialogRef = inject("dialogRef");
-    const file = dialogRef?.value.data.file;
-    const fields = dialogRef?.value.data.fields;
-    const options = dialogRef?.value.data.options;
+    const file = dialogRef.value?.data.file;
+    const fields = dialogRef.value?.data.fields;
+    const options = dialogRef.value?.data.options;
     const worksheets = ref([]);
     const headers = ref([]);
     const isLoading = ref(false);
@@ -51,7 +51,7 @@
         for (let field of fields) {
             field.mapping = null;
             headers.value.forEach((header) => {
-                if (field.label.localeCompare(header.trim(), "en", { sensitivity: "accent" }) === 0) {
+                if (typeof(header) === "string" && field.label.localeCompare(header.trim(), "en", { sensitivity: "accent" }) === 0) {
                     field.mapping = header;
                 }
             });
@@ -59,11 +59,11 @@
     }
 
     function validateFile() {
-        return dialogRef?.value.data.hasSubmitted && !file.data;
+        return dialogRef.value?.data.hasSubmitted && !file.data;
     }
 
     function validateFieldMapping(field) {
-        return dialogRef?.value.data.hasSubmitted && (!field.mapping || fields.filter(f => f.label != field.label).map(otherField => otherField.mapping).includes(field.mapping));
+        return dialogRef.value?.data.hasSubmitted && (!field.mapping || fields.filter(f => f.label != field.label).map(otherField => otherField.mapping).includes(field.mapping));
     }
 
     function fieldMappingError(field) {
@@ -81,7 +81,7 @@
             <article class="flex flex-col gap-2 w-full">
                 <label for="file">Select File to Import<span title="required" class="required-indicator" aria-hidden="true">*</span></label>
                 <div class="flex items-center gap-2">
-                    <Button icon="pi pi-upload" label="Browse" size="small" :loading="isLoading" @click="selectFile"></Button>
+                    <Button id="file" icon="pi pi-upload" label="Browse" size="small" :loading="isLoading" autofocus @click="selectFile"></Button>
                     <span>{{ file.name ? file.name : "No file selected" }}</span>
                 </div>
                 <small v-if="validateFile()" id="file-error" class="text-red-500">File is required.</small>
@@ -99,7 +99,7 @@
             </section>
             <section class="flex flex-col gap-2">
                 <label for="header_row">Header Row<span title="required" class="required-indicator" aria-hidden="true">*</span> <i v-tooltip="'Which row are the headers? (start from 1)'" class="pi pi-question-circle"></i></label>                
-                <InputNumber id="header_row" v-model="options.header_row" :min="1" :allowEmpty="false" showButtons @update:modelValue="updateHeaders"></InputNumber>
+                <InputNumber inputId="header_row" v-model="options.header_row" :min="1" :allowEmpty="false" showButtons @update:modelValue="updateHeaders"></InputNumber>
             </section>
             <Fieldset legend="Field Mappings" :pt="{
                 content: {
@@ -107,7 +107,7 @@
                 }
             }">
                 <section v-for="field in fields" class="flex flex-col gap-2">
-                    <label :id="`label_${field.label}`">{{ field.label }}<span title="required" class="required-indicator" aria-hidden="true">*</span></label>
+                    <label>{{ field.label }}<span title="required" class="required-indicator" aria-hidden="true">*</span></label>
                     <Select v-model="field.mapping" :options="headers" :invalid="validateFieldMapping(field)"></Select>
                     <small v-if="validateFieldMapping(field)" :id="field.label + '-error'" class="text-red-500">{{ fieldMappingError(field) }}</small>
                 </section>

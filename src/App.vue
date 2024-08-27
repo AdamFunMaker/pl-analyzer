@@ -1,20 +1,15 @@
 <script setup>
-    import { ref, nextTick, onMounted } from "vue";
+    import { ref, nextTick } from "vue";
     import { useRouter } from "vue-router";
-    import { usePrimeVue } from "primevue/config";
     import { useLayout } from "@/layout/composables/layout.js";
     import BlockUI from "primevue/blockui";
     import ProgressSpinner from "primevue/progressspinner";
 
     const router = useRouter();
-    const primevue = usePrimeVue();
     const { isLoading, setLoading } = useLayout();
     const loading_mask = ref();
 
-    primevue.config.locale.firstDayOfWeek = 1;
-
     router.beforeEach(() => setLoading(true));
-
     router.afterEach(() => {
         nextTick(() => {
             setLoading(false);
@@ -35,6 +30,6 @@
             }
         }">
         </ProgressSpinner>
-    </BlockUI>
+    </BlockUI>    
     <RouterView></RouterView>
 </template>

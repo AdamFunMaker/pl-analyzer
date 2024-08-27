@@ -112,8 +112,7 @@
             rejectLabel: "No",
             acceptLabel: "Yes",
             accept: deleteCategories,
-            severity: "danger",
-            defaultFocus: "accept"
+            severity: "danger"
         });
     }
 </script>

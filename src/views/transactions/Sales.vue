@@ -174,8 +174,7 @@
             rejectLabel: "No",
             acceptLabel: "Yes",
             accept: deleteSales,
-            severity: "danger",
-            defaultFocus: "accept"
+            severity: "danger"
         });
     }
 </script>

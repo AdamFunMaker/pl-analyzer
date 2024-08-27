@@ -163,8 +163,7 @@
             rejectLabel: "No",
             acceptLabel: "Yes",
             accept: deleteCashFlow,
-            severity: "danger",
-            defaultFocus: "accept"
+            severity: "danger"
         });
     }
 

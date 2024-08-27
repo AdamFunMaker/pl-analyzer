@@ -96,6 +96,9 @@ const Noir = definePreset(Aura, {
 createApp(App)
     .use(router)
     .use(PrimeVue, {
+        locale: {
+            firstDayOfWeek: 1
+        },
         theme: {
             preset: Noir,
             options: {

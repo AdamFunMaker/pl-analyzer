@@ -121,8 +121,7 @@
             rejectLabel: "No",
             acceptLabel: "Yes",
             accept: deleteItems,
-            severity: "danger",
-            defaultFocus: "accept"
+            severity: "danger"
         });
     }
 </script>

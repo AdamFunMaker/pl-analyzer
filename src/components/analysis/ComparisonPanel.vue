@@ -133,7 +133,7 @@
             <section class="flex items-center justify-between">
                 <h4>{{ toTitleCase(props.transaction) }} Comparison</h4>
                 <article class="flex items-center gap-2">
-                    <Button label="Export" icon="pi pi-file-export" :disabled="!data.length" @click="() => exportTableXLSX(comparison_table.$el.children[1].children[0], `${toTitleCase(props.transaction)} Comparison (${range1String}, ${range2String}).xlsx`)"></Button>
+                    <Button label="Export" icon="pi pi-file-export" size="small" :disabled="!data.length" @click="() => exportTableXLSX(comparison_table.$el.children[1].children[0], `${toTitleCase(props.transaction)} Comparison (${range1String}, ${range2String}).xlsx`)"></Button>
                     <IconField>
                         <InputIcon class="pi pi-search"></InputIcon>
                         <InputText v-model="filters.global.value" placeholder="Search" fluid></InputText>

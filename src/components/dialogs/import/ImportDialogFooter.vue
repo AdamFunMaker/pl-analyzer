@@ -4,16 +4,16 @@
 
     const emit = defineEmits(["error"]);
     const dialogRef = inject("dialogRef");
-    const file = dialogRef?.value.data.file;
+    const file = dialogRef.value?.data.file;
     const isProcessing = ref(false);
     
     function closeDialog() {
-        dialogRef?.value.close();
+        dialogRef.value?.close();
     }
     
     function submit() {        
-        const fields = dialogRef?.value.data.fields;
-        const options = dialogRef?.value.data.options;
+        const fields = dialogRef.value?.data.fields;
+        const options = dialogRef.value?.data.options;
 
         let isInputValid = true;
 
@@ -30,10 +30,10 @@
         if (isInputValid) {
             isProcessing.value = true;
 
-            if (dialogRef?.value.data.importFunctionParam) {
-                dialogRef?.value.data.importFunction(dialogRef?.value.data.importFunctionParam, file, fields, options).then((res) => {
+            if (dialogRef.value?.data.importFunctionParam) {
+                dialogRef.value?.data.importFunction(dialogRef.value?.data.importFunctionParam, file, fields, options).then((res) => {
                     if (res.success) {
-                        dialogRef?.value.close({ success: true, file: file, result: res.data });
+                        dialogRef.value?.close({ success: true, file: file, result: res.data });
                     } else {
                         emit("error", res.error);
                     }
@@ -41,9 +41,9 @@
                     isProcessing.value = false;
                 });
             } else {
-                dialogRef?.value.data.importFunction(file, fields, options).then((res) => {
+                dialogRef.value?.data.importFunction(file, fields, options).then((res) => {
                     if (res.success) {
-                        dialogRef?.value.close({ success: true, file: file, result: res.data });
+                        dialogRef.value?.close({ success: true, file: file, result: res.data });
                     } else {
                         emit("error", res.error);
                     }
@@ -55,7 +55,7 @@
     }
 
     watch(
-        () => dialogRef?.value.data.hasSubmitted,
+        () => dialogRef.value?.data.hasSubmitted,
         (hasSubmitted) => {
             if (hasSubmitted) {
                 submit();
