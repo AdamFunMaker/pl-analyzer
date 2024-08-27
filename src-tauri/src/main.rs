@@ -135,6 +135,24 @@ fn main() {
         ) transactions
         ON cash_flow.`date` = transactions.`date` WHERE transactions.category IS NOT NULL ORDER BY year DESC, month, category;",
       kind: MigrationKind::Up
+    },
+    Migration {
+      version: 4,
+      description: "enhance_overview_views",
+      sql: r"DROP VIEW IF EXISTS overview;
+        CREATE VIEW overview AS SELECT `date`, CAST(strftime('%Y', `date`) AS INTEGER) AS year, CAST(strftime('%m', `date`) AS INTEGER) AS month, ifnull(monthly_purchases.weight, 0) AS buy_weight, ifnull(monthly_purchases.price, 0) AS buy_price, ifnull(monthly_purchases.average_price, 0) AS buy_average_price, ifnull(monthly_sales.weight, 0) AS sell_weight, ifnull(monthly_sales.price, 0) AS sell_price, ifnull(monthly_sales.average_price, 0) AS sell_average_price, salary, expenses, petty_cash, ifnull(monthly_sales.price, 0) - ifnull(monthly_purchases.price, 0) - salary - expenses - petty_cash AS profit_loss FROM cash_flow FULL JOIN monthly_purchases ON CAST(strftime('%Y', `date`) AS INTEGER) = monthly_purchases.year AND CAST(strftime('%m', `date`) AS INTEGER) = monthly_purchases.month FULL JOIN monthly_sales ON CAST(strftime('%Y', `date`) AS INTEGER) = monthly_sales.year AND CAST(strftime('%m', `date`) AS INTEGER) = monthly_sales.month ORDER BY year DESC, month;
+        DROP VIEW IF EXISTS overview_categories;
+        CREATE VIEW overview_categories AS SELECT cash_flow.`date`, CAST(strftime('%Y', cash_flow.`date`) AS INTEGER) AS year, CAST(strftime('%m', cash_flow.`date`) AS INTEGER) AS month, name AS category, ifnull(buy_weight, 0) AS buy_weight, ifnull(buy_price, 0) AS buy_price, ifnull(buy_average_price, 0) AS buy_average_price, ifnull(sell_weight, 0) AS sell_weight, ifnull(sell_price, 0) AS sell_price, ifnull(sell_average_price, 0) AS sell_average_price 
+        FROM cash_flow FULL JOIN
+        (SELECT * FROM item_categories
+        LEFT JOIN (SELECT categorical_purchases.year AS buy_year, categorical_purchases.month AS buy_month, categorical_sales.year AS sell_year, categorical_sales.month AS sell_month, categorical_purchases.category AS buy_category, categorical_sales.category AS sell_category, categorical_purchases.weight AS buy_weight, categorical_purchases.price AS buy_price, categorical_purchases.average_price AS buy_average_price, categorical_sales.price AS sell_price, categorical_sales.weight AS sell_weight, categorical_sales.average_price AS sell_average_price 
+        FROM categorical_purchases FULL JOIN categorical_sales USING (year, month, category)) ON name = buy_category OR name = sell_category
+        GROUP BY buy_year, buy_month, buy_category, sell_category)
+        ON (CAST(strftime('%Y', cash_flow.`date`) AS INTEGER) = buy_year AND CAST(strftime('%m', cash_flow.`date`) AS INTEGER) = buy_month) OR (CAST(strftime('%Y', cash_flow.`date`) AS INTEGER) = sell_year AND CAST(strftime('%m', cash_flow.`date`) AS INTEGER) = sell_month)
+        GROUP BY year, month, category
+        HAVING category IS NOT NULL
+        ORDER BY year DESC, month, category;",
+      kind: MigrationKind::Up
     }
   ];
 
