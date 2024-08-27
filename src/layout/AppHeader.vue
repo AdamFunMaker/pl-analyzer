@@ -3,7 +3,7 @@
     import Button from "primevue/button";
     import AppNav from "./AppNav.vue";
 
-    const { isDarkTheme, toggleDarkMode } = useLayout();    
+    const { isDarkTheme, toggleDarkMode } = useLayout();
 </script>
 
 <template>

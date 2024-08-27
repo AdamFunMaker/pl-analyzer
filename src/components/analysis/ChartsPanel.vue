@@ -2,6 +2,7 @@
     import { ref, onMounted } from "vue";
     import { useToast } from "primevue/usetoast";
     import { AnalysisService } from "@/service/AnalysisService.js";
+    import { toTitleCase } from "@/utils/text.js";
     import DatePicker from "primevue/datepicker";
     import Toolbar from "primevue/toolbar";
     import DoughnutChart from "@/components/charts/Doughnut.vue";
@@ -21,7 +22,7 @@
     const data = ref([]);
     const weightChartData = ref({});
     const priceChartData = ref({});
-    const loading = ref(true);    
+    const loading = ref(true);
 
     const loadData = () => {
         loading.value = true;
@@ -45,7 +46,7 @@
                     ]
                 };
             } else {
-                toast.add({severity:"error", summary: `Error Loading Categorical ${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Analysis Data`, detail: res.error, life: 3000});
+                toast.add({severity:"error", summary: `Error Loading Categorical ${toTitleCase(props.transaction)} Analysis Data`, detail: res.error, life: 3000});
             }
 
             loading.value = false;
@@ -59,7 +60,7 @@
                 range.value = period.value;
                 loadData();
             } else {
-                toast.add({severity:"error", summary: `Error Loading ${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Analysis Range`, detail: res.error, life: 3000});
+                toast.add({severity:"error", summary: `Error Loading ${toTitleCase(props.transaction)} Analysis Range`, detail: res.error, life: 3000});
             }
         });
     });
@@ -76,8 +77,8 @@
             </template>
         </Toolbar>
         <section v-if="data.length" class="grid grid-cols-12 gap-8">
-            <DoughnutChart class="col-span-12 lg:col-span-6" :title="`${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Weight by Category`" :data="weightChartData" :tooltipLabelFunction="context => `${context.raw.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`"></DoughnutChart>
-            <DoughnutChart class="col-span-12 lg:col-span-6" :title="`${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Price by Category`" :data="priceChartData" :tooltipLabelFunction="context => context.raw.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})"></DoughnutChart>
+            <DoughnutChart class="col-span-12 lg:col-span-6" :title="`${toTitleCase(props.transaction)} Weight by Category`" :data="weightChartData" :tooltipLabelFunction="context => `${context.raw.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`"></DoughnutChart>
+            <DoughnutChart class="col-span-12 lg:col-span-6" :title="`${toTitleCase(props.transaction)} Price by Category`" :data="priceChartData" :tooltipLabelFunction="context => context.raw.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})"></DoughnutChart>
         </section>
         <span v-else class="block w-full text-center">No data</span>
     </LoadingOverlay>

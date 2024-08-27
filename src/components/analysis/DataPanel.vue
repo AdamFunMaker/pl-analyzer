@@ -3,6 +3,7 @@
     import { usePrimeVue } from "primevue/config";
     import { useToast } from "primevue/usetoast";
     import { AnalysisService } from "@/service/AnalysisService.js";
+    import { toTitleCase } from "@/utils/text.js";
     import Column from "primevue/column";
     import TreeTable from "primevue/treetable";
 
@@ -26,7 +27,7 @@
             if (res.success) {
                 value.value = res.data;
             } else {
-                toast.add({ severity: "error", summary: `Error Loading Yearly ${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Analysis Data`, detail: res.error, life: 3000 });
+                toast.add({ severity: "error", summary: `Error Loading Yearly ${toTitleCase(props.transaction)} Analysis Data`, detail: res.error, life: 3000 });
             }
 
             loading.value = false;
@@ -54,7 +55,7 @@
                             return n;
                         });
                     } else {
-                        toast.add({ severity: "error", summary: `Error Loading Monthly ${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Analysis Data`, detail: res.error, life: 3000 });
+                        toast.add({ severity: "error", summary: `Error Loading Monthly ${toTitleCase(props.transaction)} Analysis Data`, detail: res.error, life: 3000 });
                     }
 
                     loading.value = false;
@@ -77,7 +78,7 @@
                             return n;
                         });
                     } else {
-                        toast.add({ severity: "error", summary: `Error Loading Categorical ${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Analysis Data`, detail: res.error, life: 3000 });
+                        toast.add({ severity: "error", summary: `Error Loading Categorical ${toTitleCase(props.transaction)} Analysis Data`, detail: res.error, life: 3000 });
                     }
 
                     loading.value = false;
@@ -106,7 +107,7 @@
                             return n;
                         });
                     } else {
-                        toast.add({ severity: "error", summary: `Error Loading ${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Analysis Data Items`, detail: res.error, life: 3000 });
+                        toast.add({ severity: "error", summary: `Error Loading ${toTitleCase(props.transaction)} Analysis Data Items`, detail: res.error, life: 3000 });
                     }
 
                     loading.value = false;

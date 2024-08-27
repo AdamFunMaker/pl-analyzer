@@ -170,9 +170,9 @@
     function formatExport(record) {
         switch (record.field) {
             case "month":
-                primevue.config.locale.monthNamesShort[record.data - 1]
+                return primevue.config.locale.monthNamesShort[record.data - 1]
             default:
-                return record.data;
+                return record.data
         }
     }
 </script>

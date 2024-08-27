@@ -1,7 +1,7 @@
 <script setup>    
     import { ref } from "vue";
     import { FilterMatchMode } from "@primevue/core/api";
-    import { exportXLSX, exportTableXLSX } from "@/utils/exports.js";
+    import { exportXLSX } from "@/utils/exports.js";
     import Column from "primevue/column";
     import DataTable from "primevue/datatable";
     import IconField from "primevue/iconfield";

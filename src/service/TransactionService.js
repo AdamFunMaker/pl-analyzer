@@ -38,9 +38,9 @@ export class TransactionService {
 
             if (newCategories.length) {
                 await database.execute(sqlNewCategories);
+                categories = await database.select("SELECT id, name FROM item_categories");
             }
 
-            categories = await database.select("SELECT id, name FROM item_categories");
             let items = await database.select(`SELECT id, description FROM ${transaction}_items`);
             const newItems = fileData.map(record => {
                 record.category = record.category.trim().localeCompare("Aluminimium", "en", {sensitivity: "accent"}) === 0 ? "Aluminium" : record.category.trim();
@@ -54,24 +54,26 @@ export class TransactionService {
 
             if (newItems.length) {
                 await database.execute(sqlNewItems);
+                items = await database.select(`SELECT id, description FROM ${transaction}_items`);
             }
 
-            items = await database.select(`SELECT id, description FROM ${transaction}_items`);
             await database.execute("BEGIN");
 
             try {
+                const table = `transaction_${transaction}`;
+
                 if (options.overwrite) {
-                    await database.execute(`DELETE FROM transaction_${transaction}`);
+                    await database.execute(`DELETE FROM ${table}`);
                 }
                 
                 const newTransactions = fileData.map(record => {
                     const newTransactionItem = items.filter(item => item.description.localeCompare(record.item, "en", {sensitivity: "accent"}) === 0);
 
                     if (newTransactionItem[0] && record.weight && record.price) {
-                        return [transaction === "purchases" ? new Date(record.year, record.month) : record.date, newTransactionItem[0].id, record.weight, record.price];
+                        return [transaction === "purchases" ? new Date(record.year, record.month) : record.date, newTransactionItem[0].id, record.weight, record.price]
                     }
                 }).filter(record => record);
-                const sqlNewTransactions = formatSQLString(`INSERT OR ROLLBACK INTO transaction_${transaction} (\`date\`, item, weight, price) VALUES ?`, [newTransactions]);
+                const sqlNewTransactions = formatSQLString(`INSERT OR ROLLBACK INTO ${table} (\`date\`, item, weight, price) VALUES ?`, [newTransactions]);
                 const result = await database.execute(sqlNewTransactions);
                 await database.execute("COMMIT");
 
