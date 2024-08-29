@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, computed, provide, onBeforeMount, onMounted } from "vue";
+    import { ref, computed, provide, onMounted } from "vue";
     import { usePrimeVue } from "primevue/config";
     import { useToast } from "primevue/usetoast";
     import { FilterMatchMode } from "@primevue/core/api";
@@ -35,7 +35,48 @@
     const interval = ref("Monthly");
     const period = ref([new Date(), new Date()]);
     const range = ref([null, null]);
-    const columns = ref([]);
+    const columns = ref([
+        {
+            label: "Buy",
+            items: [
+                {shown: true, field: "buy_weight", header: "Weight"},
+                {shown: true, field: "buy_price", header: "Buying Price"},
+                {shown: true, field: "buy_average_price", header: "Average Price"}
+            ]
+        },
+        {
+            label: "Sell",
+            items:  [
+                {shown: true, field: "sell_weight", header: "Weight"},
+                {shown: true, field: "sell_price", header: "Selling Price"},
+                {shown: true, field: "sell_average_price", header: "Average Price"}
+            ]
+        },
+        {
+            label: "Salary",
+            items: [
+                {shown: true, field: "salary", header: "Salary"}
+            ]
+        },
+        {
+            label: "Expenses",
+            items: [
+                {shown: true, field: "expenses", header: "Expenses"}
+            ]
+        },
+        {
+            label: "Petty Cash",
+            items: [
+                {shown: true, field: "petty_cash", header: "Petty Cash"}
+            ]
+        },
+        {
+            label: "P&L",
+            items: [
+                {shown: true, field: "profit_loss", header: "P&L"}
+            ]
+        }
+    ]);
     const columns_toggler = ref();
     const overview_table = ref();
     const data = ref([]);
@@ -61,51 +102,6 @@
     provide("range", range);
     provide("overviewBreakdownData", overviewBreakdownData)
     provide("isOverviewBreakdownLoading", isOverviewBreakdownLoading);
-
-    onBeforeMount(() => {
-        columns.value = [            
-            {
-                label: "Buy",
-                items: [
-                    {shown: true, field: "buy_weight", header: "Weight"},
-                    {shown: true, field: "buy_price", header: "Buying Price"},
-                    {shown: true, field: "buy_average_price", header: "Average Price"}
-                ]
-            },
-            {
-                label: "Sell",
-                items:  [
-                    {shown: true, field: "sell_weight", header: "Weight"},
-                    {shown: true, field: "sell_price", header: "Selling Price"},
-                    {shown: true, field: "sell_average_price", header: "Average Price"}
-                ]
-            },
-            {
-                label: "Salary",
-                items: [
-                    {shown: true, field: "salary", header: "Salary"}
-                ]
-            },
-            {
-                label: "Expenses",
-                items: [
-                    {shown: true, field: "expenses", header: "Expenses"}
-                ]                
-            },
-            {
-                label: "Petty Cash",
-                items: [
-                    {shown: true, field: "petty_cash", header: "Petty Cash"}
-                ]
-            },
-            {
-                label: "P&L",
-                items: [
-                    {shown: true, field: "profit_loss", header: "P&L"}
-                ]
-            }
-        ];
-    });
 
     function loadOverview() {
         data.value = [];

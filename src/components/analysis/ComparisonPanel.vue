@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, onMounted, computed, onBeforeMount } from "vue";
+    import { ref, onMounted, computed } from "vue";
     import { useToast } from "primevue/usetoast";
     import { FilterMatchMode } from "@primevue/core/api";
     import { AnalysisService } from "@/service/AnalysisService.js";
@@ -29,26 +29,8 @@
     const period = ref([new Date(), new Date()]);
     const range1 = ref([null, null]);
     const range2 = ref([null, null]);
-    const columns = ref([]);
-    const columns_toggler = ref();
-    const comparison_table = ref();
-    const data = ref([]);
-    const selection = ref([]);
-    const filters = ref({
-        "global": {value: null, matchMode: FilterMatchMode.CONTAINS},
-    });
-    const loading = ref(true);
-    const range1String = computed(() => `${range1.value[0] ? range1.value[0].toLocaleString("en-MY", {year: "numeric", month: "short"}) : ""} ${range1.value[1] ? "- " + range1.value[1].toLocaleString("en-MY", {year: "numeric", month: "short"}) : ""}`);
-    const range2String = computed(() => `${range2.value[0] ? range2.value[0].toLocaleString("en-MY", {year: "numeric", month: "short"}) : ""} ${range2.value[1] ? "- " + range2.value[1].toLocaleString("en-MY", {year: "numeric", month: "short"}) : ""}`);
-    const range1TotalWeight = computed(() => comparison_table.value?.processedData.length ? comparison_table.value.processedData.map(record => record.weight1).reduce((total, val) => total + val) : null);
-    const range1TotalPrice = computed(() => comparison_table.value?.processedData.length ? comparison_table.value.processedData.map(record => record.price1).reduce((total, val) => total + val) : null);
-    const range1TotalAveragePrice = computed(() => ((range1TotalPrice.value / range1TotalWeight.value) || 0).toLocaleString("en-MY", {style: "currency", currency: "MYR"}));
-    const range2TotalWeight = computed(() => comparison_table.value?.processedData.length ? comparison_table.value.processedData.map(record => record.weight2).reduce((total, val) => total + val) : null);
-    const range2TotalPrice = computed(() => comparison_table.value?.processedData.length ? comparison_table.value.processedData.map(record => record.price2).reduce((total, val) => total + val) : null);
-    const range2TotalAveragePrice = computed(() => ((range2TotalPrice.value / range2TotalWeight.value) || 0).toLocaleString("en-MY", {style: "currency", currency: "MYR"}));
-
-    onBeforeMount(() => {
-        columns.value = [{
+    const columns = ref([
+        {
             label: "Range 1",
             items: props.transaction === "purchases" ? [
                 {shown: true, field: "weight1", header: "Weight"},
@@ -71,8 +53,24 @@
                 {shown: true, field: "price2", header: "Selling Price"},
                 {shown: true, field: "average_price2", header: "Average Price"}
             ]
-        }];
+        }
+    ]);
+    const columns_toggler = ref();
+    const comparison_table = ref();
+    const data = ref([]);
+    const selection = ref([]);
+    const filters = ref({
+        "global": {value: null, matchMode: FilterMatchMode.CONTAINS},
     });
+    const loading = ref(true);
+    const range1String = computed(() => `${range1.value[0] ? range1.value[0].toLocaleString("en-MY", {year: "numeric", month: "short"}) : ""} ${range1.value[1] ? "- " + range1.value[1].toLocaleString("en-MY", {year: "numeric", month: "short"}) : ""}`);
+    const range2String = computed(() => `${range2.value[0] ? range2.value[0].toLocaleString("en-MY", {year: "numeric", month: "short"}) : ""} ${range2.value[1] ? "- " + range2.value[1].toLocaleString("en-MY", {year: "numeric", month: "short"}) : ""}`);
+    const range1TotalWeight = computed(() => comparison_table.value?.processedData.length ? comparison_table.value.processedData.map(record => record.weight1).reduce((total, val) => total + val) : null);
+    const range1TotalPrice = computed(() => comparison_table.value?.processedData.length ? comparison_table.value.processedData.map(record => record.price1).reduce((total, val) => total + val) : null);
+    const range1TotalAveragePrice = computed(() => ((range1TotalPrice.value / range1TotalWeight.value) || 0).toLocaleString("en-MY", {style: "currency", currency: "MYR"}));
+    const range2TotalWeight = computed(() => comparison_table.value?.processedData.length ? comparison_table.value.processedData.map(record => record.weight2).reduce((total, val) => total + val) : null);
+    const range2TotalPrice = computed(() => comparison_table.value?.processedData.length ? comparison_table.value.processedData.map(record => record.price2).reduce((total, val) => total + val) : null);
+    const range2TotalAveragePrice = computed(() => ((range2TotalPrice.value / range2TotalWeight.value) || 0).toLocaleString("en-MY", {style: "currency", currency: "MYR"}));
 
     function loadComparison() {
         loading.value = true;

@@ -153,6 +153,17 @@ fn main() {
         HAVING category IS NOT NULL
         ORDER BY year DESC, month, category;",
       kind: MigrationKind::Up
+    },
+    Migration {
+      version: 5,
+      description: "optimize_sales_views",
+      sql: r"DROP VIEW IF EXISTS yearly_sales;
+        CREATE VIEW yearly_sales AS SELECT year, sum(weight) AS weight, sum(price * weight) AS price, sum(price * weight) / weight AS average_price FROM sales GROUP BY year ORDER BY year DESC;
+        DROP VIEW IF EXISTS monthly_sales;
+        CREATE VIEW monthly_sales AS SELECT year, month, sum(weight) AS weight, sum(price * weight) AS price, sum(price * weight) / sum(weight) AS average_price FROM sales GROUP BY year, month ORDER BY year DESC, month;
+        DROP VIEW IF EXISTS categorical_sales;
+        CREATE VIEW categorical_sales AS SELECT `date`, year, month, category, sum(weight) AS weight, sum(price * weight) AS price, sum(price * weight) / sum(weight) AS average_price FROM item_categories LEFT JOIN sales ON id = category_id GROUP BY year, month, category ORDER BY year DESC, month, category;",
+      kind: MigrationKind::Up
     }
   ];
 

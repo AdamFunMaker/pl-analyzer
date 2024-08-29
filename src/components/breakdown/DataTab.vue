@@ -12,10 +12,31 @@
     import InputIcon from "primevue/inputicon";
     import InputText from "primevue/inputtext";
     import Row from "primevue/row";
+    import Toolbar from "primevue/toolbar";
+    import ColumnsToggler from "@/components/ColumnsToggler.vue";
 
     const primevue = usePrimeVue();
     const interval = inject("interval");
     const range = inject("range");
+    const columns = ref([            
+        {
+            label: "Buy",
+            items: [
+                {shown: true, field: "buy_weight", header: "Weight"},
+                {shown: true, field: "buy_price", header: "Buying Price"},
+                {shown: true, field: "buy_average_price", header: "Average Price"}
+            ]
+        },
+        {
+            label: "Sell",
+            items:  [
+                {shown: true, field: "sell_weight", header: "Weight"},
+                {shown: true, field: "sell_price", header: "Selling Price"},
+                {shown: true, field: "sell_average_price", header: "Average Price"}
+            ]
+        }
+    ]);
+    const columns_toggler = ref();
     const table = ref();
     const value = inject("overviewBreakdownData");
     const selection = ref([]);
@@ -23,9 +44,19 @@
         "global": {value: null, matchMode: FilterMatchMode.CONTAINS}
     });
     const loading = inject("isOverviewBreakdownLoading");
+
+    function toggleColumnsToggler(event) {
+        columns_toggler.value.toggle(event);
+    }
 </script>
 
 <template>
+    <Toolbar>
+        <template #end>
+            <Button label="Columns" icon="pi pi-sliders-v" text :badge="String([...columns[0].items, ...columns[1].items].filter(column => column.shown).length)" badgeSeverity="contrast" @click="toggleColumnsToggler"></Button>
+            <ColumnsToggler ref="columns_toggler" :columns></ColumnsToggler>
+        </template>        
+    </Toolbar>
     <DataTable ref="table" v-model:selection="selection" :loading :value :dataKey="data => `${data.year}${interval === 'Monthly' ? primevue.config.locale.monthNamesShort[data.month - 1] : ''}${data.category}`" :filters :globalFilterFields="['year', data => primevue.config.locale.monthNamesShort[data.month - 1], 'category', data => `${data.buy_weight.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`, data => data.buy_price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => data.buy_average_price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => `${data.sell_weight.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`, data => data.sell_price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => data.sell_average_price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})]" rowHover paginator :alwaysShowPaginator="false" :rows="10" paginatorTemplate="FirstPageLink PrevPageLink JumpToPageInput CurrentPageReport NextPageLink LastPageLink" currentPageReportTemplate="of {totalPages}" removableSort reorderableColumns scrollable scrollHeight="flex" stateKey="tableBreakdownState">
         <template #header>
             <section class="flex items-center justify-between">
@@ -56,36 +87,11 @@
                         <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
                     </template>
                 </Column>
-                <Column header="Buy" :colspan="3"></Column>
-                <Column header="Sell" :colspan="3"></Column>
+                <Column v-if="columns[0].items.filter(column => column.shown).length" header="Buy" :colspan="columns[0].items.filter(column => column.shown).length"></Column>
+                <Column v-if="columns[1].items.filter(column => column.shown).length" header="Sell" :colspan="columns[1].items.filter(column => column.shown).length"></Column>
             </Row>                    
             <Row>
-                <Column header="Weight" field="buy_weight" sortable>
-                    <template #sorticon="{sorted, sortOrder}">
-                        <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
-                    </template>
-                </Column>
-                <Column header="Buying Price" field="buy_price" sortable>
-                    <template #sorticon="{sorted, sortOrder}">
-                        <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
-                    </template>
-                </Column>
-                <Column header="Average Price" field="buy_average_price" sortable>
-                    <template #sorticon="{sorted, sortOrder}">
-                        <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
-                    </template>
-                </Column>
-                <Column header="Weight" field="sell_weight" sortable>
-                    <template #sorticon="{sorted, sortOrder}">
-                        <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
-                    </template>
-                </Column>
-                <Column header="Selling Price" field="sell_price" sortable>
-                    <template #sorticon="{sorted, sortOrder}">
-                        <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
-                    </template>
-                </Column>
-                <Column header="Average Price" field="sell_average_price" sortable>
+                <Column v-for="column of [...columns[0].items, ...columns[1].items].filter(column => column.shown)" :header="column.header" :field="column.field" sortable>
                     <template #sorticon="{sorted, sortOrder}">
                         <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
                     </template>
@@ -108,35 +114,10 @@
                 <span v-html="highlightMatch(data[field], filters.global)"></span>
             </template>
         </Column>
-        <Column header="Weight" field="buy_weight" sortable>
+        <Column v-for="column of [...columns[0].items, ...columns[1].items].filter(column => column.shown)" :header="column.header" :field="column.field" sortable>
             <template #body="{ data, field }">
-                <span v-html="highlightMatch(`${data[field].toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`, filters.global)"></span>
+                <span v-html="highlightMatch(field.match(/price/gi) ? data[field].toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}) : `${data[field].toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`, filters.global)"></span>
             </template>
-        </Column>
-        <Column header="Buying Price" field="buy_price" sortable>
-            <template #body="{ data, field }">
-                <span v-html="highlightMatch(data[field].toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), filters.global)"></span>
-            </template>
-        </Column>
-        <Column header="Average Price" field="buy_average_price" sortable>
-            <template #body="{ data, field }">
-                <span v-html="highlightMatch(data[field].toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), filters.global)"></span>
-            </template>
-        </Column>
-        <Column header="Weight" field="sell_weight" sortable>
-            <template #body="{ data, field }">
-                <span v-html="highlightMatch(`${data[field].toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`, filters.global)"></span>
-            </template>
-        </Column>
-        <Column header="Selling Price" field="sell_price" sortable>
-            <template #body="{ data, field }">
-                <span v-html="highlightMatch(data[field].toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), filters.global)"></span>
-            </template>
-        </Column>
-        <Column header="Average Price" field="sell_average_price" sortable>
-            <template #body="{ data, field }">
-                <span v-html="highlightMatch(data[field].toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), filters.global)"></span>
-            </template>
-        </Column>
+        </Column>        
     </DataTable>
 </template>

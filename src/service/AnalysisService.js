@@ -198,7 +198,7 @@ export class AnalysisService {
     async getItems(transaction, year, month, category) {
         try {
             const params = [year, month, category];
-            const result = await database.select(`SELECT ${transaction === "purchases" ? "year, month, category, item, weight, price, price / weight AS average_price" : "strftime('%Y', date) AS year, CAST(strftime('%m', date) AS INTEGER) AS month, category, item, weight, price, price * weight AS selling_price"} FROM ${transaction} WHERE ${transaction === "purchases" ? "year = $1 AND month = $2" : "CAST(strftime('%Y', date) AS INTEGER) = $1 AND CAST(strftime('%m', date) AS INTEGER) = $2"} AND category = $3`, params);
+            const result = await database.select(`SELECT ${transaction === "purchases" ? "year, month, category, item, weight, price, price / weight AS average_price" : "strftime('%Y', date) AS year, CAST(strftime('%m', date) AS INTEGER) AS month, category, item, weight, price, price * weight AS selling_price"} FROM ${transaction} WHERE ${transaction === "purchases" ? "year = $1 AND month = $2" : "CAST(strftime('%Y', date) AS INTEGER) = $1 AND CAST(strftime('%m', date) AS INTEGER) = $2"} AND category = $3 GROUP BY item`, params);
             let nodes = [];
 
             if (transaction === "purchases") {
