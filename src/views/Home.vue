@@ -108,8 +108,10 @@
     });
 
     function loadOverview() {
+        data.value = [];
+        overviewBreakdownData.value = [];
         isLoading.value = true;
-        isOverviewBreakdownLoading.value = true;        
+        isOverviewBreakdownLoading.value = true;
         analysis.getOverview(interval.value, range.value).then(res => {
             if (res.success) {
                 data.value = res.data;

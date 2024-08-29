@@ -57,7 +57,7 @@
         analysis.getComparisonRange(props.transaction).then((res) => {
             if (res.success) {
                 period.value = [res.data.min_date, res.data.max_date];
-                range.value = period.value;
+                range.value = res.data.min_date && res.data.max_date ? [new Date(new Date(res.data.max_date).setMonth(0)) < res.data.min_date ? res.data.min_date : new Date(new Date(res.data.max_date).setMonth(0)), res.data.max_date] : [null, null];
                 loadData();
             } else {
                 toast.add({severity:"error", summary: `Error Loading ${toTitleCase(props.transaction)} Analysis Range`, detail: res.error, life: 3000});
