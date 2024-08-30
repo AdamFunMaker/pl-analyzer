@@ -18,7 +18,7 @@
     const primevue = usePrimeVue();
     const interval = inject("interval");
     const range = inject("range");
-    const columns = ref([            
+    const columns = ref([
         {
             label: "Buy",
             items: [

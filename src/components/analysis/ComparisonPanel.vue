@@ -94,6 +94,7 @@
                 loadComparison();
             } else {
                 toast.add({ severity: "error", summary: `Error Loading ${props.transaction.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase())} Analysis Comparison Range`, detail: res.error, life: 3000 });
+                loading.value = false;
             }
         });
     }

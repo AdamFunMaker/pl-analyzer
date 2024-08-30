@@ -97,11 +97,11 @@
                     data: null
                 },
                 fields: [
-                    { name: "year", label: "Year", type: "year", mapping: null },
-                    { name: "month", label: "Month", type: "month", mapping: null },
-                    { name: "salary", label: "Salary", type: "numeric", mapping: null },
-                    { name: "expenses", label: "Expenses", type: "numeric", mapping: null },
-                    { name: "petty_cash", label: "Petty Cash", type: "numeric", mapping: null }
+                    {name: "year", label: "Year", type: "year", mapping: null },
+                    {name: "month", label: "Month", type: "month", mapping: null },
+                    {name: "salary", label: "Salary", type: "numeric", mapping: null },
+                    {name: "expenses", label: "Expenses", type: "numeric", mapping: null },
+                    {name: "petty_cash", label: "Petty Cash", type: "numeric", mapping: null }
                 ],
                 options: {
                     overwrite: false,

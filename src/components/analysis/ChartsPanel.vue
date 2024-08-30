@@ -61,6 +61,7 @@
                 loadData();
             } else {
                 toast.add({severity:"error", summary: `Error Loading ${toTitleCase(props.transaction)} Analysis Range`, detail: res.error, life: 3000});
+                loading.value = false;
             }
         });
     });

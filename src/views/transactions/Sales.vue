@@ -69,10 +69,10 @@
                 addFunction: transactionService.addTransaction,
                 addFunctionParam: transaction,
                 fields: [
-                    { id: "date", label: "Date", type: "date", format: "dd/mm/yyyy", minimum: null, maximum: null, required: true },
-                    { id: "item", label: "Item", type: "select", placeholder: "Select an Item", options: items, optionLabel: "description", optionValue: "id", required: true },
-                    { id: "weight", label: "Weight", type: "number", minimum: 0, maximum: null, step: 0.1, minFractionDigits: 2, maxFractionDigits: 5, prefix: "", suffix: " kg", required: true },
-                    { id: "price", label: "Unit Price", type: "currency", minimum: 0, maximum: null, required: true }
+                    {id: "date", label: "Date", type: "date", format: "dd/mm/yyyy", minimum: null, maximum: null, required: true},
+                    {id: "item", label: "Item", type: "select", placeholder: "Select an Item", options: items, optionLabel: "description", optionValue: "id", required: true},
+                    {id: "weight", label: "Weight", type: "number", minimum: 0, maximum: null, step: 0.1, minFractionDigits: 2, maxFractionDigits: 5, prefix: "", suffix: " kg", required: true},
+                    {id: "price", label: "Unit Price", type: "currency", minimum: 0, maximum: null, required: true}
                 ],
                 newRecord: {},
                 hasSubmitted: false
@@ -109,11 +109,11 @@
                     data: null
                 },
                 fields: [
-                    { name: "date", label: "Date", type: "date", mapping: null},
-                    { name: "category", label: "Category", type: "string", mapping: null},
-                    { name: "item", label: "Description", type: "string", mapping: null},
-                    { name: "weight", label: "Weight", type: "numeric", mapping: null},
-                    { name: "price", label: "Unit Price", type: "numeric", mapping: null}
+                    {name: "date", label: "Date", type: "date", mapping: null},
+                    {name: "category", label: "Category", type: "string", mapping: null},
+                    {name: "item", label: "Description", type: "string", mapping: null},
+                    {name: "weight", label: "Weight", type: "numeric", mapping: null},
+                    {name: "price", label: "Unit Price", type: "numeric", mapping: null}
                 ],
                 options: {
                     overwrite: false,
@@ -245,7 +245,7 @@
             <template #editor="{ data, field }">
                 <InputNumber mode="currency" currency="MYR" v-model="data[field]" :min="0" :step="0.01" :minFractionDigits="2" :maxFractionDigits="2" showButtons :allowEmpty="false" :invalid="!data[field]" autofocus highlightOnFocus></InputNumber>
             </template>
-        </Column>        
+        </Column>
         <Column field="selling_price" header="Selling Price" sortable>
             <template #sorticon="{sorted, sortOrder}">
                 <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>

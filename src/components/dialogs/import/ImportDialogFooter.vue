@@ -36,6 +36,7 @@
                         dialogRef.value?.close({ success: true, file: file, result: res.data });
                     } else {
                         emit("error", res.error);
+                        dialogRef.value.data.hasSubmitted = false;
                     }
 
                     isProcessing.value = false;
@@ -46,6 +47,7 @@
                         dialogRef.value?.close({ success: true, file: file, result: res.data });
                     } else {
                         emit("error", res.error);
+                        dialogRef.value.data.hasSubmitted = false;
                     }
 
                     isProcessing.value = false;

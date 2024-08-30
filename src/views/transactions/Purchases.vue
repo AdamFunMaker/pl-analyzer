@@ -70,10 +70,10 @@
                 addFunction: transactionService.addTransaction,
                 addFunctionParam: transaction,
                 fields: [
-                    { id: "date", label: "Date", type: "month", minimum: null, maximum: null, required: true },
-                    { id: "item", label: "Item", type: "select", placeholder: "Select an Item", options: items, optionLabel: "description", optionValue: "id", required: true },
-                    { id: "weight", label: "Weight", type: "number", minimum: 0, maximum: null, step: 0.1, minFractionDigits: 2, maxFractionDigits: 5, prefix: "", suffix: " kg", required: true },
-                    { id: "price", label: "Buying Price", type: "currency", minimum: 0, maximum: null, required: true }
+                    {id: "date", label: "Date", type: "month", minimum: null, maximum: null, required: true},
+                    {id: "item", label: "Item", type: "select", placeholder: "Select an Item", options: items, optionLabel: "description", optionValue: "id", required: true},
+                    {id: "weight", label: "Weight", type: "number", minimum: 0, maximum: null, step: 0.1, minFractionDigits: 2, maxFractionDigits: 5, prefix: "", suffix: " kg", required: true},
+                    {id: "price", label: "Buying Price", type: "currency", minimum: 0, maximum: null, required: true}
                 ],
                 newRecord: {},
                 hasSubmitted: false
@@ -110,12 +110,12 @@
                     data: null
                 },
                 fields: [
-                    { name: "year", label: "Year", type: "year", mapping: null},
-                    { name: "month", label: "Month", type: "month", mapping: null},
-                    { name: "category", label: "Category", type: "string", mapping: null},
-                    { name: "item", label: "Description", type: "string", mapping: null},
-                    { name: "weight", label: "Weight", type: "numeric", mapping: null},
-                    { name: "price", label: "Buying Price", type: "numeric", mapping: null}
+                    {name: "year", label: "Year", type: "year", mapping: null},
+                    {name: "month", label: "Month", type: "month", mapping: null},
+                    {name: "category", label: "Category", type: "string", mapping: null},
+                    {name: "item", label: "Description", type: "string", mapping: null},
+                    {name: "weight", label: "Weight", type: "numeric", mapping: null},
+                    {name: "price", label: "Buying Price", type: "numeric", mapping: null}
                 ],
                 options: {
                     overwrite: false,
@@ -181,7 +181,7 @@
         });
     }
 
-    const formatExport = (record) => {
+    function formatExport(record) {
         switch (record.field) {
             case "month":
                 return primevue.config.locale.monthNamesShort[record.data - 1]

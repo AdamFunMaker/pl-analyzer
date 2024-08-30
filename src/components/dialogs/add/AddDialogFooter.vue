@@ -31,6 +31,7 @@
                         dialogRef.value?.close({ success: true, record: newRecord });
                     } else {
                         emit("error", res.error);
+                        dialogRef.value.data.hasSubmitted = false;
                     }
 
                     isProcessing.value = false;
@@ -41,6 +42,7 @@
                         dialogRef.value?.close({ success: true, record: newRecord });
                     } else {
                         emit("error", res.error);
+                        dialogRef.value.data.hasSubmitted = false;
                     }
 
                     isProcessing.value = false;

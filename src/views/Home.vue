@@ -104,10 +104,10 @@
     provide("isOverviewBreakdownLoading", isOverviewBreakdownLoading);
 
     function loadOverview() {
-        data.value = [];
-        overviewBreakdownData.value = [];
         isLoading.value = true;
         isOverviewBreakdownLoading.value = true;
+        data.value = [];
+        overviewBreakdownData.value = [];
         analysis.getOverview(interval.value, range.value).then(res => {
             if (res.success) {
                 data.value = res.data;
@@ -136,6 +136,8 @@
                 loadOverview();
             } else {
                 toast.add({ severity: "error", summary: "Error Loading Overview", detail: res.error, life: 3000 });
+                isLoading.value = false;
+                isOverviewBreakdownLoading.value = false;
             }
         });
     }
