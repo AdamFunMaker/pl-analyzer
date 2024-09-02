@@ -47,7 +47,8 @@
         "height": 400,
         "resizable": false,
         "decorations": false,
-        "url": "splashscreen.html"
+        "url": "splashscreen.html",
+        "title": "P&L Analyzer"
       }
     ],
     "bundle": {

@@ -2,13 +2,11 @@
     import { ref, inject, watch } from "vue";
     import { usePrimeVue } from "primevue/config";
     import LineChart from "@/components/charts/Line.vue";
-    import LoadingOverlay from "../LoadingOverlay.vue";
 
     const primevue = usePrimeVue();
     const interval = inject("interval");
     const data = inject("overviewBreakdownData");
     const chartsData = ref({});
-    const loading = inject("isOverviewBreakdownLoading");
 
     function updateData(newData) {
         const documentStyle = getComputedStyle(document.documentElement);
@@ -37,9 +35,7 @@
 </script>
 
 <template>
-    <LoadingOverlay :loading="loading">
-        <section class="grid grid-cols-12 gap-8">
-            <LineChart v-for="(data, category) in chartsData" class="col-span-12 lg:col-span-6" :title="category" :data :tooltipLabelFunction="context => `${context.raw.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`" xAxisTitle="Date" yAxisTitle="Weight" :yAxisTickFunction="value => `${value.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`"></LineChart>
-        </section>
-    </LoadingOverlay>
+    <section class="grid grid-cols-12 gap-8">
+        <LineChart v-for="(data, category) in chartsData" class="col-span-12 lg:col-span-6" :title="category" :data :tooltipLabelFunction="context => `${context.raw.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`" xAxisTitle="Date" yAxisTitle="Weight" :yAxisTickFunction="value => `${value.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`"></LineChart>
+    </section>
 </template>

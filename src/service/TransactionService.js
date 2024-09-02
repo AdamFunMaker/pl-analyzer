@@ -33,7 +33,7 @@ export class TransactionService {
                 if (newCategory) {
                     return {name: newCategory, ferous: false}
                 }
-            }).filter((record, index, records) => index === records.findIndex(category => category.name === record.name)).filter(record => !categories.map(category => category.name).includes(record.name)).map(record => [record.name, record.ferous]).sort();
+            }).filter((record, index, records) => index === records.findIndex(category => category.name === record.name)).filter(record => !categories.filter(category => category.name.localeCompare(record.name, "en", {sensitivity: "accent"}) === 0).length).map(record => [record.name, record.ferous]).sort();
             const sqlNewCategories = formatSQLString("INSERT INTO item_categories (name, ferous) VALUES ?", [newCategories]);
 
             if (newCategories.length) {
@@ -49,7 +49,7 @@ export class TransactionService {
                 if (newItemCategory[0]) {
                     return {description: record.item.trim(), category: newItemCategory[0].id}
                 }
-            }).filter((record, index, records) => index === records.findIndex(item => item.description === record.description)).filter(record => !items.map(item => item.description).includes(record.description)).map(record => [record.description, record.category]);
+            }).filter((record, index, records) => index === records.findIndex(item => item.description === record.description)).filter(record => !items.filter(item => item.description.localeCompare(record.description, "en", {sensitivity: "accent"}) === 0).length).map(record => [record.description, record.category]);
             const sqlNewItems = formatSQLString(`INSERT INTO item_${transaction} (description, category) VALUES ?`, [newItems]);            
 
             if (newItems.length) {

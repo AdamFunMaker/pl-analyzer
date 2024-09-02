@@ -101,7 +101,6 @@
     provide("interval", interval);
     provide("range", range);
     provide("overviewBreakdownData", overviewBreakdownData)
-    provide("isOverviewBreakdownLoading", isOverviewBreakdownLoading);
 
     function loadOverview() {
         isLoading.value = true;
@@ -250,10 +249,10 @@
         </TabList>
         <TabPanels>
             <TabPanel value="data">
-                <DataTab></DataTab>
+                <DataTab :loading="isOverviewBreakdownLoading"></DataTab>
             </TabPanel>
             <TabPanel value="charts">
-                <ChartsTab></ChartsTab>
+                <ChartsTab :loading="isOverviewBreakdownLoading"></ChartsTab>
             </TabPanel>
         </TabPanels>
     </Tabs>

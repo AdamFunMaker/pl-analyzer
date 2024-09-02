@@ -15,6 +15,13 @@
     import Toolbar from "primevue/toolbar";
     import ColumnsToggler from "@/components/ColumnsToggler.vue";
 
+    const props = defineProps({
+        loading: {
+            type: Boolean,
+            default: true
+        }
+    });
+
     const primevue = usePrimeVue();
     const interval = inject("interval");
     const range = inject("range");
@@ -43,7 +50,6 @@
     const filters = ref({
         "global": {value: null, matchMode: FilterMatchMode.CONTAINS}
     });
-    const loading = inject("isOverviewBreakdownLoading");
 
     function toggleColumnsToggler(event) {
         columns_toggler.value.toggle(event);
@@ -57,7 +63,7 @@
             <ColumnsToggler ref="columns_toggler" :columns></ColumnsToggler>
         </template>        
     </Toolbar>
-    <DataTable ref="table" v-model:selection="selection" :loading :value :dataKey="data => `${data.year}${interval === 'Monthly' ? primevue.config.locale.monthNamesShort[data.month - 1] : ''}${data.category}`" :filters :globalFilterFields="['year', data => primevue.config.locale.monthNamesShort[data.month - 1], 'category', data => `${data.buy_weight.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`, data => data.buy_price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => data.buy_average_price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => `${data.sell_weight.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`, data => data.sell_price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => data.sell_average_price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})]" rowHover paginator :alwaysShowPaginator="false" :rows="10" paginatorTemplate="FirstPageLink PrevPageLink JumpToPageInput CurrentPageReport NextPageLink LastPageLink" currentPageReportTemplate="of {totalPages}" removableSort reorderableColumns scrollable scrollHeight="flex" stateKey="tableBreakdownState">
+    <DataTable ref="table" v-model:selection="selection" :loading="props.loading" :value :dataKey="data => `${data.year}${interval === 'Monthly' ? primevue.config.locale.monthNamesShort[data.month - 1] : ''}${data.category}`" :filters :globalFilterFields="['year', data => primevue.config.locale.monthNamesShort[data.month - 1], 'category', data => `${data.buy_weight.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`, data => data.buy_price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => data.buy_average_price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => `${data.sell_weight.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`, data => data.sell_price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => data.sell_average_price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})]" rowHover paginator :alwaysShowPaginator="false" :rows="10" paginatorTemplate="FirstPageLink PrevPageLink JumpToPageInput CurrentPageReport NextPageLink LastPageLink" currentPageReportTemplate="of {totalPages}" removableSort reorderableColumns scrollable scrollHeight="flex" stateKey="tableBreakdownState">
         <template #header>
             <section class="flex items-center justify-between">
                 <h4>Categorical Breakdown</h4>
