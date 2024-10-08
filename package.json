@@ -1,7 +1,7 @@
 {
   "name": "pl-analyzer",
   "private": true,
-  "version": "1.1.13",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,20 +11,24 @@
   },
   "dependencies": {
     "@primevue/themes": "^4",
-    "@tauri-apps/api": "^1",
+    "@tauri-apps/api": "^2.0.0",
+    "@tauri-apps/plugin-dialog": "^2.0.0",
+    "@tauri-apps/plugin-fs": "^2.0.0",
+    "@tauri-apps/plugin-shell": "^2.0.0",
+    "@tauri-apps/plugin-sql": "^2.0.0",
+    "@tauri-apps/plugin-updater": "^2.0.0",
     "@vueuse/core": "^11",
     "chart.js": "^4",
     "chartjs-plugin-a11y-legend": "^0.1.2",
     "chartjs-plugin-datalabels": "^2.2.0",
     "primeicons": "^7",
     "primevue": "^4",
-    "tauri-plugin-sql-api": "github:tauri-apps/tauri-plugin-sql#v1",
     "vue": "^3",
     "vue-router": "^4",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^1",
+    "@tauri-apps/cli": "^2.0.2",
     "@vitejs/plugin-vue": "^5",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.40",

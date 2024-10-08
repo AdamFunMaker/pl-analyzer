@@ -2,40 +2,55 @@
   "build": {
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build",
-    "devPath": "http://localhost:1420",
-    "distDir": "../dist"
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:1420"
   },
-  "package": {
-    "productName": "pl-analyzer"
-  },
-  "tauri": {
-    "allowlist": {
-      "shell": {
-        "open": true
+  "bundle": {
+    "active": true,
+    "windows": {
+      "webviewInstallMode": {
+        "type": "offlineInstaller"
       },
-      "dialog": {
-        "open": true,
-        "save": true
+      "wix": {
+        "language": "en-US"
       },
-      "fs": {
-        "readFile": true,
-        "writeFile": true
+      "nsis": {
+        "installerIcon": "icons/icon.ico"
       }
     },
+    "publisher": "Lim Tze Yang",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "category": "Business",
+    "targets": [
+      "nsis"
+    ],
+    "createUpdaterArtifacts": "v1Compatible"
+  },
+  "productName": "pl-analyzer",
+  "mainBinaryName": "pl-analyzer",
+  "identifier": "pl-analyzer",
+  "plugins": {
     "updater": {
-      "active": true,
+      "windows": {
+        "installMode": "passive"
+      },
       "endpoints": [
         "https://raw.githubusercontent.com/AdamFunMaker/pl-analyzer/update/latest.json"
       ],
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDJEN0JEQkVCRDYzMkQyMjgKUldRbzBqTFc2OXQ3TFVkOFJ5T1pMUzdCcFQ5VnY4RWpzTzFZSGJQNWIrNjIwdGVpTEFVckNRWUcK",
-      "windows": {
-        "installMode": "passive"
-      }
-    },
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDJEN0JEQkVCRDYzMkQyMjgKUldRbzBqTFc2OXQ3TFVkOFJ5T1pMUzdCcFQ5VnY4RWpzTzFZSGJQNWIrNjIwdGVpTEFVckNRWUcK"
+    }
+  },
+  "app": {
     "windows": [
       {
         "label": "main",
-        "fileDropEnabled": false,
+        "dragDropEnabled": false,
         "maximized": true,
         "title": "P&L Analyzer",
         "visible": false
@@ -50,31 +65,6 @@
         "url": "splashscreen.html",
         "title": "P&L Analyzer"
       }
-    ],
-    "bundle": {
-      "active": true,
-      "identifier": "pl-analyzer",
-      "publisher": "Lim Tze Yang",
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ],
-      "category": "Business",
-      "targets": ["nsis", "updater"],
-      "windows": {        
-        "webviewInstallMode": {
-          "type": "offlineInstaller"
-        },
-        "wix": {
-          "language": "en-US"
-        },
-        "nsis": {
-          "installerIcon": "icons/icon.ico"
-        }
-      }
-    }
+    ]
   }
 }

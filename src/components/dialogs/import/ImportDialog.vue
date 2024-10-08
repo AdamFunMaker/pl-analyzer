@@ -1,7 +1,7 @@
 <script setup>
     import { utils, read } from "xlsx";
-    import { open } from "@tauri-apps/api/dialog";
-    import { readBinaryFile } from "@tauri-apps/api/fs";
+    import { open } from "@tauri-apps/plugin-dialog";
+    import { readFile } from "@tauri-apps/plugin-fs";
     import { inject, ref } from "vue";
     import Button from "primevue/button";
     import Fieldset from "primevue/fieldset";
@@ -37,7 +37,7 @@
         file.name = file.path.replace(/^.*[\\/]/, "");
         isLoading.value = true;
         dialogRef.value.data.hasSubmitted = false;
-        file.data = await readBinaryFile(file.path);
+        file.data = await readFile(file.path);
         const workbook = read(file.data);
         worksheets.value = workbook.Sheets;
         options.worksheet = workbook.SheetNames[0];

@@ -1,6 +1,6 @@
 import { utils, writeXLSX } from "xlsx";
-import { save } from "@tauri-apps/api/dialog";
-import { writeBinaryFile } from "@tauri-apps/api/fs";
+import { save } from "@tauri-apps/plugin-dialog";
+import { writeFile } from "@tauri-apps/plugin-fs";
 
 async function exportXLSX(tableRef, fileName) {
     const exportableColumns = tableRef.value.columns.filter(column => column.props.exportable !== false);
@@ -38,7 +38,7 @@ async function exportXLSX(tableRef, fileName) {
     });
 
     if (filePath) {
-        writeBinaryFile(filePath, fileData);
+        writeFile(filePath, fileData);
     }
 }
 
@@ -66,7 +66,7 @@ async function exportTableXLSX(table, fileName) {
     });
 
     if (filePath) {
-        writeBinaryFile(filePath, fileData);
+        writeFile(filePath, fileData);
     }
 }
 

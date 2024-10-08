@@ -1,29 +1,37 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use tauri::{Manager, Window};
+use tauri::{Emitter, Manager, WebviewWindow};
 use tauri_plugin_sql::{Builder, Migration, MigrationKind};
 
 #[derive(Clone, serde::Serialize)]
 struct Payload {
-  args: Vec<String>,
-  cwd: String,
+    args: Vec<String>,
+    cwd: String,
 }
 
 #[tauri::command]
-async fn close_splashscreen(window: Window) {
-  if window.get_window("splashscreen").is_some() {
-    window.get_window("splashscreen").expect("no window labeled 'splashscreen' found").close().unwrap();
-    window.get_window("main").expect("no window labeled 'main' found").show().unwrap();
-  }
+async fn close_splashscreen(window: WebviewWindow) {
+    if window.get_webview_window("splashscreen").is_some() {
+        window
+            .get_webview_window("splashscreen")
+            .expect("no window labeled 'splashscreen' found")
+            .close()
+            .unwrap();
+        window
+            .get_webview_window("main")
+            .expect("no window labeled 'main' found")
+            .show()
+            .unwrap();
+    }
 }
 
 fn main() {
-  let migrations = vec![
-    Migration {
-      version: 1,
-      description: "create_tables",
-      sql: r"CREATE TABLE IF NOT EXISTS 'cash_flow' ('date' DATETIME PRIMARY KEY NOT NULL, 'salary' REAL NOT NULL, 'expenses' REAL NOT NULL, 'petty_cash' REAL NOT NULL);
+    let migrations = vec![
+        Migration {
+            version: 1,
+            description: "create_tables",
+            sql: r"CREATE TABLE IF NOT EXISTS 'cash_flow' ('date' DATETIME PRIMARY KEY NOT NULL, 'salary' REAL NOT NULL, 'expenses' REAL NOT NULL, 'petty_cash' REAL NOT NULL);
         CREATE TABLE IF NOT EXISTS 'item_categories' ('id' INTEGER PRIMARY KEY NOT NULL, 'name' TEXT NOT NULL, 'ferous' BOOLEAN NOT NULL DEFAULT 'false');
         CREATE TABLE IF NOT EXISTS item_purchases(
           id INTEGER PRIMARY KEY NOT NULL,
@@ -53,12 +61,12 @@ fn main() {
           PRIMARY KEY (`date`, item),
           FOREIGN KEY(item) REFERENCES item_sales(id)
         );",
-      kind: MigrationKind::Up
-    },
-    Migration {
-      version: 2,
-      description: "create_views",
-      sql: r"DROP VIEW IF EXISTS purchases_items;
+            kind: MigrationKind::Up,
+        },
+        Migration {
+            version: 2,
+            description: "create_views",
+            sql: r"DROP VIEW IF EXISTS purchases_items;
         CREATE VIEW purchases_items AS SELECT item_purchases.id AS id, description, item_categories.id AS category_id, name AS category FROM item_purchases LEFT JOIN item_categories ON item_purchases.category = item_categories.id ORDER BY id;
         DROP VIEW IF EXISTS sales_items;
         CREATE VIEW sales_items AS SELECT item_sales.id AS id, description, item_categories.id AS category_id, name AS category FROM item_sales LEFT JOIN item_categories ON item_sales.category = item_categories.id ORDER BY id;
@@ -91,18 +99,28 @@ fn main() {
         GROUP BY year, month, category
         HAVING category IS NOT NULL
         ORDER BY year DESC, month, category;",
-      kind: MigrationKind::Up
-    }
-  ];
+            kind: MigrationKind::Up,
+        },
+    ];
 
-  tauri::Builder::default()
-    .plugin(tauri_plugin_single_instance::init(|app, argv, cwd| {
-        println!("{}, {argv:?}, {cwd}", app.package_info().name);
+    tauri::Builder::default()
+        .plugin(tauri_plugin_sql::Builder::new().build())
+        .plugin(tauri_plugin_updater::Builder::new().build())        
+        .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_single_instance::init(|app, argv, cwd| {
+            println!("{}, {argv:?}, {cwd}", app.package_info().name);
 
-        app.emit_all("single-instance", Payload { args: argv, cwd }).unwrap();
-    }))
-    .plugin(Builder::default().add_migrations("sqlite:pl_analyzer.sqlite", migrations).build())
-    .invoke_handler(tauri::generate_handler![close_splashscreen])
-    .run(tauri::generate_context!())
-    .expect("error while running tauri application");
+            app.emit("single-instance", Payload { args: argv, cwd })
+                .unwrap();
+        }))
+        .plugin(
+            Builder::default()
+                .add_migrations("sqlite:pl_analyzer.sqlite", migrations)
+                .build(),
+        )
+        .invoke_handler(tauri::generate_handler![close_splashscreen])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
 }
