@@ -1,0 +1,11 @@
+{
+  "version": "2.0.0",
+  "notes": "Upgrade to Tauri 2",
+  "pub_date": "2024-10-08T14:25:59.669Z",
+  "platforms": {
+    "windows-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRbzBqTFc2OXQ3TFp4UUh6YjZSVXBEaDd2cy9POFcrWlNEeWRoVk4xWjhGZXFNSlZWWm8vcWFNbjFsM2dGNXEwTHd3WnZnTCs4ZEpab25aSlBiZXgvZlJVUDU4TVkrWEFRPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzI4Mzk3NTUwCWZpbGU6cGwtYW5hbHl6ZXJfMi4wLjBfeDY0LXNldHVwLm5zaXMuemlwCnpHZjJ5ZGtkZ1o4WEhhKzJIMlBzU1R6d0NCck0wNFI5UTNUUUNXdFl4cytOMWEzaWtzZnhJTGdvaTFyQlFMSFVHdG1hNXpNV0VDK3d0Y3B5OHYvT0JnPT0K",
+      "url": "https://github.com/AdamFunMaker/pl-analyzer/releases/download/v2.0.0/pl-analyzer_2.0.0_x64-setup.nsis.zip"
+    }
+  }
+}
