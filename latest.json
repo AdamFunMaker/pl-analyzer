@@ -1,0 +1,11 @@
+{
+  "version": "2.0.2",
+  "notes": "Fix updater",
+  "pub_date": "2024-10-11T16:00:16.993Z",
+  "platforms": {
+    "windows-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRbzBqTFc2OXQ3TGRWRkRMZHRmVHlTcXFabVg3b3RDckU1dk85SnNBY2lDUGd5Szh6eGtoT0lHSVB3aXl5OW5hc3pJUnprZTlsTkFqUnQyZE9TTE9BY1J1VmNSMHpDUFEwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzI4NjYyNDA3CWZpbGU6cGwtYW5hbHl6ZXJfMi4wLjJfeDY0LXNldHVwLm5zaXMuemlwCjFTZVNZVmcyMERvZjErZ0RkbjdOZnoyR3pvMklSQi9MUGZEOUNQamI1S1QrL05DRVBCRmQ4UUY2YmM2S2Z0M2t1WmFvd01Jb2tIRC9qUk1YdytFdkFRPT0K",
+      "url": "https://github.com/AdamFunMaker/pl-analyzer/releases/download/v2.0.2/pl-analyzer_2.0.2_x64-setup.nsis.zip"
+    }
+  }
+}
