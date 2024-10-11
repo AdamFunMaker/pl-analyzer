@@ -155,11 +155,12 @@ function parseFile(file, fields, options) {
                     data[field.name] = typeof(record[field.mapping]) === "string" ? record[field.mapping].trim() : "";
                     break;
                 default:
-                    data[field.name] = record[field.mapping];
+                    data[field.name] = record[field.mapping] || null;
             }
         });
 
         if (!Object.values(data).some(field => field === null || field === "")) {
+            console.log(data.year)
             newRecords.push(data);
         }
     });
