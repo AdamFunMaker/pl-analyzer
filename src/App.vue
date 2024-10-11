@@ -1,6 +1,7 @@
 <script setup>
-    import { ref, nextTick } from "vue";
+    import { ref, nextTick, onMounted } from "vue";
     import { useRouter } from "vue-router";
+    import { checkForAppUpdates } from "@/utils/updater.js";
     import { useLayout } from "@/layout/composables/layout.js";
     import BlockUI from "primevue/blockui";
     import ProgressSpinner from "primevue/progressspinner";
@@ -8,6 +9,8 @@
     const router = useRouter();
     const { isLoading, setLoading } = useLayout();
     const loading_mask = ref();
+
+    onMounted(async () => await checkForAppUpdates());
 
     router.beforeEach(() => setLoading(true));
     router.afterEach(() => {
