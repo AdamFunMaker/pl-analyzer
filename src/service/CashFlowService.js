@@ -25,17 +25,13 @@ export class CashFlowService {
     async importCashFlow(file, fields, options) {
         try {        
             const newCashFlows = parseFile(file, fields, options).map(cashFlow => [new Date(cashFlow.year, cashFlow.month), cashFlow.salary, cashFlow.expenses, cashFlow.petty_cash]);
-            const sql = formatSQLString("INSERT OR ROLLBACK INTO cash_flow (`date`, salary, expenses, petty_cash) VALUES ?", [newCashFlows]);
-
-            await database.execute("BEGIN DEFERRED");
+            const sql = formatSQLString("INSERT INTO cash_flow (`date`, salary, expenses, petty_cash) VALUES ?", [newCashFlows]);
 
             if (options.overwrite) {
                 await database.execute("DELETE FROM cash_flow");
             }
 
             const result = await database.execute(sql);
-            await database.execute("COMMIT");
-
             return {success: true, data: result}
         } catch (err) {
             return {success: false, error: err}

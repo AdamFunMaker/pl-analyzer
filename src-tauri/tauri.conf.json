@@ -30,7 +30,7 @@
     "targets": [
       "nsis"
     ],
-    "createUpdaterArtifacts": "v1Compatible"
+    "createUpdaterArtifacts": true
   },
   "productName": "pl-analyzer",
   "mainBinaryName": "pl-analyzer",

@@ -1,3 +1,5 @@
+@use "mixins";
+
 .layout__header {
     position: fixed;
     height: 5rem;
@@ -27,7 +29,7 @@
         }
 
         &:focus {
-            @include focused();
+            @include mixins.focused();
         }
     }
 

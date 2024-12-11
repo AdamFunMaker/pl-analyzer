@@ -160,7 +160,6 @@ function parseFile(file, fields, options) {
         });
 
         if (!Object.values(data).some(field => field === null || field === "")) {
-            console.log(data.year)
             newRecords.push(data);
         }
     });

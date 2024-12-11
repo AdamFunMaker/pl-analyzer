@@ -1,7 +1,7 @@
 {
   "name": "pl-analyzer",
   "private": true,
-  "version": "2.0.2",
+  "version": "2.0.3",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,17 +11,17 @@
   },
   "dependencies": {
     "@primevue/themes": "^4",
-    "@tauri-apps/api": "^2.0.0",
-    "@tauri-apps/plugin-dialog": "^2.0.0",
-    "@tauri-apps/plugin-fs": "^2.0.0",
-    "@tauri-apps/plugin-process": "^2.0.0",
-    "@tauri-apps/plugin-shell": "^2.0.0",
-    "@tauri-apps/plugin-sql": "^2.0.0",
-    "@tauri-apps/plugin-updater": "^2.0.0",
-    "@vueuse/core": "^11",
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-dialog": "^2",
+    "@tauri-apps/plugin-fs": "^2",
+    "@tauri-apps/plugin-process": "^2",
+    "@tauri-apps/plugin-shell": "^2",
+    "@tauri-apps/plugin-sql": "^2",
+    "@tauri-apps/plugin-updater": "^2",
+    "@vueuse/core": "^12",
     "chart.js": "^4",
-    "chartjs-plugin-a11y-legend": "^0.1.2",
-    "chartjs-plugin-datalabels": "^2.2.0",
+    "chartjs-plugin-a11y-legend": "^0.2",
+    "chartjs-plugin-datalabels": "^2.2",
     "primeicons": "^7",
     "primevue": "^4",
     "vue": "^3",
@@ -36,6 +36,6 @@
     "sass": "^1.55.0",
     "tailwindcss": "^3.4.6",
     "tailwindcss-primeui": "^0.3.4",
-    "vite": "^5"
+    "vite": "^6"
   }
 }
