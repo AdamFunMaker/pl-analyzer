@@ -1,9 +1,13 @@
-@layer tailwind-base, primevue, tailwind-utilities;
+@import "tailwindcss";
+@import "tailwindcss-primeui";
 
-@layer tailwind-base {
-    @tailwind base;
-}
+@custom-variant dark (&:where([class*="theme-dark"], [class*="theme-dark"] *));
 
-@layer tailwind-utilities {
-    @tailwind utilities;
+@theme {
+  --breakpoint-*: initial;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1080px;
+  --breakpoint-xl: 1200px;
+  --breakpoint-2xl: 1920px;
 }

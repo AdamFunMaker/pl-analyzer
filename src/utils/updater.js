@@ -6,13 +6,9 @@ import { relaunch } from "@tauri-apps/plugin-process";
 export async function checkForAppUpdates() {
   const update = await check();
 
-  if (update?.available) {
+  if (update) {
     const yes = await ask(
-      `
-PL Analyzer ${update.version} is now available! -- you have ${await getVersion()}.
-Release notes: 
-${update.body}
-        `,
+      `PL Analyzer ${update.version} is now available! -- you have ${await getVersion()}. Do you want to update?`,
       {
         title: "A new version of PL Analyzer is available!",
         kind: "info",
@@ -22,8 +18,9 @@ ${update.body}
     );
 
     if (yes) {
-      await update.downloadAndInstall();
-      await relaunch();
+      await update.downloadAndInstall().then(async () => {
+        await relaunch();
+      });
     }
   }
 }

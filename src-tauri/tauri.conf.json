@@ -58,7 +58,7 @@
       {
         "label": "splashscreen",
         "center": true,
-        "width": 300,
+        "width": 350,
         "height": 400,
         "resizable": false,
         "decorations": false,

@@ -34,7 +34,7 @@
     const intervals = ref(["Monthly", "Yearly"]);
     const interval = ref("Monthly");
     const period = ref([new Date(), new Date()]);
-    const range = ref([null, null]);
+    const range = ref([new Date(), new Date()]);
     const columns = ref([
         {
             label: "Buy",

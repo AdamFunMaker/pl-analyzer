@@ -3,7 +3,7 @@
     import Button from "primevue/button";
     import AppNav from "./AppNav.vue";
 
-    const { isDarkTheme, toggleDarkMode } = useLayout();
+    const { isDark, toggleDarkMode } = useLayout();
 </script>
 
 <template>
@@ -14,7 +14,7 @@
         </RouterLink>
         <AppNav class="layout__header-nav"></AppNav>
         <section class="layout__header-buttons">
-            <Button :icon="`pi ${isDarkTheme ? 'pi-moon' : 'pi-sun'}`" severity="contrast" rounded outlined @click="toggleDarkMode"></Button>
+            <Button :icon="`pi ${isDark ? 'pi-moon' : 'pi-sun'}`" severity="contrast" rounded outlined @click="toggleDarkMode"></Button>
         </section>
     </header>
 </template>
