@@ -77,19 +77,6 @@ const Noir = definePreset(Aura, {
             icon: {
                 size: "5rem"
             }
-        },
-        paginator: {
-            jump: {
-                to: {
-                    page: {
-                        input: {
-                            max: {
-                                width: "4rem"
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 });

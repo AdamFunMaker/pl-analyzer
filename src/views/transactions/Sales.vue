@@ -199,7 +199,7 @@
                 <span v-html="highlightMatch(data[field].toLocaleString('en-MY', {dateStyle: 'short'}), sales_table.filters.global)"></span>
             </template>
             <template #editor="{ data, field}">
-                <DatePicker v-model="data[field]" dateFormat="dd/mm/yy" showIcon showButtonBar :invalid="!data[field]" autofocus></DatePicker>
+                <DatePicker v-model="data[field]" dateFormat="dd/mm/yy" showIcon showButtonBar hideOnRangeSelection :invalid="!data[field]" autofocus></DatePicker>
             </template>
         </Column>
         <Column field="category" header="Category" sortable>

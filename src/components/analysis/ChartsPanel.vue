@@ -18,7 +18,7 @@
     const analysis = new AnalysisService();
     const toast = useToast();
     const period = ref([new Date(), new Date()]);
-    const range = ref([null, null]);
+    const range = ref([new Date(), new Date()]);
     const data = ref([]);
     const weightChartData = ref({});
     const priceChartData = ref({});
@@ -73,7 +73,7 @@
             <template #start>
                 <article class="flex items-center gap-2">
                     Period:
-                    <DatePicker v-model="range" dateFormat="M yy" view="month" :minDate="period[0]" :maxDate="period[1]" selectionMode="range" showIcon :manualInput="false" @update:modelValue="loadData"></DatePicker>
+                    <DatePicker v-model="range" dateFormat="M yy" view="month" :minDate="period[0]" :maxDate="period[1]" selectionMode="range" showIcon hideOnRangeSelection :manualInput="false" @update:modelValue="loadData"></DatePicker>
                 </article>
             </template>
         </Toolbar>

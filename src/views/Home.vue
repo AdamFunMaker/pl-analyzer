@@ -53,6 +53,12 @@
             ]
         },
         {
+            label: "Stock",
+            items: [
+                {shown: true, field: "stock_weight", header: "Stock"}
+            ]
+        },
+        {
             label: "Salary",
             items: [
                 {shown: true, field: "salary", header: "Salary"}
@@ -79,11 +85,10 @@
     ]);
     const columns_toggler = ref();
     const overview_table = ref();
-    const data = ref([]);
-    const selection = ref([]);
     const filters = ref({
         "global": {value: null, matchMode: FilterMatchMode.CONTAINS}
     });
+    const data = ref([]);
     const isLoading = ref(true);
     const buyTotalWeight = computed(() => overview_table.value?.processedData.length ? overview_table.value.processedData.map(record => record.buy_weight).reduce((total, val) => total + val) : null);
     const buyTotalPrice = computed(() => overview_table.value?.processedData.length ? overview_table.value.processedData.map(record => record.buy_price).reduce((total, val) => total + val) : null);
@@ -91,6 +96,7 @@
     const sellTotalWeight = computed(() => overview_table.value?.processedData.length ? overview_table.value.processedData.map(record => record.sell_weight).reduce((total, val) => total + val) : null);
     const sellTotalPrice = computed(() => overview_table.value?.processedData.length ? overview_table.value.processedData.map(record => record.sell_price).reduce((total, val) => total + val) : null);
     const sellTotalAveragePrice = computed(() => ((sellTotalPrice.value / sellTotalWeight.value) || 0).toLocaleString("en-MY", {style: "currency", currency: "MYR"}));
+    const totalStock = computed(() => ((buyTotalWeight.value - sellTotalWeight.value) || 0));
     const totalSalary = computed(() => overview_table.value?.processedData.length ? overview_table.value.processedData.map(record => record.salary).reduce((total, val) => total + val) : null);
     const totalExpenses = computed(() => overview_table.value?.processedData.length ? overview_table.value.processedData.map(record => record.expenses).reduce((total, val) => total + val) : null);
     const totalPettyCash = computed(() => overview_table.value?.processedData.length ? overview_table.value.processedData.map(record => record.petty_cash).reduce((total, val) => total + val) : null);
@@ -100,7 +106,7 @@
 
     provide("interval", interval);
     provide("range", range);
-    provide("overviewBreakdownData", overviewBreakdownData)
+    provide("overviewBreakdownData", overviewBreakdownData);
 
     function loadOverview() {
         isLoading.value = true;
@@ -124,7 +130,7 @@
             }
 
             isOverviewBreakdownLoading.value = false;
-        })
+        });
     }
 
     function loadRange() {
@@ -156,15 +162,15 @@
         <template #start>
             <article class="flex items-center gap-2">
                 <SelectButton v-model="interval" :options="intervals" :allowEmpty="false" @update:modelValue="loadOverview"></SelectButton>
-                <DatePicker v-model="range" :dateFormat="`${interval === 'Monthly' ? 'M ' : ''}yy`" :view="`${interval === 'Monthly' ? 'month' : 'year'}`" :minDate="period[0]" :maxDate="period[1]" selectionMode="range" showIcon @update:modelValue="loadOverview"></DatePicker>
+                <DatePicker v-model="range" :dateFormat="`${interval === 'Monthly' ? 'M ' : ''}yy`" :view="`${interval === 'Monthly' ? 'month' : 'year'}`" :minDate="period[0]" :maxDate="period[1]" selectionMode="range" showIcon hideOnRangeSelection @update:modelValue="loadOverview"></DatePicker>
             </article>
         </template>
         <template #end>
-            <Button label="Columns" icon="pi pi-sliders-v" text :badge="String([...columns[0].items, ...columns[1].items, ...columns[2].items, ...columns[3].items, ...columns[4].items, ...columns[5].items].filter(column => column.shown).length)" badgeSeverity="contrast" @click="toggleColumnsToggler"></Button>
+            <Button label="Columns" icon="pi pi-sliders-v" text :badge="String([...columns[0].items, ...columns[1].items, ...columns[2].items, ...columns[3].items, ...columns[4].items, ...columns[5].items, ...columns[6].items].filter(column => column.shown).length)" badgeSeverity="contrast" @click="toggleColumnsToggler"></Button>
             <ColumnsToggler ref="columns_toggler" :columns></ColumnsToggler>
         </template>        
     </Toolbar>
-    <DataTable ref="overview_table" v-model:selection="selection" :loading="isLoading" :value="data" :dataKey="data => `${data.year}${interval === 'Monthly' ? primevue.config.locale.monthNamesShort[data.month - 1] : ''}`" :globalFilterFields="['year', (data) => primevue.config.locale.monthNamesShort[data.month - 1], data => `${data.buy_weight.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`, data => data.buy_price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => data.buy_average_price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => `${data.sell_weight.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`, data => data.sell_price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => data.sell_average_price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => data.salary.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => data.expenses.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => data.petty_cash.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => data.profit_loss.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})]" :filters rowHover removableSort reorderableColumns scrollable scrollHeight="flex" stateKey="tableOverviewState">
+    <DataTable ref="overview_table" :loading="isLoading" :value="data" :dataKey="data => `${data.year}${interval === 'Monthly' ? primevue.config.locale.monthNamesShort[data.month - 1] : ''}`" :globalFilterFields="['year', (data) => primevue.config.locale.monthNamesShort[data.month - 1], data => `${data.buy_weight.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`, data => data.buy_price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => data.buy_average_price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => `${data.sell_weight.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`, data => data.sell_price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => data.sell_average_price.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => data.salary.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => data.expenses.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => data.petty_cash.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), data => data.profit_loss.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})]" :filters rowHover removableSort reorderableColumns scrollable scrollHeight="flex" stateKey="tableOverviewState">
         <template #header>
             <section class="flex items-center justify-between">
                 <h4>Overview</h4>
@@ -177,6 +183,7 @@
                 </article>
             </section>
         </template>
+        <template #empty><span class="block w-full text-center">No record(s) found</span></template>
         <ColumnGroup type="header">
             <Row>
                 <Column header="Year" field="year" :rowspan="2" sortable>
@@ -191,7 +198,7 @@
                 </Column>
                 <Column v-if="columns[0].items.filter(column => column.shown).length" :header="columns[0].label" :colspan="columns[0].items.filter(column => column.shown).length"></Column>
                 <Column v-if="columns[1].items.filter(column => column.shown).length" :header="columns[1].label" :colspan="columns[1].items.filter(column => column.shown).length"></Column>
-                <Column v-for="column of [...columns[2].items, ...columns[3].items, ...columns[4].items, ...columns[5].items].filter(column => column.shown)" :header="column.header" :field="column.field" :rowspan="2" sortable>
+                <Column v-for="column of [...columns[2].items, ...columns[3].items, ...columns[4].items, ...columns[5].items, ...columns[6].items].filter(column => column.shown)" :header="column.header" :field="column.field" :rowspan="2" sortable>
                     <template #sorticon="{sorted, sortOrder}">
                         <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
                     </template>
@@ -204,8 +211,7 @@
                     </template>
                 </Column>
             </Row>
-        </ColumnGroup>
-        <template #empty><span class="block w-full text-center">No record(s) found</span></template>
+        </ColumnGroup>        
         <Column header="Year" field="year" sortable>
             <template #body="{ data, field }">
                 <span v-html="highlightMatch(data[field], filters.global)"></span>
@@ -216,15 +222,15 @@
                 <span v-html="highlightMatch(primevue.config.locale.monthNamesShort[data[field] - 1], filters.global)"></span>
             </template>
         </Column>
-        <Column v-for="column of [...columns[0].items, ...columns[1].items, ...columns[2].items, ...columns[3].items, ...columns[4].items, ...columns[5].items].filter(column => column.shown)" :field="column.field" sortable>
-            <template v-if="column.header.match(/weight/gi)" #body="{ data, field }">
+        <Column v-for="column of [...columns[0].items, ...columns[1].items, ...columns[2].items, ...columns[3].items, ...columns[4].items, ...columns[5].items, ...columns[6].items].filter(column => column.shown)" :field="column.field" sortable>
+            <template v-if="column.header.match(/weight/gi) || column.header === 'Stock'" #body="{ data, field }">
                 <span v-html="highlightMatch(`${data[field].toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`, filters.global)"></span>
             </template>
             <template v-else-if="column.header.match(/price/gi) || column.header === 'Salary' || column.header === 'Expenses' || column.header === 'Petty Cash' || column.header === 'P&L'" #body="{ data, field }">
                 <span v-html="highlightMatch(data[field].toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}), filters.global)" :class="column.header !== 'P&L' ? null : data[field] < 0 ? 'text-red-500' : data[field] > 0 ? 'text-green-500' : null"></span>
             </template>
         </Column>
-        <ColumnGroup v-if="!(buyTotalWeight === null || buyTotalPrice === null || sellTotalWeight === null || sellTotalPrice === null || totalSalary === null || totalExpenses === null || totalPettyCash === null || totalPL === null) && [...columns[2].items, ...columns[3].items, ...columns[4].items, ...columns[5].items].filter(column => column.shown).length" type="footer">
+        <ColumnGroup v-if="!(buyTotalWeight === null || buyTotalPrice === null || sellTotalWeight === null || sellTotalPrice === null || totalStock === null || totalSalary === null || totalExpenses === null || totalPettyCash === null || totalPL === null) && [...columns[2].items, ...columns[3].items, ...columns[4].items, ...columns[5].items, ...columns[6].items].filter(column => column.shown).length" type="footer">
             <Row>
                 <Column footer="Total:" :colspan="interval === 'Monthly' ? 2 : 1" footerClass="text-right"></Column>
                 <Column v-if="columns[0].items.filter(column => column.field === 'buy_weight' && column.shown === true).length" :footer="`${buyTotalWeight.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`"></Column>
@@ -233,10 +239,11 @@
                 <Column v-if="columns[1].items.filter(column => column.field === 'sell_weight' && column.shown === true).length" :footer="`${sellTotalWeight.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`"></Column>
                 <Column v-if="columns[1].items.filter(column => column.field === 'sell_price' && column.shown === true).length" :footer="sellTotalPrice.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})"></Column>
                 <Column v-if="columns[1].items.filter(column => column.field === 'sell_average_price' && column.shown === true).length" :footer="sellTotalAveragePrice"></Column>
-                <Column v-if="columns[2].items.filter(column => column.field === 'salary' && column.shown === true).length" :footer="totalSalary.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})"></Column>
-                <Column v-if="columns[3].items.filter(column => column.field === 'expenses' && column.shown === true).length" :footer="totalExpenses.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})"></Column>
-                <Column v-if="columns[4].items.filter(column => column.field === 'petty_cash' && column.shown === true).length" :footer="totalPettyCash.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})"></Column>
-                <Column v-if="columns[5].items.filter(column => column.field === 'profit_loss' && column.shown === true).length" :footer="totalPL.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})" :class="totalPL < 0 ? 'text-red-500' : totalPL > 0 ? 'text-green-500' : null"></Column>
+                <Column v-if="columns[2].items.filter(column => column.field === 'stock_weight' && column.shown === true).length" :footer="`${totalStock.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`"></Column>
+                <Column v-if="columns[3].items.filter(column => column.field === 'salary' && column.shown === true).length" :footer="totalSalary.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})"></Column>
+                <Column v-if="columns[4].items.filter(column => column.field === 'expenses' && column.shown === true).length" :footer="totalExpenses.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})"></Column>
+                <Column v-if="columns[5].items.filter(column => column.field === 'petty_cash' && column.shown === true).length" :footer="totalPettyCash.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})"></Column>
+                <Column v-if="columns[6].items.filter(column => column.field === 'profit_loss' && column.shown === true).length" :footer="totalPL.toLocaleString('en-MY', {style: 'currency', currency: 'MYR'})" :class="totalPL < 0 ? 'text-red-500' : totalPL > 0 ? 'text-green-500' : null"></Column>
             </Row>
         </ColumnGroup>
     </DataTable>

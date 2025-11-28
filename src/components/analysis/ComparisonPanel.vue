@@ -27,8 +27,8 @@
     const toast = useToast();
     const analysis = new AnalysisService();
     const period = ref([new Date(), new Date()]);
-    const range1 = ref([null, null]);
-    const range2 = ref([null, null]);
+    const range1 = ref([new Date(), new Date()]);
+    const range2 = ref([new Date(), new Date()]);
     const columns = ref([
         {
             label: "Range 1",
@@ -113,7 +113,7 @@
         <template #start>
             <article class="flex items-center gap-2">
                 Period 1:
-                <DatePicker v-model="range1" dateFormat="M yy" view="month" :minDate="period[0]" :maxDate="period[1]" selectionMode="range" showIcon :manualInput="false" @update:modelValue="loadComparison"></DatePicker>
+                <DatePicker v-model="range1" dateFormat="M yy" view="month" :minDate="period[0]" :maxDate="period[1]" selectionMode="range" showIcon hideOnRangeSelection :manualInput="false" @update:modelValue="loadComparison"></DatePicker>
             </article>
         </template>
         <template #center>
@@ -123,7 +123,7 @@
         <template #end>
             <article class="flex items-center gap-2">
                 Period 2:
-                <DatePicker v-model="range2" dateFormat="M yy" view="month" :minDate="period[0]" :maxDate="period[1]" selectionMode="range" showIcon :manualInput="false" @update:modelValue="loadComparison"></DatePicker>
+                <DatePicker v-model="range2" dateFormat="M yy" view="month" :minDate="period[0]" :maxDate="period[1]" selectionMode="range" showIcon hideOnRangeSelection :manualInput="false" @update:modelValue="loadComparison"></DatePicker>
             </article>
         </template>
     </Toolbar>

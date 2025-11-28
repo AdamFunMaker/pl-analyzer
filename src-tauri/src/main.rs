@@ -100,7 +100,7 @@ fn main() {
         HAVING category IS NOT NULL
         ORDER BY year DESC, month, category;",
             kind: MigrationKind::Up,
-        },
+        }
     ];
 
     tauri::Builder::default()

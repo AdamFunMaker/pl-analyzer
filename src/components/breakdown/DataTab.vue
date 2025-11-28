@@ -41,6 +41,12 @@
                 {shown: true, field: "sell_price", header: "Selling Price"},
                 {shown: true, field: "sell_average_price", header: "Average Price"}
             ]
+        },
+        {
+            label: "Stock",
+            items: [
+                {shown: true, field: "stock_weight", header: "Stock"}
+            ]
         }
     ]);
     const columns_toggler = ref();
@@ -95,6 +101,11 @@
                 </Column>
                 <Column v-if="columns[0].items.filter(column => column.shown).length" header="Buy" :colspan="columns[0].items.filter(column => column.shown).length"></Column>
                 <Column v-if="columns[1].items.filter(column => column.shown).length" header="Sell" :colspan="columns[1].items.filter(column => column.shown).length"></Column>
+                <Column v-if="columns[2].items.filter(column => column.shown).length" header="Stock" field="stock_weight" :rowspan="2" sortable>
+                    <template #sorticon="{sorted, sortOrder}">
+                        <i :class="['p-sortable-column-icon', 'pi', sorted ? (sortOrder == 1 ? 'pi-sort-up-fill' : 'pi-sort-down-fill') : 'pi-sort']"></i>
+                    </template>
+                </Column>
             </Row>                    
             <Row>
                 <Column v-for="column of [...columns[0].items, ...columns[1].items].filter(column => column.shown)" :header="column.header" :field="column.field" sortable>
@@ -120,7 +131,7 @@
                 <span v-html="highlightMatch(data[field], filters.global)"></span>
             </template>
         </Column>
-        <Column v-for="column of [...columns[0].items, ...columns[1].items].filter(column => column.shown)" :header="column.header" :field="column.field" sortable>
+        <Column v-for="column of [...columns[0].items, ...columns[1].items, ...columns[2].items].filter(column => column.shown)" :header="column.header" :field="column.field" sortable>
             <template #body="{ data, field }">
                 <span v-html="highlightMatch(field.match(/price/gi) ? data[field].toLocaleString('en-MY', {style: 'currency', currency: 'MYR'}) : `${data[field].toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 5})} kg`, filters.global)"></span>
             </template>
