@@ -24,7 +24,7 @@ export class AnalysisService {
         } catch (err) {
             return {success: false, error: err}
         }
-    }
+    }    
 
     async getOverviewBreakdown(interval, period) {
         try {
@@ -250,8 +250,9 @@ export class AnalysisService {
         try {
             if (period1[0] && period2[0]) {
                 const categories = await database.select("SELECT name FROM item_categories");
-                const sql1 = formatSQLString(`SELECT ${period1[1] ? "date" : "\`year\`, month"}, category, SUM(weight) AS weight, SUM(price) AS price, ${transaction === "purchases" ? "SUM(price) / SUM(weight)" : "SUM(price) / SUM(weight)"} AS average_price FROM categorical_${transaction} WHERE date BETWEEN ? AND ? GROUP BY category`, period1[1] ? period1 : [period1[0], new Date(period1[0].getFullYear(), period1[0].getMonth() + 1, 0)]);
-                const sql2 = formatSQLString(`SELECT ${period2[1] ? "date" : "\`year\`, month"}, category, SUM(weight) AS weight, SUM(price) AS price, ${transaction === "purchases" ? "SUM(price) / SUM(weight)" : "SUM(price) / SUM(weight)"} AS average_price FROM categorical_${transaction} WHERE date BETWEEN ? AND ? GROUP BY category`, period2[1] ? period2 : [period2[0], new Date(period2[0].getFullYear(), period2[0].getMonth() + 1, 0)]);
+                const criteria = `date BETWEEN ? AND ?`;
+                const sql1 = formatSQLString(`SELECT ${period1[1] ? "date" : "\`year\`, month"}, category, SUM(weight) AS weight, SUM(price) AS price, ${transaction === "purchases" ? "SUM(price) / SUM(weight)" : "SUM(price) / SUM(weight)"} AS average_price FROM categorical_${transaction} WHERE ${criteria} GROUP BY category`, period1[1] ? period1.with(1, new Date(period1[1].getFullYear(), period1[1].getMonth() + 1, 0)) : [period1[0], new Date(period1[0].getFullYear(), period1[0].getMonth() + 1, 0)]);
+                const sql2 = formatSQLString(`SELECT ${period2[1] ? "date" : "\`year\`, month"}, category, SUM(weight) AS weight, SUM(price) AS price, ${transaction === "purchases" ? "SUM(price) / SUM(weight)" : "SUM(price) / SUM(weight)"} AS average_price FROM categorical_${transaction} WHERE ${criteria} GROUP BY category`, period2[1] ? period2.with(1, new Date(period2[1].getFullYear(), period2[1].getMonth() + 1, 0)) : [period2[0], new Date(period2[0].getFullYear(), period2[0].getMonth() + 1, 0)]);
                 const result1 = await database.select(sql1);
                 const result2 = await database.select(sql2);
                 let data = categories.map(category => {return {category: category.name}});
