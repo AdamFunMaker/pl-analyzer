@@ -1,0 +1,15 @@
+{
+  "version": "2.0.4",
+  "notes": "Added stock overview and general fixes and improvements",
+  "pub_date": "2025-11-28T13:31:30.557Z",
+  "platforms": {
+    "windows-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRbzBqTFc2OXQ3TFg0bXNNZEhqQXYyTHE5ZE9vMVgxSXVLNTBEazNBOFp6aXJIczJxTTVhUWtFOC9UWC9UTmF2aXJwbnR6aEQvTGZ4T1Bsblhwalh4azVTcFYrdmZ4dlFBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzY0MzM2NjgzCWZpbGU6cGwtYW5hbHl6ZXJfMi4wLjRfeDY0LXNldHVwLmV4ZQpQWkxhSU1xK0VSUWRFZHJSVUZFSHJkdThzRjNmVS84YzUwbXJKR1JrK0lxM1BDakRacnIyMEJQRmljRk9tbGxIeGUxeHphNkRWdUhxeFVyblkrSGhEZz09Cg==",
+      "url": "https://github.com/AdamFunMaker/pl-analyzer/releases/download/v2.0.4/pl-analyzer_2.0.4_x64-setup.exe"
+    },
+    "windows-x86_64-nsis": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRbzBqTFc2OXQ3TFg0bXNNZEhqQXYyTHE5ZE9vMVgxSXVLNTBEazNBOFp6aXJIczJxTTVhUWtFOC9UWC9UTmF2aXJwbnR6aEQvTGZ4T1Bsblhwalh4azVTcFYrdmZ4dlFBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzY0MzM2NjgzCWZpbGU6cGwtYW5hbHl6ZXJfMi4wLjRfeDY0LXNldHVwLmV4ZQpQWkxhSU1xK0VSUWRFZHJSVUZFSHJkdThzRjNmVS84YzUwbXJKR1JrK0lxM1BDakRacnIyMEJQRmljRk9tbGxIeGUxeHphNkRWdUhxeFVyblkrSGhEZz09Cg==",
+      "url": "https://github.com/AdamFunMaker/pl-analyzer/releases/download/v2.0.4/pl-analyzer_2.0.4_x64-setup.exe"
+    }
+  }
+}
