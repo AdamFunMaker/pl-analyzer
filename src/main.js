@@ -1,5 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { createApp } from "vue";
+import { createPinia } from "pinia";
 import App from "./App.vue";
 import router from "./router";
 import Aura from "@primevue/themes/aura";
@@ -95,6 +96,7 @@ const Noir = definePreset(Aura, {
 
 createApp(App)
     .use(router)
+    .use(createPinia())
     .use(PrimeVue, {
         locale: {
             firstDayOfWeek: 1

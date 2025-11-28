@@ -1,9 +1,9 @@
 <script setup>
-    import { useLayout } from "@/layout/composables/layout.js";
+    import { useAppStateStore } from "@/stores/appstate.js";
     import Button from "primevue/button";
     import AppNav from "./AppNav.vue";
 
-    const { isDark, toggleDarkMode } = useLayout();
+    const appstate = useAppStateStore();
 </script>
 
 <template>
@@ -14,7 +14,7 @@
         </RouterLink>
         <AppNav class="layout__header-nav"></AppNav>
         <section class="layout__header-buttons">
-            <Button :icon="`pi ${isDark ? 'pi-moon' : 'pi-sun'}`" severity="contrast" rounded outlined @click="toggleDarkMode"></Button>
+            <Button :icon="`pi ${appstate.dark ? 'pi-moon' : 'pi-sun'}`" severity="contrast" rounded outlined @click="appstate.toggleDarkMode()"></Button>
         </section>
     </header>
 </template>

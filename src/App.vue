@@ -1,27 +1,37 @@
 <script setup>
     import { ref, nextTick, onMounted } from "vue";
     import { useRouter } from "vue-router";
+    import { useNetwork } from "@vueuse/core";
+    import { useAppStateStore } from "./stores/appstate";
     import { checkForAppUpdates } from "@/utils/updater.js";
-    import { useLayout } from "@/layout/composables/layout.js";
     import BlockUI from "primevue/blockui";
     import ProgressSpinner from "primevue/progressspinner";
 
     const router = useRouter();
-    const { isLoading, setLoading } = useLayout();
+    const { isOnline } = useNetwork();
+    const appstate = useAppStateStore();
     const loading_mask = ref();
 
-    onMounted(async () => await checkForAppUpdates());
+    onMounted(async () => {
+        if (isOnline) {
+            try {
+                await checkForAppUpdates();
+            } catch (err) {
+                console.log(`App updates check failed: ${err}`);
+            }
+        }
+    });
 
-    router.beforeEach(() => setLoading(true));
+    router.beforeEach(() => appstate.setLoading(true));
     router.afterEach(() => {
         nextTick(() => {
-            setLoading(false);
+            appstate.setLoading(false);
         });
     });
 </script>
 
 <template>
-    <BlockUI ref="loading_mask" :blocked="isLoading" fullScreen :pt="{
+    <BlockUI ref="loading_mask" :blocked="appstate.loading" fullScreen :pt="{
         mask: {
             class: 'backdrop-blur-sm'
         }

@@ -1,11 +1,11 @@
 <script setup>
-    import { useLayout } from "@/layout/composables/layout.js";
+    import { useAppStateStore } from "@/stores/appstate";
 
-    const { appVersion } = useLayout();
+    const appstate = useAppStateStore();
 </script>
 
 <template>
     <footer class="layout__footer">
-        <span>Version {{ appVersion }}</span>
+        <span>Version {{ appstate.version }}</span>
     </footer>
 </template>

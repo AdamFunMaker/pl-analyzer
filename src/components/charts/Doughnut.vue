@@ -1,6 +1,6 @@
 <script setup>
     import { ref, watch } from "vue";
-    import { useLayout } from "@/layout/composables/layout.js";
+    import { useAppStateStore } from "@/stores/appstate";
     import Chart from "primevue/chart";
     import a11yLegend from "chartjs-plugin-a11y-legend";
     import ChartDataLabels from "chartjs-plugin-datalabels";
@@ -23,7 +23,7 @@
         }
     });
 
-    const { isDarkTheme } = useLayout();
+    const appstate = useAppStateStore();
     const options = ref({});
 
     function render() {
@@ -31,6 +31,7 @@
         const fontFamily = documentStyle.fontFamily;
         const fontSize = Number(documentStyle.fontSize.replace(/[^0-9]/g, ""));
         const textColor = documentStyle.getPropertyValue("--text-color");
+
         options.value = {
             plugins: {
                 legend: {
@@ -70,8 +71,8 @@
             }
         };
     }
-
-    watch(isDarkTheme, render, { immediate: true });
+    
+    watch(() => appstate.dark, render, {immediate: true});
 </script>
 
 <template>
